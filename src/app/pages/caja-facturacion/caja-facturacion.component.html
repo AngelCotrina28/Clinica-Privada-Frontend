@@ -1,0 +1,96 @@
+<header class="header-top">
+  <h1>Módulo Financiero y Caja</h1>
+  <p>Usuario: Caja Principal - Piso 1</p>
+</header>
+
+<main class="contenedor">
+
+  <section>
+    <h2 class="subtitulo-seccion">Facturación y Cobranza</h2>
+
+    <form>
+      <fieldset>
+        <legend>Búsqueda de Deudas</legend>
+
+        <label for="dni_deuda">DNI Paciente:</label>
+        <input type="text" id="dni_deuda" name="dni_deuda">
+
+        <label for="concepto_deuda">Filtrar por Concepto:</label>
+        <select id="concepto_deuda" name="concepto_deuda">
+          <option value="todos">Todos</option>
+          <option value="emergencia">Gastos de Emergencia</option>
+          <option value="cita">Gastos de Cita</option>
+          <option value="medicina">Gastos de Medicina</option>
+        </select>
+
+        <button type="submit">Buscar Deudas</button>
+      </fieldset>
+    </form>
+
+    <h3 class="subtitulo-seccion">Estado de Cuenta del Paciente</h3>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Monto (S/)</th>
+            <th class="col-centrada">Seleccionar para Pago</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gastos de Cita - Cardiología</td>
+            <td>80.00</td>
+            <td class="col-centrada">
+              <input type="checkbox" name="pago_item" value="80">
+            </td>
+          </tr>
+          <tr>
+            <td>Gastos de Medicina - Receta REC-9921</td>
+            <td>45.50</td>
+            <td class="col-centrada">
+              <input type="checkbox" name="pago_item" value="45.50">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <form>
+      <fieldset>
+        <legend>Procesamiento de Pago</legend>
+
+        <label for="metodo_pago">Método de Pago:</label>
+        <select id="metodo_pago" name="metodo_pago">
+          <option value="efectivo">Efectivo</option>
+          <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+          <option value="billetera">Billetera Electrónica (Yape/Plin)</option>
+        </select>
+
+        <label for="tipo_comprobante">Tipo de Comprobante:</label>
+        <select id="tipo_comprobante" name="tipo_comprobante">
+          <option value="boleta">Boleta de Venta</option>
+          <option value="factura">Factura</option>
+        </select>
+
+        <button type="submit">Emitir Comprobante</button>
+      </fieldset>
+    </form>
+  </section>
+
+  <section>
+    <h2 class="subtitulo-seccion">Control de Caja</h2>
+
+    <form>
+      <fieldset class="fieldset-operaciones">
+        <legend>Operaciones de Turno</legend>
+        <div class="grupo-acciones">
+          <button type="submit" name="accion" value="apertura">Apertura de Caja</button>
+          <button type="button" class="btn-operacion">Cuadre de Caja</button>
+          <button type="button" class="btn-operacion">Cierre de Caja</button>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
+</main>

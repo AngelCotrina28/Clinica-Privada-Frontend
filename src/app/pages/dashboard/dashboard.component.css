@@ -1,0 +1,36 @@
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding-top: 2rem;
+}
+
+.tarjeta-resumen {
+  background-color: var(--color-bg-blanco);
+  padding: 1.5rem;
+  border-radius: var(--borde-redondeado);
+  box-shadow: var(--sombra-suave);
+  border-left: 4px solid var(--color-texto-titulo);
+  transition: var(--transicion-estandar);
+}
+
+.tarjeta-resumen:hover {
+  border-left-color: var(--color-acento);
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-hover);
+}
+
+.tarjeta-resumen h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.tarjeta-resumen p strong {
+  color: var(--color-acento);
+}
+
+@media screen and (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

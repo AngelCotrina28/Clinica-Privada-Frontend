@@ -1,0 +1,18 @@
+<aside class="sidebar" [class.colapsado]="colapsado">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Red de Clínicas Privadas del Perú</div>
+    <button class="btn-toggle" (click)="toggleSidebar()">☰</button>
+  </div>
+  <ul class="sidebar-menu">
+    <li><a routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{exact:true}"><span>Inicio</span></a></li>
+    <li><a routerLink="/admision" routerLinkActive="activo"><span>Admisión y Consultas</span></a></li>
+    <li><a routerLink="/atencion-medica" routerLinkActive="activo"><span>Atención Médica</span></a></li>
+    <li><a routerLink="/farmacia" routerLinkActive="activo"><span>Farmacia</span></a></li>
+    <li><a routerLink="/caja-facturacion" routerLinkActive="activo"><span>Caja y Facturación</span></a></li>
+    <li><a routerLink="/administracion" routerLinkActive="activo"><span>Administración</span></a></li>
+  </ul>
+</aside>
+
+<div class="contenido-wrapper">
+  <router-outlet></router-outlet>
+</div>

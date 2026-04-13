@@ -1,0 +1,98 @@
+<header class="header-top">
+  <h1>Módulo de Admisión y Consultas</h1>
+  <p>Usuario: Recepción Central</p>
+</header>
+
+<main class="contenedor">
+
+  <section>
+    <h2 class="subtitulo-seccion">Gestión de Historias Clínicas</h2>
+    <form>
+      <fieldset>
+        <legend>Apertura / Búsqueda de Historia Clínica</legend>
+        <label for="dni_paciente">DNI / CE del Paciente:</label>
+        <input type="text" id="dni_paciente" name="dni_paciente">
+        <div class="grupo-acciones">
+          <button type="submit">Buscar Historia</button>
+          <button type="button">Abrir Nueva Historia</button>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
+  <section>
+    <h2 class="subtitulo-seccion">Flujo de Emergencia</h2>
+    <form>
+      <fieldset>
+        <legend>Generar Orden de Atención de Emergencia</legend>
+
+        <label for="id_historia_emergencia">N° Historia Clínica:</label>
+        <input type="text" id="id_historia_emergencia" name="id_historia_emergencia">
+
+        <label for="medico_emergencia">Asignar Médico (Disponibles):</label>
+        <select id="medico_emergencia" name="medico_emergencia">
+          <option value="med_1">Dr. Carlos Mendoza (Medicina General)</option>
+          <option value="med_2">Dra. Ana Silva (Traumatología)</option>
+        </select>
+
+        <label for="motivo_emergencia">Motivo de Ingreso:</label>
+        <input type="text" id="motivo_emergencia" name="motivo_emergencia">
+
+        <div class="grupo-acciones">
+          <button type="submit">Registrar Orden de Emergencia</button>
+          <button type="button">Imprimir Orden</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <h3 class="subtitulo-seccion">Órdenes de Emergencia Registradas Hoy</h3>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>N° Orden</th>
+            <th>Paciente</th>
+            <th>Médico Asignado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>EM-001</td>
+            <td>Luis Pérez</td>
+            <td>Dr. Carlos Mendoza</td>
+            <td><strong class="texto-acento">En Atención</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="subtitulo-seccion">Flujo de Consulta Externa</h2>
+    <form>
+      <fieldset>
+        <legend>Programación de Citas Médicas</legend>
+
+        <label for="id_historia_cita">N° Historia Clínica:</label>
+        <input type="text" id="id_historia_cita" name="id_historia_cita">
+
+        <label for="especialidad">Especialidad:</label>
+        <select id="especialidad" name="especialidad">
+          <option value="cardiologia">Cardiología</option>
+          <option value="pediatria">Pediatría</option>
+          <option value="gastroenterologia">Gastroenterología</option>
+        </select>
+
+        <label for="fecha_cita">Fecha y Hora:</label>
+        <input type="datetime-local" id="fecha_cita" name="fecha_cita">
+
+        <div class="grupo-acciones">
+          <button type="submit">Programar Cita</button>
+          <button type="button">Generar Ticket de Turno</button>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
+</main>
