@@ -1,0 +1,97 @@
+<app-header titulo="Módulo de Admisión y Consultas" usuario="Recepción Central" />
+
+<main class="contenedor">
+
+  <!-- Historia Clínica -->
+  <section>
+    <h2 class="subtitulo-seccion">Gestión de Historias Clínicas</h2>
+    <form>
+      <fieldset>
+        <div class="grupo-acciones">
+          <legend>Apertura / Búsqueda de Historia Clínica</legend>
+          <label for="dni_paciente">DNI / CE del Paciente:</label>
+          <input type="text" id="dni_paciente" name="dni_paciente" required>
+          <button type="submit">Buscar Historia</button>
+          <button type="button">Abrir Nueva Historia</button>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
+  <!-- Emergencia -->
+  <section>
+    <h2 class="subtitulo-seccion">Flujo de Emergencia</h2>
+    <form>
+      <fieldset>
+        <legend>Generar Orden de Atención de Emergencia</legend>
+
+        <label for="id_historia_emergencia">N° Historia Clínica:</label>
+        <input type="text" id="id_historia_emergencia" required>
+
+        <label for="medico_emergencia">Asignar Médico (Disponibles):</label>
+        <select id="medico_emergencia">
+          @for (medico of medicos; track medico.value) {
+            <option [value]="medico.value">{{ medico.label }}</option>
+          }
+        </select>
+
+        <label for="motivo_emergencia">Motivo de Ingreso:</label>
+        <input type="text" id="motivo_emergencia" required>
+
+        <button type="submit">Registrar Orden de Emergencia</button>
+        <button type="button">Imprimir Orden</button>
+      </fieldset>
+    </form>
+
+    <h3 class="subtitulo-seccion">Órdenes de Emergencia Registradas Hoy</h3>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>N° Orden</th>
+            <th>Paciente</th>
+            <th>Médico Asignado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (orden of ordenes; track orden.nroOrden) {
+            <tr>
+              <td>{{ orden.nroOrden }}</td>
+              <td>{{ orden.paciente }}</td>
+              <td>{{ orden.medicoAsignado }}</td>
+              <td><strong class="texto-acento">{{ orden.estado }}</strong></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Consulta Externa -->
+  <section>
+    <h2 class="subtitulo-seccion">Flujo de Consulta Externa</h2>
+    <form>
+      <fieldset>
+        <legend>Programación de Citas Médicas</legend>
+
+        <label for="id_historia_cita">N° Historia Clínica:</label>
+        <input type="text" id="id_historia_cita" required>
+
+        <label for="especialidad">Especialidad:</label>
+        <select id="especialidad">
+          @for (esp of especialidades; track esp.value) {
+            <option [value]="esp.value">{{ esp.label }}</option>
+          }
+        </select>
+
+        <label for="fecha_cita">Fecha y Hora:</label>
+        <input type="datetime-local" id="fecha_cita" required>
+
+        <button type="submit">Programar Cita</button>
+        <button type="button">Generar Ticket de Turno</button>
+      </fieldset>
+    </form>
+  </section>
+
+</main>

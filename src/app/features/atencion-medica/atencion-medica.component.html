@@ -1,0 +1,70 @@
+<app-header titulo="Módulo de Atención Médica" usuario="Dr. Carlos Mendoza" />
+
+<main class="contenedor">
+
+  <!-- Historia Clínica -->
+  <section>
+    <h2 class="subtitulo-seccion">Registro de Resultados de Atención</h2>
+    <form>
+      <fieldset>
+        <legend>Historia Clínica del Paciente Actual</legend>
+
+        <label for="nro_cita">N° Cita / Orden:</label>
+        <input type="text" id="nro_cita" value="CE-045" readonly>
+
+        <label for="diagnostico">Diagnóstico (CIE-10):</label>
+        <input type="text" id="diagnostico" required>
+
+        <label for="notas_evolucion">Notas de Evolución:</label>
+        <textarea id="notas_evolucion" rows="5"></textarea>
+
+        <button type="submit">Guardar en Historia Clínica</button>
+      </fieldset>
+    </form>
+  </section>
+
+  <!-- Receta -->
+  <section>
+    <h2 class="subtitulo-seccion">Emisión de Recetas Médicas</h2>
+    <form>
+      <fieldset>
+        <legend>Receta Digital</legend>
+
+        <label for="medicamento">Medicamento:</label>
+        <input type="text" id="medicamento" list="medicamentos_list">
+        <datalist id="medicamentos_list">
+          @for (med of medicamentosDisponibles; track med) {
+            <option [value]="med">
+          }
+        </datalist>
+
+        <label for="dosis">Dosis e Indicaciones:</label>
+        <input type="text" id="dosis">
+
+        <button type="button">Añadir a la Receta</button>
+
+        <div class="tabla-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Medicamento</th>
+                <th>Indicaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of receta; track item.medicamento) {
+                <tr>
+                  <td>{{ item.medicamento }}</td>
+                  <td>{{ item.indicaciones }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <button type="submit">Emitir Receta Digital</button>
+      </fieldset>
+    </form>
+  </section>
+
+</main>

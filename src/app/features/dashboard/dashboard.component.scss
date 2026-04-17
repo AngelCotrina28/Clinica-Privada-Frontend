@@ -1,0 +1,52 @@
+// Estilos del dashboard — equivalente al index.css original
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 2rem 1rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tarjeta-resumen {
+  background-color: var(--color-bg-blanco);
+  padding: 1.5rem;
+  border-radius: var(--borde-redondeado);
+  box-shadow: var(--sombra-suave);
+  border-left: 4px solid var(--color-texto-titulo);
+  transition: var(--transicion-estandar);
+
+  &:hover {
+    border-left-color: var(--color-acento);
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+  }
+
+  h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  p  { font-size: 0.95rem; }
+
+  strong { color: var(--color-acento); }
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #aaa;
+}

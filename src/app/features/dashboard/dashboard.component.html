@@ -1,0 +1,20 @@
+<app-header titulo="Resumen Operativo" usuario="Dr. Carlos Mendoza" />
+
+<main class="dashboard-main">
+  <section class="dashboard-grid">
+    @for (card of resumen; track card.titulo) {
+      <article class="tarjeta-resumen">
+        <h3>{{ card.titulo }}</h3>
+        <p>
+          {{ card.descripcion }}
+          <strong>{{ card.valor }}</strong>
+          {{ card.sufijo }}
+        </p>
+      </article>
+    }
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Red de Clínicas Privadas del Perú. Todos los derechos reservados.</p>
+</footer>

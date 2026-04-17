@@ -1,0 +1,20 @@
+// sidebar.component.scss
+// 
+// Aquí van SOLO los estilos propios del componente sidebar.
+// Los estilos globales (.sidebar, .sidebar-menu, etc.) ya viven
+// en styles.scss — no los repetimos aquí.
+//
+// Este archivo es para overrides puntuales o animaciones
+// específicas del componente si las necesitáramos en el futuro.
+//
+// Por ahora lo dejamos como placeholder documentado para que
+// el equipo sepa dónde agregar estilos sin romper el global.
+
+// Ejemplo de override futuro:
+// :host {
+//   display: contents; // hace que el <app-sidebar> no agregue un div extra al layout
+// }
+
+:host {
+  display: contents;
+}

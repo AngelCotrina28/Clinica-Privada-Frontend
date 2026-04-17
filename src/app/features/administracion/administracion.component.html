@@ -1,0 +1,90 @@
+<app-header titulo="Configuración y Control Administrativo" usuario="Administrador del Sistema" />
+
+<main class="contenedor">
+
+  <!-- Series de comprobantes -->
+  <section>
+    <h2 class="subtitulo-seccion">Configuración de Series de Comprobantes</h2>
+    <form>
+      <fieldset>
+        <legend>Asignar Series a Puntos de Venta</legend>
+
+        <label for="punto_venta">Punto de Venta / Caja:</label>
+        <select id="punto_venta">
+          @for (pv of puntosDeVenta; track pv.value) {
+            <option [value]="pv.value">{{ pv.label }}</option>
+          }
+        </select>
+
+        <label for="serie_boleta">Serie Boleta:</label>
+        <input type="text" id="serie_boleta" placeholder="Ej: B001">
+
+        <label for="serie_factura">Serie Factura:</label>
+        <input type="text" id="serie_factura" placeholder="Ej: F001">
+
+        <button type="submit">Guardar Configuración</button>
+      </fieldset>
+    </form>
+  </section>
+
+  <!-- Cajeros -->
+  <section>
+    <h2 class="subtitulo-seccion">Mantenimiento de Cajeros</h2>
+    <form>
+      <fieldset>
+        <legend>Registrar Nuevo Perfil de Cajero</legend>
+
+        <label for="nombre_cajero">Nombre Completo:</label>
+        <input type="text" id="nombre_cajero" required>
+
+        <label for="usuario_cajero">Usuario de Sistema:</label>
+        <input type="text" id="usuario_cajero" required>
+
+        <button type="submit">Crear Perfil</button>
+      </fieldset>
+    </form>
+
+    <h3 class="subtitulo-seccion">Cajeros Activos</h3>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cajero of cajeros; track cajero.id) {
+            <tr>
+              <td>{{ cajero.id }}</td>
+              <td>{{ cajero.nombre }}</td>
+              <td>{{ cajero.usuario }}</td>
+              <td><strong>{{ cajero.estado }}</strong></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Anulación -->
+  <section>
+    <h2 class="subtitulo-seccion">Anulación de Comprobantes</h2>
+    <form>
+      <fieldset class="fieldset-final">
+        <legend>Buscar y Anular</legend>
+
+        <label for="nro_comprobante">N° de Comprobante</label>
+        <input type="text" id="nro_comprobante" required>
+
+        <label for="motivo_anulacion">Motivo de la Anulación</label>
+        <input type="text" id="motivo_anulacion" required>
+
+        <button type="submit">Procesar Anulación</button>
+      </fieldset>
+    </form>
+  </section>
+
+</main>

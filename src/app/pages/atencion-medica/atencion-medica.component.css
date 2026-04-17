@@ -1,9 +1,0 @@
-main section {
-  margin-bottom: 3.5rem;
-}
-
-input[readonly] {
-  background-color: #F1F5F9;
-  color: #94A3B8;
-  cursor: not-allowed;
-}

@@ -1,0 +1,47 @@
+<app-header titulo="Módulo de Farmacia" usuario="Farmacia Central" />
+
+<main class="contenedor">
+  <section>
+    <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
+
+    <form class="grupo-acciones">
+      <fieldset>
+        <legend>Buscar Órdenes de Entrega</legend>
+        <label for="nro_receta">N° Receta o DNI del Paciente:</label>
+        <input type="text" id="nro_receta">
+        <button type="submit">Buscar</button>
+      </fieldset>
+    </form>
+
+    <h3 class="subtitulo-seccion">Órdenes Pendientes de Despacho</h3>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>N° Receta</th>
+            <th>Paciente</th>
+            <th>Origen</th>
+            <th>Estado de Pago</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (orden of ordenesPendientes; track orden.nroReceta) {
+            <tr>
+              <td>{{ orden.nroReceta }}</td>
+              <td>{{ orden.paciente }}</td>
+              <td>{{ orden.origen }}</td>
+              <td><strong class="texto-acento">{{ orden.estadoPago }}</strong></td>
+              <td>
+                <div class="grupo-acciones">
+                  <button type="button" class="btn-tabla">Registrar Entrega</button>
+                  <button type="button" class="btn-tabla">Imprimir Orden</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

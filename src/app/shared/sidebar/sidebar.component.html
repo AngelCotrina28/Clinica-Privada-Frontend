@@ -1,0 +1,22 @@
+<aside class="sidebar" [class.colapsado]="colapsado()">
+
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Red de Clínicas Privadas del Perú</div>
+    <button class="btn-toggle" (click)="toggleSidebar()" aria-label="Colapsar menú">
+      ☰
+    </button>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li *ngFor="let item of navItems">
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="activo"
+        [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+      >
+        <span>{{ item.label }}</span>
+      </a>
+    </li>
+  </ul>
+
+</aside>

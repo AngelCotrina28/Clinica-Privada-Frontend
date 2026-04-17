@@ -1,0 +1,12 @@
+// app.component.scss
+// El layout principal (flex row, altura 100vh) ya está
+// definido en styles.scss con .layout-sidebar.
+// Aquí solo necesitamos aplicarlo al host del componente raíz.
+
+:host {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--color-bg-principal);
+}

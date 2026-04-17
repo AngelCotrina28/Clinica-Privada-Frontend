@@ -1,0 +1,93 @@
+<app-header titulo="Módulo Financiero y Caja" usuario="Caja Principal - Piso 1" />
+
+<main class="contenedor">
+
+  <!-- Facturación -->
+  <section>
+    <h2 class="subtitulo-seccion">Facturación y Cobranza</h2>
+
+    <form>
+      <fieldset>
+        <legend>Búsqueda de Deudas</legend>
+
+        <label for="dni_deuda">DNI Paciente:</label>
+        <input type="text" id="dni_deuda">
+
+        <label for="concepto_deuda">Filtrar por Concepto:</label>
+        <select id="concepto_deuda">
+          @for (c of conceptosDeuda; track c.value) {
+            <option [value]="c.value">{{ c.label }}</option>
+          }
+        </select>
+
+        <button type="submit">Buscar Deudas</button>
+      </fieldset>
+    </form>
+
+    <h3 class="subtitulo-seccion">Estado de Cuenta del Paciente</h3>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Monto (S/)</th>
+            <th class="col-centrada">Seleccionar para Pago</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (deuda of deudas; track deuda.concepto) {
+            <tr>
+              <td>{{ deuda.concepto }}</td>
+              <td>{{ deuda.monto | number:'1.2-2' }}</td>
+              <td class="col-centrada">
+                <input type="checkbox" [(ngModel)]="deuda.checked">
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalSeleccionado > 0) {
+      <p class="total-pago">
+        Total a pagar: <strong>S/ {{ totalSeleccionado | number:'1.2-2' }}</strong>
+      </p>
+    }
+
+    <form>
+      <fieldset>
+        <legend>Procesamiento de Pago</legend>
+
+        <label for="metodo_pago">Método de Pago:</label>
+        <select id="metodo_pago">
+          @for (m of metodosPago; track m.value) {
+            <option [value]="m.value">{{ m.label }}</option>
+          }
+        </select>
+
+        <label for="tipo_comprobante">Tipo de Comprobante:</label>
+        <select id="tipo_comprobante">
+          @for (t of tiposComprobante; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+
+        <button type="submit">Emitir Comprobante</button>
+      </fieldset>
+    </form>
+  </section>
+
+  <!-- Control de Caja -->
+  <section>
+    <h2 class="subtitulo-seccion">Control de Caja</h2>
+    <form>
+      <fieldset class="grupo-acciones fieldset-operaciones">
+        <legend>Operaciones de Turno</legend>
+        <button type="submit">Apertura de Caja</button>
+        <button type="button">Cuadre de Caja</button>
+        <button type="button">Cierre de Caja</button>
+      </fieldset>
+    </form>
+  </section>
+
+</main>

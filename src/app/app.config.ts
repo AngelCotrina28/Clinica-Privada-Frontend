@@ -1,11 +1,15 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
+    // Optimización de detección de cambios
+    provideZoneChangeDetection({ eventCoalescing: true }),
+
+    // Router con las rutas definidas
+    // withComponentInputBinding() permite pasar params de ruta
+    // como @Input() en los componentes (útil más adelante)
+    provideRouter(routes, withComponentInputBinding()),
   ]
 };
