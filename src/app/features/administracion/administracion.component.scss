@@ -1,10 +1,82 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
+/* =========================================
+   UX/UI CLÍNICA - PALETA DE COLORES
+========================================= */
+$color-clinical-navy: #0F3D68;   /* Azul marino - Confianza y Autoridad (Headers y Textos principales) */
+$color-clinical-teal: #00897B;   /* Verde azulado - Salud, Vida y Acciones positivas (Botones Guardar) */
+$color-clinical-bg: #F4F7F9;     /* Gris azulado muy claro - Limpieza (Fondos de pantalla) */
+$color-clinical-border: #E0E7ED; /* Gris suave - Divisiones limpias */
+
+.clinical-dashboard {
+  background-color: $color-clinical-bg;
+  min-height: 100vh;
+  padding: 2rem;
+
+  h2 {
+    color: $color-clinical-navy;
+    font-weight: 600;
+  }
 }
 
-main section { margin-bottom: 3.5rem; }
+/* Tarjetas limpias de hospital */
+.card-clinical {
+  border: 1px solid $color-clinical-border;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 
-h3 { margin-top: 2.5rem; }
+  .card-header {
+    background-color: white;
+    border-bottom: 2px solid $color-clinical-border;
+    color: $color-clinical-navy;
+    font-weight: 600;
+  }
+}
+
+/* Botones Personalizados */
+.btn-clinical-action {
+  background-color: $color-clinical-navy;
+  color: white;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: lighten($color-clinical-navy, 10%);
+    color: white;
+  }
+}
+
+.btn-clinical-save {
+  background-color: $color-clinical-teal;
+  color: white;
+  border: none;
+  font-weight: 500;
+
+  &:hover {
+    background-color: darken($color-clinical-teal, 10%);
+    color: white;
+  }
+}
+
+/* Modales y Tablas */
+::ng-deep .modal-header.clinical-modal-header {
+  background-color: $color-clinical-navy;
+  color: white;
+  border-bottom: none;
+
+  .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+}
+
+.table-clinical {
+  th {
+    background-color: $color-clinical-navy;
+    color: white;
+    font-weight: 500;
+    border-bottom: none;
+  }
+  td {
+    vertical-align: middle;
+    color: #495057;
+  }
+}

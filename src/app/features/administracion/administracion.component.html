@@ -1,90 +1,122 @@
-<app-header titulo="Configuración y Control Administrativo" usuario="Administrador del Sistema" />
+<div class="clinical-dashboard">
+    <h2 class="mb-4"><i class="bi bi-building"></i> Panel de Administración</h2>
+    
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link active fw-bold" style="color: #0F3D68;" href="#">👥 Gestión de Usuarios</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-muted" href="#">📄 Series de Comprobantes</a>
+        </li>
+    </ul>
 
-<main class="contenedor">
+    <div class="card card-clinical">
+        <div class="card-header d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0">Personal Registrado</h5>
+            
+            <button class="btn btn-clinical-action px-4" (click)="abrirModal(modalNuevoUsuario)">
+                + Nuevo Personal
+            </button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-clinical mb-0">
+                    <thead>
+                        <tr>
+                            <th>DNI</th>
+                            <th>Nombre Completo</th>
+                            <th>Usuario</th>
+                            <th>Correo</th>
+                            <th>Perfil / Rol</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="usuarios.length === 0">
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <em>Aún no hay personal registrado. Haga clic en "+ Nuevo Personal" para comenzar.</em>
+                            </td>
+                        </tr>
 
-  <!-- Series de comprobantes -->
-  <section>
-    <h2 class="subtitulo-seccion">Configuración de Series de Comprobantes</h2>
-    <form>
-      <fieldset>
-        <legend>Asignar Series a Puntos de Venta</legend>
-
-        <label for="punto_venta">Punto de Venta / Caja:</label>
-        <select id="punto_venta">
-          @for (pv of puntosDeVenta; track pv.value) {
-            <option [value]="pv.value">{{ pv.label }}</option>
-          }
-        </select>
-
-        <label for="serie_boleta">Serie Boleta:</label>
-        <input type="text" id="serie_boleta" placeholder="Ej: B001">
-
-        <label for="serie_factura">Serie Factura:</label>
-        <input type="text" id="serie_factura" placeholder="Ej: F001">
-
-        <button type="submit">Guardar Configuración</button>
-      </fieldset>
-    </form>
-  </section>
-
-  <!-- Cajeros -->
-  <section>
-    <h2 class="subtitulo-seccion">Mantenimiento de Cajeros</h2>
-    <form>
-      <fieldset>
-        <legend>Registrar Nuevo Perfil de Cajero</legend>
-
-        <label for="nombre_cajero">Nombre Completo:</label>
-        <input type="text" id="nombre_cajero" required>
-
-        <label for="usuario_cajero">Usuario de Sistema:</label>
-        <input type="text" id="usuario_cajero" required>
-
-        <button type="submit">Crear Perfil</button>
-      </fieldset>
-    </form>
-
-    <h3 class="subtitulo-seccion">Cajeros Activos</h3>
-    <div class="tabla-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Usuario</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (cajero of cajeros; track cajero.id) {
-            <tr>
-              <td>{{ cajero.id }}</td>
-              <td>{{ cajero.nombre }}</td>
-              <td>{{ cajero.usuario }}</td>
-              <td><strong>{{ cajero.estado }}</strong></td>
-            </tr>
-          }
-        </tbody>
-      </table>
+                        <tr *ngFor="let u of usuarios">
+                            <td class="fw-bold">{{ u.dni }}</td>
+                            <td>{{ u.nombreCompleto }}</td>
+                            <td class="text-muted">{{ u.username }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>
+                                <span class="badge rounded-pill bg-light text-dark border">
+                                    {{ u.nombreRol }}
+                                </span>
+                            </td>
+                            <td>
+                                <span [class]="u.activo ? 'text-success fw-bold' : 'text-danger fw-bold'">
+                                    ● {{ u.activo ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </section>
+</div>
 
-  <!-- Anulación -->
-  <section>
-    <h2 class="subtitulo-seccion">Anulación de Comprobantes</h2>
-    <form>
-      <fieldset class="fieldset-final">
-        <legend>Buscar y Anular</legend>
+<ng-template #modalNuevoUsuario let-modal>
+    <div class="modal-header clinical-modal-header">
+        <h5 class="modal-title"><i class="bi bi-person-plus"></i> Registrar Nuevo Personal</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    
+    <div class="modal-body p-4 bg-light">
+        <div *ngIf="mensajeError" class="alert alert-danger shadow-sm">
+            {{ mensajeError }}
+        </div>
 
-        <label for="nro_comprobante">N° de Comprobante</label>
-        <input type="text" id="nro_comprobante" required>
+        <form [formGroup]="usuarioForm">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label text-muted fw-bold small">DNI</label>
+                    <input type="text" class="form-control" formControlName="dni" placeholder="8 dígitos">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted fw-bold small">USUARIO DE SISTEMA</label>
+                    <input type="text" class="form-control" formControlName="username">
+                </div>
+                
+                <div class="col-md-12">
+                    <label class="form-label text-muted fw-bold small">NOMBRE COMPLETO</label>
+                    <input type="text" class="form-control" formControlName="nombreCompleto">
+                </div>
 
-        <label for="motivo_anulacion">Motivo de la Anulación</label>
-        <input type="text" id="motivo_anulacion" required>
+                <div class="col-md-6">
+                    <label class="form-label text-muted fw-bold small">CORREO ELECTRÓNICO</label>
+                    <input type="email" class="form-control" formControlName="email">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-muted fw-bold small">CONTRASEÑA TEMPORAL</label>
+                    <input type="password" class="form-control" formControlName="password">
+                </div>
 
-        <button type="submit">Procesar Anulación</button>
-      </fieldset>
-    </form>
-  </section>
-
-</main>
+                <div class="col-md-12">
+                    <label class="form-label text-muted fw-bold small">ROL EN LA CLÍNICA</label>
+                    <select class="form-select" formControlName="rolId">
+                        <option value="" disabled selected>Seleccione el perfil...</option>
+                        <option value="1">Administrador</option>
+                        <option value="2">Médico</option>
+                        <option value="3">Enfermera</option>
+                        <option value="4">Recepcionista</option>
+                        <option value="5">Cajero</option>
+                        <option value="6">Técnico Farmacia</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="modal-footer border-0 bg-light">
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="modal.dismiss()">Cancelar</button>
+        <button type="button" class="btn btn-clinical-save px-4" [disabled]="usuarioForm.invalid" (click)="registrar(modal)">
+            Guardar Registro
+        </button>
+    </div>
+</ng-template>

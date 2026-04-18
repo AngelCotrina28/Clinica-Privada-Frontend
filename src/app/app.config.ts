@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,5 +12,6 @@ export const appConfig: ApplicationConfig = {
     // withComponentInputBinding() permite pasar params de ruta
     // como @Input() en los componentes (útil más adelante)
     provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient()
   ]
 };
