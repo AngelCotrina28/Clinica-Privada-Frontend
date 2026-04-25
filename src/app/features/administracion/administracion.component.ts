@@ -13,9 +13,8 @@ import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AdministracionComponent implements OnInit {
   usuarioForm!: FormGroup;
-  mensajeExito: string = '';
   mensajeError: string = '';
-  usuarios: any[] = []; // Array que guarda la lista de usuarios del backend
+  usuarios: any[] = []; 
 
   constructor(
     private fb: FormBuilder,
@@ -25,7 +24,7 @@ export class AdministracionComponent implements OnInit {
 
   ngOnInit(): void {
     this.inicializarFormulario();
-    this.cargarUsuarios(); // Se ejecuta al entrar a la página
+    this.cargarUsuarios(); 
   }
 
   inicializarFormulario(): void {
@@ -39,7 +38,6 @@ export class AdministracionComponent implements OnInit {
     });
   }
 
-  // Trae los usuarios de Spring Boot
   cargarUsuarios(): void {
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
@@ -51,15 +49,13 @@ export class AdministracionComponent implements OnInit {
     });
   }
 
-  // Abre el Modal flotante
+  // Se activa al presionar el botón de arriba
   abrirModal(modalContent: any): void {
     this.usuarioForm.reset();
-    this.mensajeExito = '';
     this.mensajeError = '';
-    this.modalService.open(modalContent, { backdrop: 'static', size: 'lg' }); 
+    this.modalService.open(modalContent, { backdrop: 'static', size: 'lg', centered: true }); 
   }
 
-  // Registra un nuevo usuario y actualiza la tabla
   registrar(modalActivo: any): void {
     if (this.usuarioForm.invalid) {
       this.usuarioForm.markAllAsTouched();
@@ -68,9 +64,9 @@ export class AdministracionComponent implements OnInit {
 
     this.usuarioService.registrarUsuario(this.usuarioForm.value).subscribe({
       next: (res) => {
-        alert('¡Personal registrado correctamente!'); 
-        modalActivo.close(); // Cierra la ventanita
-        this.cargarUsuarios(); // Refresca la tabla automáticamente
+        alert('¡Personal registrado exitosamente!'); 
+        modalActivo.close(); 
+        this.cargarUsuarios(); 
       },
       error: (err) => {
         this.mensajeError = err.error?.message || 'Ocurrió un error al registrar el usuario.';

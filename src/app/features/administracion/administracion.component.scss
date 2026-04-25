@@ -1,10 +1,7 @@
-/* =========================================
-   UX/UI CLÍNICA - PALETA DE COLORES
-========================================= */
-$color-clinical-navy: #0F3D68;   /* Azul marino - Confianza y Autoridad (Headers y Textos principales) */
-$color-clinical-teal: #00897B;   /* Verde azulado - Salud, Vida y Acciones positivas (Botones Guardar) */
-$color-clinical-bg: #F4F7F9;     /* Gris azulado muy claro - Limpieza (Fondos de pantalla) */
-$color-clinical-border: #E0E7ED; /* Gris suave - Divisiones limpias */
+$color-clinical-navy: #0F3D68;   
+$color-clinical-teal: #00897B;   
+$color-clinical-bg: #F4F7F9;     
+$color-clinical-border: #E0E7ED; 
 
 .clinical-dashboard {
   background-color: $color-clinical-bg;
@@ -13,35 +10,38 @@ $color-clinical-border: #E0E7ED; /* Gris suave - Divisiones limpias */
 
   h2 {
     color: $color-clinical-navy;
-    font-weight: 600;
+    font-weight: 700;
+    margin: 0;
   }
 }
 
-/* Tarjetas limpias de hospital */
+.text-clinical-navy {
+  color: $color-clinical-navy !important;
+}
+
 .card-clinical {
   border: 1px solid $color-clinical-border;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  overflow: hidden;
 
   .card-header {
-    background-color: white;
-    border-bottom: 2px solid $color-clinical-border;
-    color: $color-clinical-navy;
-    font-weight: 600;
+    border-bottom: 1px solid $color-clinical-border;
   }
 }
 
-/* Botones Personalizados */
 .btn-clinical-action {
   background-color: $color-clinical-navy;
   color: white;
   border: none;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: lighten($color-clinical-navy, 10%);
+    background-color: lighten($color-clinical-navy, 8%);
     color: white;
+    transform: translateY(-1px);
   }
 }
 
@@ -49,34 +49,50 @@ $color-clinical-border: #E0E7ED; /* Gris suave - Divisiones limpias */
   background-color: $color-clinical-teal;
   color: white;
   border: none;
-  font-weight: 500;
+  font-weight: 600;
+  border-radius: 8px;
 
   &:hover {
-    background-color: darken($color-clinical-teal, 10%);
+    background-color: darken($color-clinical-teal, 8%);
     color: white;
   }
 }
 
-/* Modales y Tablas */
-::ng-deep .modal-header.clinical-modal-header {
-  background-color: $color-clinical-navy;
-  color: white;
-  border-bottom: none;
+::ng-deep .modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
 
-  .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-  }
+::ng-deep .clinical-modal-header {
+  background-color: $color-clinical-navy;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 1.25rem 1.5rem;
 }
 
 .table-clinical {
   th {
-    background-color: $color-clinical-navy;
-    color: white;
-    font-weight: 500;
-    border-bottom: none;
+    background-color: #f8fafc;
+    color: $color-clinical-navy;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    border-bottom: 2px solid $color-clinical-border;
   }
   td {
-    vertical-align: middle;
-    color: #495057;
+    padding: 1rem;
+    color: #4b5563;
+    border-bottom: 1px solid $color-clinical-border;
+  }
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  &:focus {
+    border-color: $color-clinical-teal;
+    box-shadow: 0 0 0 0.25rem rgba(0, 137, 123, 0.15);
   }
 }
