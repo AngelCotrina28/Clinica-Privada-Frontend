@@ -42,14 +42,30 @@ export const routes: Routes = [
   },
   {
     path: 'administracion',
-    loadComponent: () =>
-      import('./features/administracion/administracion.component')
-        .then(m => m.AdministracionComponent)
+    children: [
+      {
+        path: 'trabajadores',
+        loadComponent: () =>
+          import('./features/administracion/administracion-trabajadores/administracion-trabajadores.component')
+            .then(m => m.AdministracionTrabajadoresComponent)
+      },
+      {
+        path: 'cajas',
+        loadComponent: () =>
+          import('./features/administracion/asignacion-cajas/asignacion-cajas.component')
+            .then(m => m.AsignacionCajasComponent)
+      },
+      {
+        path: 'series',
+        loadComponent: () =>
+          import('./features/administracion/series-comprobantes/series-comprobantes.component')
+            .then(m => m.SeriesComprobantesComponent)
+      },
+      {
+        path: '',
+        redirectTo: 'trabajadores',
+        pathMatch: 'full'
+      }
+    ]
   },
-
-  // Cualquier ruta desconocida vuelve al dashboard
-  {
-    path: '**',
-    redirectTo: 'dashboard'
-  }
 ];

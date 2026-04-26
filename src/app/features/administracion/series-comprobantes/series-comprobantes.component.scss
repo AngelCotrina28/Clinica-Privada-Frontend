@@ -1,0 +1,83 @@
+@use 'sass:color';
+
+.header-seccion {
+  margin-bottom: 2rem;
+  .titulo-modulo {
+    font-size: 1.8rem;
+    color: var(--color-texto-titulo);
+  }
+}
+
+.card-blanca {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  
+  .subtitulo-card {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #444;
+  }
+}
+
+/* Badges de Estado */
+.badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  
+  &-activo {
+    background-color: rgba(0, 194, 160, 0.1);
+    color: var(--color-acento);
+  }
+
+  &-inactivo {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+}
+
+/* Botones */
+.btn-primario {
+  background-color: var(--color-acento);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    background-color: #00A388;
+    transform: scale(1.02);
+  }
+}
+
+.btn-tabla-editar {
+  background: white;
+  border: 1px solid var(--color-nav-bg);
+  color: var(--color-nav-bg);
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  
+  &:hover {
+    background: var(--color-nav-bg);
+    color: white;
+  }
+}
+
+td strong {
+    color: var(--color-texto-titulo);
+}

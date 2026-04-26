@@ -1,0 +1,35 @@
+/* El cuadrito de la barra de búsqueda superior */
+.caja-filtros {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-blanco, #fff);
+  padding: 1.5rem;
+  border-radius: var(--borde-redondeado, 8px);
+  box-shadow: var(--sombra-suave, 0 4px 12px rgba(0, 0, 0, 0.05));
+  margin-bottom: 2rem;
+  gap: 1rem;
+
+  .grupo-busqueda {
+    flex: 1;
+    max-width: 400px;
+  }
+}
+
+/* Las pastillas de colores para el Estado */
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+
+  &-activo {
+    background-color: rgba(0, 194, 160, 0.1);
+    color: var(--color-acento, #00C2A0);
+  }
+  &-inactivo {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+}

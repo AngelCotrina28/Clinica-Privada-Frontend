@@ -1,22 +1,33 @@
 <aside class="sidebar" [class.colapsado]="colapsado()">
-
   <div class="sidebar-header">
-    <div class="sidebar-logo">Red de Clínicas Privadas del Perú</div>
-    <button class="btn-toggle" (click)="toggleSidebar()" aria-label="Colapsar menú">
-      ☰
-    </button>
+    <div class="sidebar-logo">RED DE CLÍNICA</div>
+    <button class="btn-toggle" (click)="toggleSidebar()">☰</button>
   </div>
 
   <ul class="sidebar-menu">
-    <li *ngFor="let item of navItems">
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="activo"
-        [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-      >
-        <span>{{ item.label }}</span>
-      </a>
-    </li>
-  </ul>
+    <ng-container *ngFor="let item of navItems">
+      
+      <li *ngIf="!item.children">
+        <a [routerLink]="item.route" routerLinkActive="activo">
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
 
+      <li *ngIf="item.children">
+        <a (click)="toggleAdmin()" class="menu-desplegable" [class.activo-padre]="adminAbierto()">
+          <span>{{ item.label }}</span>
+          <span class="flecha" *ngIf="!colapsado()">{{ adminAbierto() ? '▼' : '▶' }}</span>
+        </a>
+        
+        <ul class="submenu" *ngIf="adminAbierto() && !colapsado()">
+          <li *ngFor="let child of item.children">
+            <a [routerLink]="child.route" routerLinkActive="activo-sub">
+              {{ child.label }}
+            </a>
+          </li>
+        </ul>
+      </li>
+
+    </ng-container>
+  </ul>
 </aside>

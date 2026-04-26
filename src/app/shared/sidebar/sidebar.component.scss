@@ -1,20 +1,42 @@
-// sidebar.component.scss
-// 
-// Aquí van SOLO los estilos propios del componente sidebar.
-// Los estilos globales (.sidebar, .sidebar-menu, etc.) ya viven
-// en styles.scss — no los repetimos aquí.
-//
-// Este archivo es para overrides puntuales o animaciones
-// específicas del componente si las necesitáramos en el futuro.
-//
-// Por ahora lo dejamos como placeholder documentado para que
-// el equipo sepa dónde agregar estilos sin romper el global.
+// Estilos para el desplegable padre
+.menu-desplegable {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  &.activo-padre {
+    background-color: #00C2A0; // El verde de tu imagen
+    color: white;
+  }
+}
 
-// Ejemplo de override futuro:
-// :host {
-//   display: contents; // hace que el <app-sidebar> no agregue un div extra al layout
-// }
+.flecha {
+  font-size: 0.7rem;
+}
 
-:host {
-  display: contents;
+// Estilo de los "Trocitos" blancos
+.submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f1f1f1;
+
+  li a {
+    display: block;
+    padding: 10px 15px 10px 30px;
+    background-color: white; // Trocito blanco
+    color: #333; // Texto negro
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid #ddd;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+
+    &:hover, &.activo-sub {
+      border-left: 4px solid #00C2A0; // Borde verde indicador
+      background-color: #fafafa;
+      color: #005082;
+    }
+  }
 }

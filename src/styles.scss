@@ -96,18 +96,15 @@ a {
 
 // ------------------------------------------------------------
 // 6. LAYOUT GLOBAL CON SIDEBAR
-//    El AppComponent usará la clase .layout-sidebar en su host
-//    o directamente en el body vía ViewEncapsulation.None
 // ------------------------------------------------------------
 
-// Angular: el router-outlet vive dentro de .contenido-wrapper
-// La estructura del DOM será:
-//   body.layout-sidebar
-//     app-shell (AppComponent)
-//       app-sidebar
-//       .contenido-wrapper
-//         app-header
-//         <router-outlet>  ← cada feature se renderiza aquí
+app-root {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
 
 body.layout-sidebar,
 .layout-sidebar {
@@ -119,6 +116,7 @@ body.layout-sidebar,
 // Sidebar
 .sidebar {
   width: $sidebar-width;
+  height: 100vh; /* ✨ ESTO ES LO QUE OBLIGA AL SCROLL A APARECER ✨ */
   background-color: $color-nav-bg;
   color: $color-bg-blanco;
   display: flex;
@@ -178,6 +176,7 @@ body.layout-sidebar,
   padding: 1rem 0;
   margin: 0;
   flex: 1;
+  overflow-y: auto; // PERMITE SCROLL SI HAY SUBMENÚS
 
   li a {
     display: flex;
@@ -203,7 +202,7 @@ body.layout-sidebar,
       color: white;
     }
   }
-
+  
   .menu-titulo {
     padding: 1rem 1.5rem 0.3rem;
     font-size: 0.75rem;
@@ -213,14 +212,76 @@ body.layout-sidebar,
   }
 }
 
-// Wrapper del contenido principal (header + router-outlet)
+// ------------------------------------------------------------
+// ESTILOS PARA EL SUBMENÚ DE ADMINISTRACIÓN
+// ------------------------------------------------------------
+
+// Enlace principal que despliega el submenú
+.menu-desplegable {
+  cursor: pointer;
+  width: 100%; // Asegura que tome todo el ancho y no rompa el diseño
+
+  &.activo-padre {
+    background-color: $color-acento; 
+    color: white;
+  }
+}
+
+// Flecha alineada a la derecha
+.flecha {
+  font-size: 0.7rem;
+  margin-left: auto; // Esto empuja la flecha hacia el borde derecho
+}
+
+// Diseño de los "trocitos" blancos
+.submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f1f1f1;
+
+  li a {
+    display: block;
+    padding: 10px 15px 10px 40px; // Mayor sangría izquierda para que parezca un subnivel
+    background-color: white; // Fondo blanco del trocito
+    color: #333; // Texto oscuro
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid #ddd;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+
+    // Quitamos el cuadradito '▪' en el submenú para que se vea más limpio
+    &::before {
+      content: none; 
+    }
+
+    &:hover, &.activo-sub {
+      border-left: 4px solid $color-acento; // Raya verde al costado
+      background-color: #fafafa;
+      color: $color-nav-bg;
+    }
+  }
+}
+
+// Estilos de la barra de scroll (moderna)
+.sidebar-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+// Wrapper del contenido principal
 .contenido-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   background-color: $color-bg-principal;
-  min-width: 0; // evita overflow en flex
+  min-width: 0; 
 }
 
 // Header superior
@@ -253,7 +314,6 @@ body.layout-sidebar,
 
 // ------------------------------------------------------------
 // 7. UTILITARIOS GLOBALES
-//    Clases que usan varios módulos (no son de un feature solo)
 // ------------------------------------------------------------
 
 .contenedor {
@@ -294,7 +354,6 @@ main.contenedor {
 
 // ------------------------------------------------------------
 // 8. FORMULARIOS GLOBALES
-//    (Equivalente a formularios.css — aplica a todos los módulos)
 // ------------------------------------------------------------
 
 fieldset {
@@ -330,7 +389,6 @@ label {
   margin-top: 1rem;
 }
 
-// Inputs compartidos
 %input-base {
   width: 100%;
   padding: 0.8rem 1rem;
@@ -374,7 +432,6 @@ input[type="checkbox"] {
   margin: 0 0 4rem 0;
 }
 
-// Botones de formulario
 form button,
 button.btn-accion {
   margin-top: 1rem;
@@ -416,7 +473,6 @@ button.btn-accion {
 
 // ------------------------------------------------------------
 // 9. TABLAS GLOBALES
-//    (Equivalente a tablas.css)
 // ------------------------------------------------------------
 
 table {
@@ -482,5 +538,3 @@ button.btn-tabla {
   -webkit-overflow-scrolling: touch;
   margin-bottom: 2.5rem;
 }
-
-

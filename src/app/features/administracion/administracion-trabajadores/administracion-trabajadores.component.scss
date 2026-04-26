@@ -1,0 +1,100 @@
+@use "sass:color";
+
+$color-clinical-navy: #0F3D68;   
+$color-clinical-teal: #00897B;   
+$color-clinical-bg: #F4F7F9;     
+$color-clinical-border: #E0E7ED; 
+
+.clinical-dashboard {
+  background-color: $color-clinical-bg;
+  min-height: 100vh;
+  padding: 2rem;
+
+  h2 {
+    color: $color-clinical-navy;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.text-clinical-navy {
+  color: $color-clinical-navy !important;
+}
+
+.card-clinical {
+  border: 1px solid $color-clinical-border;
+  border-radius: 12px;
+  overflow: hidden;
+
+  .card-header {
+    border-bottom: 1px solid $color-clinical-border;
+  }
+}
+
+.btn-clinical-action {
+  background-color: $color-clinical-navy;
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: color.adjust($color-clinical-navy, $lightness: 8%);
+    color: white;
+    transform: translateY(-1px);
+  }
+}
+
+.btn-clinical-save {
+  background-color: $color-clinical-teal;
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: color.adjust($color-clinical-teal, $lightness: -8%);
+    color: white;
+  }
+}
+
+::ng-deep .modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+::ng-deep .clinical-modal-header {
+  background-color: $color-clinical-navy;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 1.25rem 1.5rem;
+}
+
+.table-clinical {
+  th {
+    background-color: #f8fafc;
+    color: $color-clinical-navy;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    border-bottom: 2px solid $color-clinical-border;
+  }
+  td {
+    padding: 1rem;
+    color: #4b5563;
+    border-bottom: 1px solid $color-clinical-border;
+  }
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  &:focus {
+    border-color: $color-clinical-teal;
+    box-shadow: 0 0 0 0.25rem rgba(0, 137, 123, 0.15);
+  }
+}
