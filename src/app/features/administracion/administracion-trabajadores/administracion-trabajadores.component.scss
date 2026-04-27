@@ -1,100 +1,245 @@
-@use "sass:color";
+@use 'sass:color';
 
-$color-clinical-navy: #0F3D68;   
-$color-clinical-teal: #00897B;   
-$color-clinical-bg: #F4F7F9;     
-$color-clinical-border: #E0E7ED; 
+/* ==============================================
+   BARRA DE HERRAMIENTAS Y TABLA
+   ============================================== */
+.caja-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-blanco, #fff);
+  padding: 1.5rem;
+  border-radius: var(--borde-redondeado, 8px);
+  box-shadow: var(--sombra-suave, 0 4px 12px rgba(0, 0, 0, 0.05));
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
 
-.clinical-dashboard {
-  background-color: $color-clinical-bg;
-  min-height: 100vh;
-  padding: 2rem;
+.grupo-busqueda-filtros {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  max-width: 600px;
 
-  h2 {
-    color: $color-clinical-navy;
-    font-weight: 700;
+  .input-con-icono {
+    flex: 2;
+  }
+
+  .input-busqueda, .select-filtro {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    background-color: #fcfcfc;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-acento, #00C2A0);
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(0, 194, 160, 0.1);
+    }
+  }
+
+  .select-filtro {
+    flex: 1;
+    cursor: pointer;
+  }
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+
+  &-activo {
+    background-color: rgba(0, 194, 160, 0.1);
+    color: var(--color-acento, #00C2A0);
+  }
+  &-inactivo {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.td-acciones {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 4px;
+  transition: transform 0.2s, background-color 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+  }
+
+  &.btn-borrar:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+}
+
+td strong {
+  color: var(--color-texto-titulo, #1A3B5D);
+}
+
+/* ==============================================
+   ESTILOS DEL MODAL (HORIZONTAL)
+   ============================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 51, 102, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-contenedor {
+  background-color: #fff;
+  border-radius: var(--borde-redondeado, 12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.3s ease-out;
+
+  &.horizontal {
+    max-width: 850px; /* Ancho para dos columnas */
+    width: 90%;
+    max-height: 90vh; /* Para que no se salga de la pantalla */
+    overflow-y: auto;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #eee;
+
+  .modal-titulo {
     margin: 0;
+    font-size: 1.25rem;
+    color: var(--color-texto-titulo);
+  }
+
+  .btn-cerrar-modal {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.2s;
+
+    &:hover { color: #dc3545; }
   }
 }
 
-.text-clinical-navy {
-  color: $color-clinical-navy !important;
+.modal-body {
+  padding: 1.5rem;
 }
 
-.card-clinical {
-  border: 1px solid $color-clinical-border;
-  border-radius: 12px;
-  overflow: hidden;
-
-  .card-header {
-    border-bottom: 1px solid $color-clinical-border;
-  }
+.formulario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  gap: 1.2rem;
+  padding: 0.5rem;
 }
 
-.btn-clinical-action {
-  background-color: $color-clinical-navy;
-  color: white;
-  border: none;
-  font-weight: 600;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: color.adjust($color-clinical-navy, $lightness: 8%);
-    color: white;
-    transform: translateY(-1px);
-  }
+.form-seccion-titulo {
+  grid-column: span 2;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-acento);
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.3rem;
+  margin-top: 0.5rem;
+  letter-spacing: 0.5px;
 }
 
-.btn-clinical-save {
-  background-color: $color-clinical-teal;
-  color: white;
-  border: none;
-  font-weight: 600;
-  border-radius: 8px;
+.form-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 
-  &:hover {
-    background-color: color.adjust($color-clinical-teal, $lightness: -8%);
-    color: white;
-  }
-}
-
-::ng-deep .modal-content {
-  border-radius: 12px;
-  border: none;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-::ng-deep .clinical-modal-header {
-  background-color: $color-clinical-navy;
-  border-radius: 12px 12px 0 0 !important;
-  padding: 1.25rem 1.5rem;
-}
-
-.table-clinical {
-  th {
-    background-color: #f8fafc;
-    color: $color-clinical-navy;
-    font-weight: 600;
-    text-transform: uppercase;
+  label {
     font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    padding: 1rem;
-    border-bottom: 2px solid $color-clinical-border;
+    font-weight: 600;
+    color: #444;
   }
-  td {
-    padding: 1rem;
-    color: #4b5563;
-    border-bottom: 1px solid $color-clinical-border;
+  
+  .requerido {
+    color: #dc3545;
+  }
+
+  input, select {
+    padding: 0.65rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: #fafafa;
+    
+    &:focus {
+      border-color: var(--color-acento);
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(0, 194, 160, 0.1);
+      outline: none;
+    }
   }
 }
 
-.form-control, .form-select {
-  border-radius: 8px;
-  border: 1px solid #ced4da;
-  &:focus {
-    border-color: $color-clinical-teal;
-    box-shadow: 0 0 0 0.25rem rgba(0, 137, 123, 0.15);
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.2rem 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #fcfcfc;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive: si la pantalla es pequeña, se vuelve vertical de nuevo */
+@media (max-width: 600px) {
+  .formulario-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-seccion-titulo {
+    grid-column: span 1;
   }
 }

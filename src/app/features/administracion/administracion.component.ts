@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UsuarioService } from '../../core/services/usuario.service';
+import { TrabajadorService } from '../../core/services/trabajador.service';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -12,23 +12,23 @@ import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./administracion.component.scss']
 })
 export class AdministracionComponent implements OnInit {
-  usuarioForm!: FormGroup;
+  TrabajadorForm!: FormGroup;
   mensajeError: string = '';
-  usuarios: any[] = []; 
+  Trabajadors: any[] = []; 
 
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService,
+    private TrabajadorService: TrabajadorService,
     private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     this.inicializarFormulario();
-    this.cargarUsuarios(); 
+    this.cargarTrabajadors(); 
   }
 
   inicializarFormulario(): void {
-    this.usuarioForm = this.fb.group({
+    this.TrabajadorForm = this.fb.group({
       dni: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       nombreCompleto: ['', Validators.required],
       username: ['', Validators.required],
@@ -38,38 +38,38 @@ export class AdministracionComponent implements OnInit {
     });
   }
 
-  cargarUsuarios(): void {
-    this.usuarioService.listarUsuarios().subscribe({
+  cargarTrabajadors(): void {
+    this.TrabajadorService.listarTrabajadors().subscribe({
       next: (data) => {
-        this.usuarios = data;
+        this.Trabajadors = data;
       },
       error: (err) => {
-        console.error('Error al cargar usuarios', err);
+        console.error('Error al cargar Trabajadors', err);
       }
     });
   }
 
   // Se activa al presionar el botón de arriba
   abrirModal(modalContent: any): void {
-    this.usuarioForm.reset();
+    this.TrabajadorForm.reset();
     this.mensajeError = '';
     this.modalService.open(modalContent, { backdrop: 'static', size: 'lg', centered: true }); 
   }
 
   registrar(modalActivo: any): void {
-    if (this.usuarioForm.invalid) {
-      this.usuarioForm.markAllAsTouched();
+    if (this.TrabajadorForm.invalid) {
+      this.TrabajadorForm.markAllAsTouched();
       return;
     }
 
-    this.usuarioService.registrarUsuario(this.usuarioForm.value).subscribe({
+    this.TrabajadorService.registrarTrabajador(this.TrabajadorForm.value).subscribe({
       next: (res) => {
         alert('¡Personal registrado exitosamente!'); 
         modalActivo.close(); 
-        this.cargarUsuarios(); 
+        this.cargarTrabajadors(); 
       },
       error: (err) => {
-        this.mensajeError = err.error?.message || 'Ocurrió un error al registrar el usuario.';
+        this.mensajeError = err.error?.message || 'Ocurrió un error al registrar el Trabajador.';
       }
     });
   }

@@ -1,117 +1,135 @@
-<div class="clinical-dashboard">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-people-fill me-2"></i> Gestión de Personal</h2>
-        <button class="btn btn-clinical-action shadow-sm" (click)="abrirModal(modalNuevoUsuario)">
-            <i class="bi bi-plus-circle me-1"></i> + Nuevo Usuario
-        </button>
+<main class="contenedor">
+  <h2 class="subtitulo-seccion">Gestión de Trabajadores</h2>
+
+  <div class="caja-filtros">
+    <div class="grupo-busqueda-filtros">
+      <div class="input-con-icono">
+        <input type="text" placeholder="Buscar por nombre, DNI o correo..." class="input-busqueda">
+      </div>
+      
+      <select class="select-filtro">
+        <option value="">Todos los Roles</option>
+        <option value="medico">Médico</option>
+        <option value="enfermero">Enfermero</option>
+        <option value="cajero">Cajero</option>
+        <option value="admin">Administrador</option>
+      </select>
     </div>
 
-    <div class="card card-clinical shadow-sm">
-        <div class="card-header bg-white py-3">
-            <h5 class="mb-0 text-clinical-navy fw-bold">Personal Registrado en el Sistema</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover table-clinical mb-0 align-middle">
-                    <thead>
-                        <tr>
-                            <th>DNI</th>
-                            <th>Nombre Completo</th>
-                            <th>Usuario</th>
-                            <th>Correo</th>
-                            <th>Perfil / Rol</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngIf="usuarios.length === 0">
-                            <td colspan="6" class="text-center py-5 text-muted">
-                                <div class="d-flex flex-column align-items-center">
-                                    <i class="bi bi-inbox fs-1 mb-2 text-light-gray"></i>
-                                    <em>No hay usuarios registrados aún. Usa el botón superior para comenzar.</em>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr *ngFor="let u of usuarios">
-                            <td class="fw-bold">{{ u.dni }}</td>
-                            <td>{{ u.nombreCompleto }}</td>
-                            <td class="text-muted">{{ u.username }}</td>
-                            <td>{{ u.email }}</td>
-                            <td>
-                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
-                                    {{ u.nombreRol }}
-                                </span>
-                            </td>
-                            <td>
-                                <span [class]="u.activo ? 'badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill' : 'badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill'">
-                                    ● {{ u.activo ? 'Activo' : 'Inactivo' }}
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="grupo-acciones">
+      <button type="button" class="btn-accion btn-primary" (click)="abrirModal()">+ Nuevo Trabajador</button>
     </div>
+  </div>
+
+  <div class="tabla-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>DNI / Doc</th>
+          <th>Nombre Completo</th>
+          <th>Correo Electrónico</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>72839401</strong></td>
+          <td>Dr. Roberto Carlos Mendoza</td>
+          <td>rmendoza@clinica.com</td>
+          <td>Médico</td>
+          <td><span class="badge badge-activo">Activo</span></td>
+          <td class="td-acciones">
+            <button class="btn-icon btn-editar" title="Editar Trabajador">✏️</button>
+            <button class="btn-icon btn-borrar" title="Desactivar Trabajador">🗑️</button>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>45902133</strong></td>
+          <td>Ana Lucía Torres</td>
+          <td>atorres@clinica.com</td>
+          <td>Enfermera</td>
+          <td><span class="badge badge-activo">Activo</span></td>
+          <td class="td-acciones">
+            <button class="btn-icon btn-editar" title="Editar Trabajador">✏️</button>
+            <button class="btn-icon btn-borrar" title="Desactivar Trabajador">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal-contenedor horizontal">
+    
+    <div class="modal-header">
+      <h3 class="modal-titulo">Registro Maestro de Trabajador</h3>
+      <button class="btn-cerrar-modal" (click)="cerrarModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <form class="formulario-grid">
+        
+        <div class="form-seccion-titulo">Datos Personales</div>
+        
+        <div class="form-grupo">
+          <label>DNI / Documento <span class="requerido">*</span></label>
+          <input type="text" placeholder="Ej. 72839401">
+        </div>
+
+        <div class="form-grupo">
+          <label>Nombres y Apellidos <span class="requerido">*</span></label>
+          <input type="text" placeholder="Nombre completo">
+        </div>
+
+        <div class="form-grupo">
+          <label>Teléfono / Móvil</label>
+          <input type="tel" placeholder="Ej. 987654321">
+        </div>
+
+        <div class="form-grupo">
+          <label>Fecha de Nacimiento</label>
+          <input type="date">
+        </div>
+
+        <div class="form-seccion-titulo">Información Profesional</div>
+
+        <div class="form-grupo">
+          <label>Rol en Clínica <span class="requerido">*</span></label>
+          <select>
+            <option value="" disabled selected>Seleccione rol...</option>
+            <option value="medico">Médico</option>
+            <option value="enfermeria">Personal de Enfermería</option>
+            <option value="cajero">Cajero / Admisión</option>
+            <option value="admin">Administrador de Sistemas</option>
+          </select>
+        </div>
+
+        <div class="form-grupo">
+          <label>N° Colegiatura (CMP/CEP)</label>
+          <input type="text" placeholder="Solo para personal médico">
+        </div>
+
+        <div class="form-seccion-titulo">Cuenta de Trabajador</div>
+
+        <div class="form-grupo">
+          <label>Correo Institucional <span class="requerido">*</span></label>
+          <input type="email" placeholder="correo@clinica.com">
+        </div>
+
+        <div class="form-grupo">
+          <label>Contraseña Inicial <span class="requerido">*</span></label>
+          <input type="password" placeholder="Mínimo 8 caracteres">
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-accion btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-accion btn-primary">Finalizar Registro</button>
+    </div>
+
+  </div>
 </div>
-
-<ng-template #modalNuevoUsuario let-modal>
-    <div class="modal-header clinical-modal-header border-0">
-        <h5 class="modal-title fw-bold text-white"><i class="bi bi-person-badge me-2"></i> Registrar Nuevo Personal</h5>
-        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss()"></button>
-    </div>
-    
-    <div class="modal-body p-4 bg-light">
-        <div *ngIf="mensajeError" class="alert alert-danger shadow-sm border-0 border-start border-danger border-4">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ mensajeError }}
-        </div>
-
-        <form [formGroup]="usuarioForm">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label text-clinical-navy fw-bold small">DNI</label>
-                    <input type="text" class="form-control form-control-lg fs-6" formControlName="dni" placeholder="8 dígitos" maxlength="8">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label text-clinical-navy fw-bold small">USUARIO DE SISTEMA</label>
-                    <input type="text" class="form-control form-control-lg fs-6" formControlName="username" placeholder="Ej: jramirez">
-                </div>
-                
-                <div class="col-md-12">
-                    <label class="form-label text-clinical-navy fw-bold small">NOMBRE COMPLETO</label>
-                    <input type="text" class="form-control form-control-lg fs-6" formControlName="nombreCompleto" placeholder="Nombres y Apellidos">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label text-clinical-navy fw-bold small">CORREO ELECTRÓNICO</label>
-                    <input type="email" class="form-control form-control-lg fs-6" formControlName="email" placeholder="correo@clinica.com">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label text-clinical-navy fw-bold small">CONTRASEÑA TEMPORAL</label>
-                    <input type="password" class="form-control form-control-lg fs-6" formControlName="password" placeholder="******">
-                </div>
-
-                <div class="col-md-12">
-                    <label class="form-label text-clinical-navy fw-bold small">ROL EN LA CLÍNICA</label>
-                    <select class="form-select form-select-lg fs-6" formControlName="rolId">
-                        <option value="" disabled selected>Seleccione el perfil...</option>
-                        <option value="1">Administrador</option>
-                        <option value="2">Médico</option>
-                        <option value="3">Enfermera</option>
-                        <option value="4">Recepcionista</option>
-                        <option value="5">Cajero</option>
-                        <option value="6">Técnico Farmacia</option>
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
-    
-    <div class="modal-footer border-0 bg-light">
-        <button type="button" class="btn btn-light border px-4" (click)="modal.dismiss()">Cancelar</button>
-        <button type="button" class="btn btn-clinical-save px-4 shadow-sm" [disabled]="usuarioForm.invalid" (click)="registrar(modal)">
-            <i class="bi bi-check2-circle me-1"></i> Guardar Registro
-        </button>
-    </div>
-</ng-template>

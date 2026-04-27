@@ -5,17 +5,17 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioService {
+export class TrabajadorService {
   // Ajusta el puerto si tu Spring Boot corre en otro distinto al 8080
-  private apiUrl = 'http://localhost:8080/api/usuarios';
+  private apiUrl = 'http://localhost:8080/api/Trabajadors';
 
   constructor(private http: HttpClient) { }
 
-  listarUsuarios(): Observable<any[]> {
+  listarTrabajadors(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  registrarUsuario(usuario: any): Observable<any> {
-    return this.http.post(this.apiUrl, usuario);
+  registrarTrabajador(Trabajador: any): Observable<any> {
+    return this.http.post(this.apiUrl, Trabajador);
   }
 }

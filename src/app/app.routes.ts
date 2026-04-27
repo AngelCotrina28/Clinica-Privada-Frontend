@@ -9,7 +9,7 @@ export const routes: Routes = [
   },
 
   // Lazy loading por feature — Angular solo carga el código
-  // de cada módulo cuando el usuario navega a esa ruta.
+  // de cada módulo cuando el Trabajador navega a esa ruta.
   {
     path: 'dashboard',
     loadComponent: () =>

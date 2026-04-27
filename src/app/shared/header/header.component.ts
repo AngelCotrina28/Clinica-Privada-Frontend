@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
 
-  // Cada feature le pasa su propio título y usuario al header.
+  // Cada feature le pasa su propio título y Trabajador al header.
   // Ejemplo en el template del feature:
-  //   <app-header titulo="Módulo de Admisión" usuario="Recepción Central" />
+  //   <app-header titulo="Módulo de Admisión" Trabajador="Recepción Central" />
   @Input() titulo: string = 'Resumen Operativo';
-  @Input() usuario: string = 'Usuario del Sistema';
+  @Input() Trabajador: string = 'Trabajador del Sistema';
 }
