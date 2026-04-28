@@ -3,19 +3,8 @@
 
   <div class="caja-filtros">
     <div class="grupo-busqueda-filtros">
-      <div class="input-con-icono">
-        <input type="text" placeholder="Buscar por nombre, DNI o correo..." class="input-busqueda">
-      </div>
-      
-      <select class="select-filtro">
-        <option value="">Todos los Roles</option>
-        <option value="medico">Médico</option>
-        <option value="enfermero">Enfermero</option>
-        <option value="cajero">Cajero</option>
-        <option value="admin">Administrador</option>
-      </select>
+      <input type="text" placeholder="Buscar..." class="input-busqueda">
     </div>
-
     <div class="grupo-acciones">
       <button type="button" class="btn-accion btn-primary" (click)="abrirModal()">+ Nuevo Trabajador</button>
     </div>
@@ -25,37 +14,35 @@
     <table>
       <thead>
         <tr>
-          <th>DNI / Doc</th>
+          <th>DNI</th>
           <th>Nombre Completo</th>
-          <th>Correo Electrónico</th>
+          <th>Correo</th>
           <th>Rol</th>
           <th>Estado</th>
           <th class="text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td><strong>72839401</strong></td>
-          <td>Dr. Roberto Carlos Mendoza</td>
-          <td>rmendoza@clinica.com</td>
-          <td>Médico</td>
-          <td><span class="badge badge-activo">Activo</span></td>
-          <td class="td-acciones">
-            <button class="btn-icon btn-editar" title="Editar Trabajador">✏️</button>
-            <button class="btn-icon btn-borrar" title="Desactivar Trabajador">🗑️</button>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>45902133</strong></td>
-          <td>Ana Lucía Torres</td>
-          <td>atorres@clinica.com</td>
-          <td>Enfermera</td>
-          <td><span class="badge badge-activo">Activo</span></td>
-          <td class="td-acciones">
-            <button class="btn-icon btn-editar" title="Editar Trabajador">✏️</button>
-            <button class="btn-icon btn-borrar" title="Desactivar Trabajador">🗑️</button>
-          </td>
-        </tr>
+        @for (t of listaTrabajadores; track t.id) {
+          <tr>
+            <td><strong>{{ t.dni }}</strong></td>
+            <td>{{ t.nombreCompleto }}</td>
+            <td>{{ t.email }}</td>
+            <td>{{ t.nombreRol }}</td> <td>
+              <span class="badge" [ngClass]="t.activo ? 'badge-activo' : 'badge-inactivo'">
+                {{ t.activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="td-acciones">
+              <button class="btn-icon">✏️</button>
+              <button class="btn-icon">🗑️</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="text-center">No hay datos para mostrar.</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
