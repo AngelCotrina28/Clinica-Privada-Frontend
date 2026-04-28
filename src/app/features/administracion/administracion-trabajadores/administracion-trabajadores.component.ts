@@ -75,17 +75,32 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     if (this.trabajadorForm.invalid) return;
 
     if (this.isEditMode && this.idSeleccionado) {
-      // LLAMADA A ACTUALIZAR
+      // MODO EDICIÓN
       this.trabajadorService.actualizar(this.idSeleccionado, this.trabajadorForm.value).subscribe({
         next: () => {
           this.finalizarOperacion();
-          alert('Trabajador actualizado con éxito');
+          alert('✅ Trabajador actualizado con éxito.');
+        },
+        error: (err) => {
+          console.error('Error al actualizar:', err);
+          // Atrapamos el mensaje de error de Spring Boot
+          const mensaje = err.error?.message || 'Error al actualizar. Verifica que el DNI o Correo no estén repetidos.';
+          alert('❌ ' + mensaje);
         }
       });
     } else {
-      // LLAMADA A CREAR (lo que ya tenías)
+      // MODO CREACIÓN
       this.trabajadorService.crear(this.trabajadorForm.value).subscribe({
-        next: () => this.finalizarOperacion()
+        next: () => {
+          this.finalizarOperacion();
+          alert('✅ Trabajador registrado con éxito.');
+        },
+        error: (err) => {
+          console.error('Error al crear:', err);
+          // Atrapamos el mensaje de error de Spring Boot ("El correo ya está registrado")
+          const mensaje = err.error?.message || 'Error al registrar. Verifica que el DNI o Correo no estén repetidos en el sistema.';
+          alert('❌ ' + mensaje);
+        }
       });
     }
   }
