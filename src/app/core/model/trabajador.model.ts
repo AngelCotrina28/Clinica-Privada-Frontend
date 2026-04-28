@@ -7,6 +7,7 @@ export interface Trabajador {
   telefono: string;
   fechaNacimiento: string;
   colegiatura: string;
+  rolId: number;
   nombreRol: string;
   activo: boolean;
 }

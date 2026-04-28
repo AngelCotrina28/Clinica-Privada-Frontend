@@ -31,6 +31,21 @@ export class AdministracionTrabajadoresComponent implements OnInit {
       colegiatura: [''],
       rolId: ['', Validators.required]
     });
+    this.trabajadorForm.get('rolId')?.valueChanges.subscribe(rolId => {
+      const colegiaturaControl = this.trabajadorForm.get('colegiatura');
+      
+      // Suponiendo que el ID 2 es "Médico" (según tu HTML anterior)
+      if (rolId === "2") { 
+        // Si es médico, agregamos la validación de obligatorio
+        colegiaturaControl?.setValidators([Validators.required]);
+      } else {
+        // Si es cualquier otro rol, limpiamos las validaciones
+        colegiaturaControl?.clearValidators();
+      }
+      
+      // Refrescamos el estado del campo para que Angular se entere del cambio
+      colegiaturaControl?.updateValueAndValidity();
+    });
   }
 
   ngOnInit(): void {
@@ -63,7 +78,7 @@ export class AdministracionTrabajadoresComponent implements OnInit {
       telefono: trabajador.telefono,
       fechaNacimiento: trabajador.fechaNacimiento,
       colegiatura: trabajador.colegiatura,
-      rolId: 1 // Aquí deberías mapear el ID real del rol
+      rolId: trabajador.rolId.toString()
     });
     
     // La contraseña no es obligatoria al editar

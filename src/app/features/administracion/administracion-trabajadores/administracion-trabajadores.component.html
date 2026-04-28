@@ -95,14 +95,24 @@
             <option value="" disabled selected>Seleccione rol...</option>
             <option value="1">Administrador</option>
             <option value="2">Medico</option>
-            <option value="3">Enfermera</option>
-            <option value="4">Cajero</option>
+            <option value="3">Enfermero</option>
+            <option value="4">Jefe_Enfermeria</option>
+            <option value="5">Recepcionista</option>
+            <option value="6">Tecnico_Farmacia</option>
+            <option value="7">Cajero</option>
           </select>
         </div>
 
         <div class="form-grupo">
-          <label>N° Colegiatura (CMP/CEP)</label>
-          <input type="text" formControlName="colegiatura" placeholder="Solo personal médico">
+          <label>
+            N° Colegiatura (CMP/CEP) 
+            <span class="requerido" *ngIf="trabajadorForm.get('rolId')?.value === '2'">*</span>
+          </label>
+          <input type="text" formControlName="colegiatura" placeholder="Ej. 123456">
+          
+          <small class="text-danger" *ngIf="trabajadorForm.get('colegiatura')?.invalid && trabajadorForm.get('colegiatura')?.touched">
+            La colegiatura es obligatoria para médicos.
+          </small>
         </div>
 
         <div class="form-seccion-titulo">Cuenta de Usuario</div>
