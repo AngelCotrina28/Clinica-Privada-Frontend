@@ -34,8 +34,13 @@
               </span>
             </td>
             <td class="td-acciones">
-              <button class="btn-icon">✏️</button>
-              <button class="btn-icon">🗑️</button>
+              <button class="btn-icon btn-editar" title="Editar" (click)="prepararEdicion(t)">✏️</button>
+              
+              @if (t.activo) {
+                <button class="btn-icon btn-borrar" title="Desactivar" (click)="cambiarEstado(t)">🗑️</button>
+              } @else {
+                <button class="btn-icon btn-activar" title="Reactivar" (click)="cambiarEstado(t)">✅</button>
+              }
             </td>
           </tr>
         } @empty {
@@ -51,71 +56,78 @@
   <div class="modal-contenedor horizontal">
     
     <div class="modal-header">
-      <h3 class="modal-titulo">Registro Maestro de Trabajador</h3>
+      <h3 class="modal-titulo">{{ isEditMode ? 'Editar Trabajador' : 'Registrar Nuevo Trabajador' }}</h3>
       <button class="btn-cerrar-modal" (click)="cerrarModal()">✕</button>
     </div>
 
     <div class="modal-body">
-      <form class="formulario-grid">
+      <form class="formulario-grid" [formGroup]="trabajadorForm" (ngSubmit)="guardarTrabajador()">
         
         <div class="form-seccion-titulo">Datos Personales</div>
         
         <div class="form-grupo">
           <label>DNI / Documento <span class="requerido">*</span></label>
-          <input type="text" placeholder="Ej. 72839401">
+          <input type="text" formControlName="dni" placeholder="Ej. 72839401" maxlength="8">
         </div>
 
         <div class="form-grupo">
           <label>Nombres y Apellidos <span class="requerido">*</span></label>
-          <input type="text" placeholder="Nombre completo">
+          <input type="text" formControlName="nombreCompleto" placeholder="Nombre completo">
         </div>
 
         <div class="form-grupo">
           <label>Teléfono / Móvil</label>
-          <input type="tel" placeholder="Ej. 987654321">
+          <input type="tel" formControlName="telefono" placeholder="Ej. 987654321">
         </div>
 
         <div class="form-grupo">
           <label>Fecha de Nacimiento</label>
-          <input type="date">
+          <input type="date" formControlName="fechaNacimiento">
         </div>
 
         <div class="form-seccion-titulo">Información Profesional</div>
 
         <div class="form-grupo">
           <label>Rol en Clínica <span class="requerido">*</span></label>
-          <select>
+          <select formControlName="rolId">
             <option value="" disabled selected>Seleccione rol...</option>
-            <option value="medico">Médico</option>
-            <option value="enfermeria">Personal de Enfermería</option>
-            <option value="cajero">Cajero / Admisión</option>
-            <option value="admin">Administrador de Sistemas</option>
+            <option value="1">Administrador</option>
+            <option value="2">Medico</option>
+            <option value="3">Enfermera</option>
+            <option value="4">Cajero</option>
           </select>
         </div>
 
         <div class="form-grupo">
           <label>N° Colegiatura (CMP/CEP)</label>
-          <input type="text" placeholder="Solo para personal médico">
+          <input type="text" formControlName="colegiatura" placeholder="Solo personal médico">
         </div>
 
-        <div class="form-seccion-titulo">Cuenta de Trabajador</div>
+        <div class="form-seccion-titulo">Cuenta de Usuario</div>
+
+        <div class="form-grupo">
+          <label>Nombre de Usuario (Username) <span class="requerido">*</span></label>
+          <input type="text" formControlName="username" placeholder="Ej. jrodriguez">
+        </div>
 
         <div class="form-grupo">
           <label>Correo Institucional <span class="requerido">*</span></label>
-          <input type="email" placeholder="correo@clinica.com">
+          <input type="email" formControlName="email" placeholder="correo@clinica.com">
         </div>
 
         <div class="form-grupo">
           <label>Contraseña Inicial <span class="requerido">*</span></label>
-          <input type="password" placeholder="Mínimo 8 caracteres">
+          <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+        </div>
+
+        <div class="modal-footer" style="grid-column: span 2; margin-top: 1rem;">
+          <button type="button" class="btn-accion btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-accion btn-primary" [disabled]="trabajadorForm.invalid">
+            Guardar Trabajador
+          </button>
         </div>
 
       </form>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-accion btn-secondary" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn-accion btn-primary">Finalizar Registro</button>
     </div>
 
   </div>

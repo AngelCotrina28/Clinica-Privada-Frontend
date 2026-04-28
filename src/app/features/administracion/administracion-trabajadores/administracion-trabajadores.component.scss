@@ -94,6 +94,11 @@
   &.btn-borrar:hover {
     background-color: rgba(220, 53, 69, 0.1);
   }
+
+  &.btn-activar:hover {
+    background-color: rgba(0, 194, 160, 0.1);
+    color: var(--color-acento);
+  }
 }
 
 td strong {
