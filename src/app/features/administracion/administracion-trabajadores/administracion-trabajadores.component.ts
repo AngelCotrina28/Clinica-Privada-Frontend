@@ -98,8 +98,8 @@ export class AdministracionTrabajadoresComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al actualizar:', err);
-          // Atrapamos el mensaje de error de Spring Boot
-          const mensaje = err.error?.message || 'Error al actualizar. Verifica que el DNI o Correo no estén repetidos.';
+          // Atrapamos el mensaje de error de Springs Boot
+          const mensaje = err.error?.mensaje || 'Error al actualizar. Verifica que el DNI o Correo no estén repetidos.';
           alert('❌ ' + mensaje);
         }
       });
@@ -113,7 +113,7 @@ export class AdministracionTrabajadoresComponent implements OnInit {
         error: (err) => {
           console.error('Error al crear:', err);
           // Atrapamos el mensaje de error de Spring Boot ("El correo ya está registrado")
-          const mensaje = err.error?.message || 'Error al registrar. Verifica que el DNI o Correo no estén repetidos en el sistema.';
+          const mensaje = err.error?.mensaje || 'Error al registrar. Verifica que el DNI o Correo no estén repetidos en el sistema.';
           alert('❌ ' + mensaje);
         }
       });
