@@ -128,6 +128,29 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     this.idSeleccionado = null;
   }
 
-  abrirModal(): void { this.isModalOpen = true; }
-  cerrarModal(): void { this.isModalOpen = false; }
+  abrirModalParaCrear(): void {
+    // 1. Decimos que NO estamos editando
+    this.isEditMode = false;
+    this.idSeleccionado = null;
+
+    // 2. ¡ESTA ES LA CLAVE! Limpiamos todos los inputs
+    this.trabajadorForm.reset({
+      // Puedes pasar valores por defecto aquí si quieres
+      rolId: '', 
+      activo: true
+    });
+
+    // 3. Volvemos a poner la contraseña como obligatoria (por si veníamos de editar)
+    this.trabajadorForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+    this.trabajadorForm.get('password')?.updateValueAndValidity();
+
+    // 4. Recién ahí abrimos el modal
+    this.isModalOpen = true;
+  }
+  
+  cerrarModal(): void {
+    this.isModalOpen = false;
+    this.trabajadorForm.reset(); // Limpia al salir para evitar fugas de datos
+    this.isEditMode = false;
+  }
 }
