@@ -1,0 +1,29 @@
+<table class="tabla-profesional">
+  <thead>
+    <tr>
+      <th>Médico</th>
+      <th>Especialidades</th>
+      <th>Colegiatura</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (med of medicos; track med.id) {
+      <tr>
+        <td>
+          <div class="user-info">
+            <strong>{{ med.nombreCompleto }}</strong>
+            <span>{{ med.email }}</span>
+          </div>
+        </td>
+        <td>
+          @for (espName of med.especialidades; track espName) {
+            <span class="badge-especialidad">{{ espName }}</span>
+          }
+        </td>
+        <td><code class="text-primary">{{ med.colegiatura }}</code></td>
+        <td><span class="dot-activo"></span> Disponible</td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -248,3 +248,39 @@ td strong {
     grid-column: span 1;
   }
 }
+
+.especialidades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-height: 200px;
+  overflow-y: auto; // Por si tienes las 40 especialidades
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-primario);
+  transition: all 0.2s;
+
+  &:hover { color: var(--color-acento); }
+
+  input { margin-right: 10px; accent-color: var(--color-acento); }
+}
+
+.badge-especialidad {
+    background: rgba(0, 194, 160, 0.1);
+    color: var(--color-acento);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 4px;
+    display: inline-block;
+}

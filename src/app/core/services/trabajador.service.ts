@@ -29,4 +29,9 @@ export class TrabajadorService {
     // Usamos patch como en el backend
     return this.http.patch<void>(`${this.apiUrl}/${id}/estado`, {});
   }
+
+  getMedicosActivos(): Observable<Trabajador[]> {
+    // Apunta al endpoint específico que creamos en el TrabajadorController de Java
+    return this.http.get<Trabajador[]>(`${this.apiUrl}/medicos/activos`);
+  }
 }

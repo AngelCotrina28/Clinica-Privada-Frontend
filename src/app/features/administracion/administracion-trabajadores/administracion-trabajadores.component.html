@@ -115,6 +115,22 @@
           </small>
         </div>
 
+        <div class="form-seccion-especialidades" *ngIf="trabajadorForm.get('rolId')?.value === '2'">
+          <div class="form-seccion-titulo">Especialidades Médicas </div>
+          
+          <div class="especialidades-grid">
+            @for (esp of especialidadesDisponibles; track esp.id) {
+              <label class="checkbox-item">
+                <input type="checkbox" 
+                      [checked]="esEspecialidadSeleccionada(esp.id)"
+                      (change)="toggleEspecialidad(esp.id)">
+                <span class="checkbox-box"></span>
+                <span class="checkbox-label">{{ esp.nombre }}</span>
+              </label>
+            }
+          </div>
+        </div>
+
         <div class="form-seccion-titulo">Cuenta de Usuario</div>
 
         <div class="form-grupo">

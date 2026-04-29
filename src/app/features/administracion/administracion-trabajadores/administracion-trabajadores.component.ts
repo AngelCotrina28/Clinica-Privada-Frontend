@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrabajadorService } from '../../../core/services/trabajador.service';
 import { Trabajador } from '../../../core/model/trabajador.model';
+import { EspecialidadService } from '../../../core/services/especialidad.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-administracion-trabajadores',
@@ -18,9 +20,14 @@ export class AdministracionTrabajadoresComponent implements OnInit {
   trabajadorForm: FormGroup;
   listaTrabajadores: Trabajador[] = [];
   isModalOpen: boolean = false;
+  especialidadesDisponibles: any[] = [];
+  especialidadesSeleccionadasIds: number[] = [];
 
-  constructor(private fb: FormBuilder, private trabajadorService: TrabajadorService) {
-    this.trabajadorForm = this.fb.group({
+  constructor(
+    private fb: FormBuilder, 
+    private trabajadorService: TrabajadorService, 
+    private especialidadService: EspecialidadService) {
+      this.trabajadorForm = this.fb.group({
       dni: ['', [Validators.required, Validators.minLength(8)]],
       nombreCompleto: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -29,9 +36,11 @@ export class AdministracionTrabajadoresComponent implements OnInit {
       telefono: [''],
       fechaNacimiento: [''],
       colegiatura: [''],
-      rolId: ['', Validators.required]
+      rolId: ['', Validators.required],
+      especialidadesIds: [[]]
     });
-    this.trabajadorForm.get('rolId')?.valueChanges.subscribe(rolId => {
+    
+      this.trabajadorForm.get('rolId')?.valueChanges.subscribe(rolId => {
       const colegiaturaControl = this.trabajadorForm.get('colegiatura');
       
       // Suponiendo que el ID 2 es "Médico" (según tu HTML anterior)
@@ -50,6 +59,15 @@ export class AdministracionTrabajadoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarTrabajadores();
+    this.especialidadService.listar().subscribe({
+      next: (data) => {
+        this.especialidadesDisponibles = data;
+        console.log('Especialidades cargadas:', data); // para confirmar
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar especialidades:', err);
+      }
+    });
   }
 
   cargarTrabajadores(): void {
@@ -88,7 +106,7 @@ export class AdministracionTrabajadoresComponent implements OnInit {
 
   guardarTrabajador() {
     if (this.trabajadorForm.invalid) return;
-
+    console.log('Enviando:', this.trabajadorForm.value);
     if (this.isEditMode && this.idSeleccionado) {
       // MODO EDICIÓN
       this.trabajadorService.actualizar(this.idSeleccionado, this.trabajadorForm.value).subscribe({
@@ -142,9 +160,24 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     this.isEditMode = false;
     this.idSeleccionado = null;
   }
+  toggleEspecialidad(id: number) {
+    const index = this.especialidadesSeleccionadasIds.indexOf(id);
+    if (index > -1) {
+      this.especialidadesSeleccionadasIds.splice(index, 1);
+    } else {
+      this.especialidadesSeleccionadasIds.push(id);
+    }
+    // Actualizamos el valor en el formulario reactivo
+    this.trabajadorForm.patchValue({ especialidadesIds: this.especialidadesSeleccionadasIds });
+  }
+
+  esEspecialidadSeleccionada(id: number): boolean {
+    return this.especialidadesSeleccionadasIds.includes(id);
+  }
 
   abrirModalParaCrear(): void {
     // 1. Decimos que NO estamos editando
+    this.especialidadesSeleccionadasIds = [];
     this.isEditMode = false;
     this.idSeleccionado = null;
 
@@ -165,7 +198,8 @@ export class AdministracionTrabajadoresComponent implements OnInit {
   
   cerrarModal(): void {
     this.isModalOpen = false;
-    this.trabajadorForm.reset(); // Limpia al salir para evitar fugas de datos
+    this.trabajadorForm.reset();
     this.isEditMode = false;
+    this.especialidadesSeleccionadasIds = []; // 👈 limpiar esto también
   }
 }
