@@ -5,7 +5,7 @@
   </div>
 
   <ul class="sidebar-menu">
-    <ng-container *ngFor="let item of navItems">
+    <ng-container *ngFor="let item of navItemsFiltrados()">
       
       <li *ngIf="!item.children">
         <a [routerLink]="item.route" routerLinkActive="activo">
