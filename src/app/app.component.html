@@ -9,7 +9,7 @@
   El header y sidebar están FUERA del outlet — 
   así no se re-renderizan al cambiar de página.
 -->
-<app-sidebar />
+<app-sidebar *ngIf="mostrarMenu" />
 
 <div class="contenido-wrapper">
   <router-outlet />

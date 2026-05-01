@@ -4,8 +4,15 @@ export const routes: Routes = [
   // Redirige la raíz al dashboard
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/login/login.component')
+        .then(m => m.LoginComponent)
   },
 
   // Lazy loading por feature — Angular solo carga el código

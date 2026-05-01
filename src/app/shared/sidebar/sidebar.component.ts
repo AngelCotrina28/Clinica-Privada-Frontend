@@ -24,32 +24,43 @@ export class SidebarComponent {
   rolActual = signal<string>('RECEPCIONISTA'); // Se puede cambiar a 'CAJERO', 'MEDICO', etc.
 
   navItems: NavItem[] = [
-    { label: '🏠 Inicio',
+    {
+      label: '🏠 Inicio',
       route: '/dashboard',
-      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERA', 'JEFA_ENFERMERA', 'MEDICO'] },
+      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERA', 'JEFA_ENFERMERA', 'MEDICO']
+    },
 
-    { label: '📋 Admisión y Consultas',
+    {
+      label: '📋 Admisión y Consultas',
       route: '/admision',
 
-      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERA', 'JEFA_ENFERMERA'] },
-    { label: '🩺 Atención Médica',
+      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERA', 'JEFA_ENFERMERA']
+    },
+    {
+      label: '🩺 Atención Médica',
       route: '/atencion-medica',
-      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO']},
+      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO']
+    },
 
-    { label: '💊 Farmacia',
+    {
+      label: '💊 Farmacia',
       route: '/farmacia',
-      rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA']},
+      rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA']
+    },
 
-    { label: '🧾 Caja y Facturación',
+    {
+      label: '🧾 Caja y Facturación',
       route: '/caja-facturacion',
-      rolesPermitidos: ['ADMINISTRADOR', 'CAJERO'] },
+      rolesPermitidos: ['ADMINISTRADOR', 'CAJERO']
+    },
 
-    { label: '👨🏻‍💻 Administración',
+    {
+      label: '👨🏻‍💻 Administración',
       rolesPermitidos: ['ADMINISTRADOR'],
       children: [
-        { label: 'Administrar Trabajadores',  route: '/administracion/trabajadores', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Series de Comprobantes',    route: '/administracion/series', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Asignación de Cajas',       route: '/administracion/cajas', rolesPermitidos: ['ADMINISTRADOR'] }
+        { label: 'Administrar Trabajadores', route: '/administracion/trabajadores', rolesPermitidos: ['ADMINISTRADOR'] },
+        { label: 'Series de Comprobantes', route: '/administracion/series', rolesPermitidos: ['ADMINISTRADOR'] },
+        { label: 'Asignación de Cajas', route: '/administracion/cajas', rolesPermitidos: ['ADMINISTRADOR'] }
       ]
     },
   ];
