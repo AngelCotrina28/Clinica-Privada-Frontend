@@ -14,12 +14,12 @@
       </li>
 
       <li *ngIf="item.children">
-        <a (click)="toggleAdmin()" class="menu-desplegable" [class.activo-padre]="adminAbierto()">
+        <a (click)="toggle(item.label)" class="menu-desplegable" [class.activo-padre]="estaAbierto(item.label)">
           <span>{{ item.label }}</span>
-          <span class="flecha" *ngIf="!colapsado()">{{ adminAbierto() ? '▼' : '▶' }}</span>
+          <span class="flecha" *ngIf="!colapsado()">{{ estaAbierto(item.label) ? '▼' : '▶' }}</span>
         </a>
         
-        <ul class="submenu" *ngIf="adminAbierto() && !colapsado()">
+        <ul class="submenu" *ngIf="estaAbierto(item.label) && !colapsado()">
           <li *ngFor="let child of item.children">
             <a [routerLink]="child.route" routerLinkActive="activo-sub">
               {{ child.label }}

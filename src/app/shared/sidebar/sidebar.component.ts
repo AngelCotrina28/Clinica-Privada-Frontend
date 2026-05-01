@@ -21,18 +21,27 @@ export class SidebarComponent {
   // Nuevo Signal para los trocitos de administración
   adminAbierto = signal(false);
 
+  admisionAbierto = signal(false);  // ← nuevo signal para Admisión
+
+
   rolActual = signal<string>('ADMINISTRADOR'); // Se puede cambiar a 'CAJERO', 'MEDICO', etc.
 
   navItems: NavItem[] = [
     { label: '🏠 Inicio',
       route: '/dashboard',
       rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFA_ENFERMERIA', 'MEDICO'] },
-
+    
     { label: '📋 Admisión y Consultas',
-      route: '/admision',
+      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'],
+      children: [
+        { label: 'Gestión de Historias',  route: '/admision/historias',  rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
+        { label: 'Flujo de Emergencia',   route: '/admision/emergencia', rolesPermitidos: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] },
+        { label: 'Consulta Externa',      route: '/admision/consulta',   rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
+      ]
+    },
 
-      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFA_ENFERMERIA'] },
-    { label: '🩺 Atención Médica',
+
+      { label: '🩺 Atención Médica',
       route: '/atencion-medica',
       rolesPermitidos: ['ADMINISTRADOR', 'MEDICO']},
 
@@ -71,5 +80,22 @@ export class SidebarComponent {
       this.colapsado.set(false);
     }
     this.adminAbierto.update(v => !v);
+  }
+
+    toggleAdmision(): void {
+    if (this.colapsado()) this.colapsado.set(false);
+    this.admisionAbierto.update(v => !v);
+  }
+
+    // Devuelve qué signal usar según la etiqueta del ítem padre
+  estaAbierto(label: string): boolean {
+    if (label.includes('Admisión'))       return this.admisionAbierto();
+    if (label.includes('Administración')) return this.adminAbierto();
+    return false;
+  }
+
+  toggle(label: string): void {
+    if (label.includes('Admisión'))       this.toggleAdmision();
+    else if (label.includes('Administración')) this.toggleAdmin();
   }
 }

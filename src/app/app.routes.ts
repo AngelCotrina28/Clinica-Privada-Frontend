@@ -18,9 +18,12 @@ export const routes: Routes = [
   },
   {
     path: 'admision',
-    loadComponent: () =>
-      import('./features/admision/admision.component')
-        .then(m => m.AdmisionComponent)
+    children: [
+      { path: '',           redirectTo: 'historias', pathMatch: 'full' },
+      { path: 'historias',  loadComponent: () => import('./features/admision/historias/admision-historias.component').then(m => m.AdmisionHistoriasComponent)  },
+      { path: 'emergencia', loadComponent: () => import('./features/admision/emergencia/admision-emergencia.component').then(m => m.AdmisionEmergenciaComponent) },
+      { path: 'consulta',   loadComponent: () => import('./features/admision/consulta/admision-consulta.component').then(m => m.AdmisionConsultaComponent)      },
+    ]
   },
   {
     path: 'atencion-medica',
