@@ -21,17 +21,17 @@ export class SidebarComponent {
   // Nuevo Signal para los trocitos de administración
   adminAbierto = signal(false);
 
-  rolActual = signal<string>('RECEPCIONISTA'); // Se puede cambiar a 'CAJERO', 'MEDICO', etc.
+  rolActual = signal<string>('ADMINISTRADOR'); // Se puede cambiar a 'CAJERO', 'MEDICO', etc.
 
   navItems: NavItem[] = [
     { label: '🏠 Inicio',
       route: '/dashboard',
-      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERA', 'JEFA_ENFERMERA', 'MEDICO'] },
+      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFA_ENFERMERIA', 'MEDICO'] },
 
     { label: '📋 Admisión y Consultas',
       route: '/admision',
 
-      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERA', 'JEFA_ENFERMERA'] },
+      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFA_ENFERMERIA'] },
     { label: '🩺 Atención Médica',
       route: '/atencion-medica',
       rolesPermitidos: ['ADMINISTRADOR', 'MEDICO']},
