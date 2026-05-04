@@ -7,22 +7,18 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
     selector: 'app-login',
     standalone: true,
-    // Importamos FormsModule para poder usar ngModel en el HTML
     imports: [CommonModule, FormsModule],
     templateUrl: './login.component.html',
-    styleUrls: [] // Puedes crear un login.component.scss más adelante y enlazarlo aquí
+    styleUrls: []
 })
 export class LoginComponent {
-    // Aquí guardaremos lo que el usuario escriba en las cajas de texto
     credentials = {
         username: '',
         password: ''
     };
 
-    // Variable para mostrar mensajes de error si se equivoca de clave
     errorMessage = '';
 
-    // Inyectamos nuestro servicio y el enrutador para cambiar de página
     private authService = inject(AuthService);
     private router = inject(Router);
 
@@ -31,18 +27,44 @@ export class LoginComponent {
 
         this.authService.login(this.credentials).subscribe({
             next: (response) => {
-                // Criterio 1: Redirección
-                this.router.navigate(['/dashboard']);
+                // Delegamos la decisión de a qué pantalla ir según el rol
+                this.redirigirSegunRol(response.rol);
             },
             error: (err) => {
-                // Leemos el mensaje exacto que nos envía el backend (err.error.mensaje)
                 if (err.error && err.error.mensaje) {
                     this.errorMessage = err.error.mensaje;
                 } else {
-                    // Por si falla la red o el servidor está apagado
                     this.errorMessage = 'Credenciales incorrectas';
                 }
             }
         });
+    }
+
+    /**
+     * Módulo de enrutamiento inteligente.
+     * Centraliza la lógica de "Aterrizaje" para cada tipo de trabajador.
+     */
+    private redirigirSegunRol(rol: string): void {
+        switch (rol) {
+            case 'MEDICO':
+                this.router.navigate(['/atencion-medica']);
+                break;
+            case 'TECNICO_FARMACIA':
+                this.router.navigate(['/farmacia']);
+                break;
+            case 'CAJERO':
+                this.router.navigate(['/caja-facturacion']);
+                break;
+            case 'RECEPCIONISTA':
+            case 'ENFERMERO':
+            case 'JEFE_ENFERMERIA':
+                this.router.navigate(['/admision/historias']);
+                break;
+            case 'ADMINISTRADOR':
+            default:
+                // El administrador y cualquier rol por defecto aterrizan en el Inicio
+                this.router.navigate(['/dashboard']);
+                break;
+        }
     }
 }

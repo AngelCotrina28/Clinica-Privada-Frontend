@@ -6,7 +6,7 @@
 
   <ul class="sidebar-menu">
     <ng-container *ngFor="let item of navItemsFiltrados()">
-      
+
       <li *ngIf="!item.children">
         <a [routerLink]="item.route" routerLinkActive="activo">
           <span>{{ item.label }}</span>
@@ -18,7 +18,7 @@
           <span>{{ item.label }}</span>
           <span class="flecha" *ngIf="!colapsado()">{{ estaAbierto(item.label) ? '▼' : '▶' }}</span>
         </a>
-        
+
         <ul class="submenu" *ngIf="estaAbierto(item.label) && !colapsado()">
           <li *ngFor="let child of item.children">
             <a [routerLink]="child.route" routerLinkActive="activo-sub">
