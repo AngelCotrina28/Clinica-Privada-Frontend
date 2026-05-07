@@ -33,7 +33,25 @@ export const routes: Routes = [
     path: 'atencion-medica',
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR', 'MEDICO'] },
-    loadComponent: () => import('./features/atencion-medica/atencion-medica.component').then(m => m.AtencionMedicaComponent)
+    children: [
+      {
+        path: 'historial-clinico',
+        loadComponent: () => import('./features/atencion-medica/historial-clinico/historial-clinico.component').then(m => m.HistorialClinicoComponent)
+      },
+      {
+        path: 'registro-resultados',
+        loadComponent: () => import('./features/atencion-medica/registro-resultados/registro-resultados.component').then(m => m.RegistroResultadosComponent)
+      },
+      {
+        path: 'receta-medica',
+        loadComponent: () => import('./features/atencion-medica/receta-medica/receta-medica.component').then(m => m.RecetaMedicaComponent)
+      },
+      {
+        path: '',
+        redirectTo: 'historial-clinico',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'farmacia',

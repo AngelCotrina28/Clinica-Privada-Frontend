@@ -1,41 +1,20 @@
-import { AtencionMedicaService } from '../../core/services/atencion-medica.service';
-import { AtencionMedicaHistorial } from '../../core/model/atencion-medica.model';
-import { inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HistoriaClinicaService } from '../../core/services/historia-clinica.service';
-import { HistoriaClinicaResponse } from '../../core/model/historia-clinica.model';
-import { Component } from '@angular/core';
-import { HeaderComponent } from '../../shared/header/header.component';
-
-interface ItemReceta {
-  medicamento: string;
-  indicaciones: string;
-}
+import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../../shared/header/header.component';
+import { HistoriaClinicaService } from '../../../core/services/historia-clinica.service';
+import { AtencionMedicaService } from '../../../core/services/atencion-medica.service';
+import { HistoriaClinicaResponse } from '../../../core/model/historia-clinica.model';
+import { AtencionMedicaHistorial } from '../../../core/model/atencion-medica.model';
 
 @Component({
-  selector: 'app-atencion-medica',
+  selector: 'app-historial-clinico',
   standalone: true,
-  imports: [HeaderComponent, FormsModule, CommonModule],
-  templateUrl: './atencion-medica.component.html',
-  styleUrl: './atencion-medica.component.scss'
+  imports: [CommonModule, FormsModule, HeaderComponent],
+  templateUrl: './historial-clinico.component.html',
+  styleUrl: './historial-clinico.component.scss'
 })
-export class AtencionMedicaComponent {
-
-  receta: ItemReceta[] = [
-    {
-      medicamento: 'Paracetamol 500mg',
-      indicaciones: '1 tableta cada 8 horas por 3 días'
-    }
-  ];
-
-  medicamentosDisponibles = [
-    'Paracetamol 500mg',
-    'Ibuprofeno 400mg',
-    'Amoxicilina 500mg'
-  ];
-
-  // --- BUSQUEDA DE HISTORIAL ---
+export class HistorialClinicoComponent {
   private historiaService = inject(HistoriaClinicaService);
   private atencionService = inject(AtencionMedicaService);
 
@@ -68,6 +47,7 @@ export class AtencionMedicaComponent {
         this.pacienteEncontrado = paciente;
         this.cargandoBusqueda = false;
         this.cargarHistorialAnterior(paciente.id);
+        this.atencionService.setPacienteActivo(paciente);
       },
       error: (err) => {
         this.cargandoBusqueda = false;

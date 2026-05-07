@@ -5,12 +5,12 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HeaderComponent } from '../../../shared/header/header.component';
 import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../admision.models';
- 
+
 @Component({
-    selector: 'app-admision-historias',
-    standalone: true,
-    imports: [CommonModule, FormsModule, HeaderComponent],
-    template: `
+  selector: 'app-admision-historias',
+  standalone: true,
+  imports: [CommonModule, FormsModule, HeaderComponent],
+  template: `
     <app-header titulo="Gestión de Historias Clínicas" Trabajador="Recepción Central" />
     <main class="contenedor">
       <section>
@@ -186,25 +186,25 @@ import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../admision.model
 })
 export class AdmisionHistoriasComponent {
   private readonly API = 'http://localhost:8080/api';
- 
-  dniBusqueda        = '';
-  mostrarFormNueva   = false;
+
+  dniBusqueda = '';
+  mostrarFormNueva = false;
   historiaEncontrada = signal<HistoriaClinicaResponse | null>(null);
-  historiaCreada     = signal<HistoriaClinicaResponse | null>(null);
+  historiaCreada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
-  cargando     = signal(false);
+  cargando = signal(false);
   errorMensaje = signal('');
   exitoMensaje = signal('');
- 
-  constructor(private http: HttpClient, public router: Router) {}
- 
+
+  constructor(private http: HttpClient, public router: Router) { }
+
   buscarHistoria(): void {
     if (!this.dniBusqueda.trim()) return;
     this.limpiar(); this.cargando.set(true);
     this.http.get<HistoriaClinicaResponse>(
       `${this.API}/admision/historia?dni=${encodeURIComponent(this.dniBusqueda.trim())}`
     ).subscribe({
-      next:  h  => { this.historiaEncontrada.set(h); this.cargando.set(false); },
+      next: h => { this.historiaEncontrada.set(h); this.cargando.set(false); },
       error: (e: HttpErrorResponse) => {
         if (e.status === 404) { this.mostrarFormNueva = true; this.nuevaHistoria.dniPaciente = this.dniBusqueda.trim(); }
         else this.errorMensaje.set(e.error?.mensaje ?? 'Error al buscar.');
@@ -212,7 +212,7 @@ export class AdmisionHistoriasComponent {
       }
     });
   }
- 
+
   abrirNuevaHistoria(form: NgForm): void {
     if (form.invalid) return;
     this.limpiar(); this.cargando.set(true);
@@ -226,7 +226,7 @@ export class AdmisionHistoriasComponent {
       error: (e: HttpErrorResponse) => { this.errorMensaje.set(e.error?.mensaje ?? 'Error al crear.'); this.cargando.set(false); }
     });
   }
- 
+
   cancelarNueva(): void { this.mostrarFormNueva = false; this.nuevaHistoria = this.initHistoria(); this.limpiar(); }
   private initHistoria(): AbrirHistoriaRequest {
     return { dniPaciente: '', nombreCompleto: '', telefono: '', email: '', fechaNacimiento: '', genero: '', direccion: '', desdeAdmision: true };
