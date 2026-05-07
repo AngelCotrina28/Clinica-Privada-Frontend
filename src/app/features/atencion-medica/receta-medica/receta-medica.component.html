@@ -1,68 +1,45 @@
-<app-header titulo="Módulo de Atención Médica" Trabajador="Dr. Carlos Mendoza" />
+<section>
+    <h2 class="subtitulo-seccion">Emisión de Recetas Médicas</h2>
 
-<main class="contenedor">
-    <section>
-        <h2 class="subtitulo-seccion">Emisión de Recetas Médicas</h2>
+    <form>
+        <fieldset>
+            <legend>Receta Digital</legend>
 
-        @if (!pacienteActivo) {
-        <div
-            style="background-color: #fff3cd; border: 1px solid #ffe69c; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
-            <h3 style="color: #664d03; margin-top: 0;">⚠️ No hay paciente activo</h3>
-            <p style="color: #664d03;">Debe buscar y seleccionar un paciente en el Historial Clínico antes de emitir una
-                receta.</p>
-            <a routerLink="/atencion-medica/historial-clinico"
-                style="display: inline-block; margin-top: 10px; padding: 8px 16px; background-color: #0d6efd; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
-                Ir a Buscar Paciente
-            </a>
-        </div>
-        } @else {
-        <div
-            style="background-color: #f4fcf8; border: 1px solid #20c997; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-            <p style="margin: 0; color: #2c3e50;"><strong>Recetando a:</strong> {{ pacienteActivo.nombreCompleto }}
-                (DNI: {{ pacienteActivo.dniPaciente }})</p>
-        </div>
+            <label for="medicamento">Medicamento:</label>
+            <input type="text" id="medicamento" list="medicamentos_list" class="campo__input">
+            <datalist id="medicamentos_list">
+                @for (med of medicamentosDisponibles; track med) {
+                <option [value]="med"></option>
+                }
+            </datalist>
 
-        <form>
-            <fieldset>
-                <legend>Receta Digital</legend>
+            <label for="dosis">Dosis e Indicaciones:</label>
+            <input type="text" id="dosis" class="campo__input">
 
-                <label for="medicamento">Medicamento:</label>
-                <input type="text" id="medicamento" list="medicamentos_list" class="campo__input">
-                <datalist id="medicamentos_list">
-                    @for (med of medicamentosDisponibles; track med) {
-                    <option [value]="med"></option>
-                    }
-                </datalist>
+            <button type="button" class="btn btn--contorno" style="margin-top: 10px;">Añadir a la Receta</button>
 
-                <label for="dosis">Dosis e Indicaciones:</label>
-                <input type="text" id="dosis" class="campo__input">
+            <div class="tabla-responsive" style="margin-top: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicamento</th>
+                            <th>Indicaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (item of receta; track item.medicamento) {
+                        <tr>
+                            <td>{{ item.medicamento }}</td>
+                            <td>{{ item.indicaciones }}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-                <button type="button" class="btn btn--contorno" style="margin-top: 10px;">Añadir a la Receta</button>
-
-                <div class="tabla-responsive" style="margin-top: 20px;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Medicamento</th>
-                                <th>Indicaciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (item of receta; track item.medicamento) {
-                            <tr>
-                                <td>{{ item.medicamento }}</td>
-                                <td>{{ item.indicaciones }}</td>
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div style="margin-top: 20px;">
-                    <button type="submit" class="btn btn--primario">Emitir Receta Digital</button>
-                </div>
-            </fieldset>
-        </form>
-        }
-    </section>
-</main>
+            <div style="margin-top: 20px;">
+                <button type="submit" class="btn btn--primario">Emitir Receta Digital</button>
+            </div>
+        </fieldset>
+    </form>
+</section>

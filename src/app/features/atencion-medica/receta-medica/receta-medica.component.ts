@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HeaderComponent } from '../../../shared/header/header.component';
 import { AtencionMedicaService } from '../../../core/services/atencion-medica.service';
 import { HistoriaClinicaResponse } from '../../../core/model/historia-clinica.model';
 
@@ -14,7 +13,7 @@ interface ItemReceta {
 @Component({
   selector: 'app-receta-medica',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './receta-medica.component.html',
   styleUrl: './receta-medica.component.scss'
 })

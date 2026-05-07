@@ -5,4 +5,97 @@
   overflow-y: auto;
 }
 
-main section { margin-bottom: 3.5rem; }
+.paciente-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4fcf8;
+  border: 1px solid #20c997;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.paciente-info h2 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+}
+
+.paciente-info p {
+  margin: 0;
+  color: #6c757d;
+  font-weight: bold;
+}
+
+.tabs-clinicas {
+  display: flex;
+  gap: 5px;
+  margin-top: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.tabs-clinicas a {
+  padding: 0.8rem 1.5rem;
+  text-decoration: none;
+  color: #6c757d;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  transition: 0.3s;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+}
+
+.tabs-clinicas a.active {
+  background: #20c997;
+  color: white;
+  border-color: #20c997;
+}
+
+.workspace-content {
+  padding-top: 1.5rem;
+}
+
+.search-hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.search-hero h1 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.btn-comenzar,
+.btn-finalizar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-comenzar {
+  background: #20c997;
+  color: white;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+.btn-comenzar:hover {
+  background: #1aa179;
+}
+
+.btn-finalizar {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-finalizar:hover {
+  background: #c82333;
+}

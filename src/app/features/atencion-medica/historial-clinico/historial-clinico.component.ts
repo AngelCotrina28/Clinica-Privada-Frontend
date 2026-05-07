@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../../../shared/header/header.component';
 import { HistoriaClinicaService } from '../../../core/services/historia-clinica.service';
 import { AtencionMedicaService } from '../../../core/services/atencion-medica.service';
 import { HistoriaClinicaResponse } from '../../../core/model/historia-clinica.model';
@@ -10,7 +9,7 @@ import { AtencionMedicaHistorial } from '../../../core/model/atencion-medica.mod
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss'
 })

@@ -1,92 +1,32 @@
-import { AtencionMedicaService } from '../../core/services/atencion-medica.service';
-import { AtencionMedicaHistorial } from '../../core/model/atencion-medica.model';
-import { inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HistoriaClinicaService } from '../../core/services/historia-clinica.service';
-import { HistoriaClinicaResponse } from '../../core/model/historia-clinica.model';
-import { Component } from '@angular/core';
+import { RouterModule, Router } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
-
-interface ItemReceta {
-  medicamento: string;
-  indicaciones: string;
-}
+import { AtencionMedicaService } from '../../core/services/atencion-medica.service';
+import { HistoriaClinicaResponse } from '../../core/model/historia-clinica.model';
 
 @Component({
   selector: 'app-atencion-medica',
   standalone: true,
-  imports: [HeaderComponent, FormsModule, CommonModule],
+  imports: [CommonModule, RouterModule, HeaderComponent],
   templateUrl: './atencion-medica.component.html',
   styleUrl: './atencion-medica.component.scss'
 })
-export class AtencionMedicaComponent {
-
-  receta: ItemReceta[] = [
-    {
-      medicamento: 'Paracetamol 500mg',
-      indicaciones: '1 tableta cada 8 horas por 3 días'
-    }
-  ];
-
-  medicamentosDisponibles = [
-    'Paracetamol 500mg',
-    'Ibuprofeno 400mg',
-    'Amoxicilina 500mg'
-  ];
-
-  // --- BUSQUEDA DE HISTORIAL ---
-  private historiaService = inject(HistoriaClinicaService);
+export class AtencionMedicaComponent implements OnInit {
   private atencionService = inject(AtencionMedicaService);
+  private router = inject(Router);
 
-  tipoBusqueda: 'DNI' | 'NUMERO' = 'DNI';
-  terminoBusqueda: string = '';
-  pacienteEncontrado: HistoriaClinicaResponse | null = null;
-  mensajeBusqueda: string = '';
-  cargandoBusqueda: boolean = false;
+  pacienteActivo: HistoriaClinicaResponse | null = null;
 
-  historialMedico: AtencionMedicaHistorial[] = [];
-  cargandoHistorial: boolean = false;
-
-  buscarPaciente() {
-    if (!this.terminoBusqueda.trim()) {
-      this.mensajeBusqueda = 'Por favor, ingrese un valor para buscar.';
-      return;
-    }
-
-    this.cargandoBusqueda = true;
-    this.mensajeBusqueda = '';
-    this.pacienteEncontrado = null;
-    this.historialMedico = [];
-
-    const peticion = this.tipoBusqueda === 'DNI'
-      ? this.historiaService.buscarPorDni(this.terminoBusqueda)
-      : this.historiaService.buscarPorNumeroHistoria(this.terminoBusqueda);
-
-    peticion.subscribe({
-      next: (paciente) => {
-        this.pacienteEncontrado = paciente;
-        this.cargandoBusqueda = false;
-        this.cargarHistorialAnterior(paciente.id);
-      },
-      error: (err) => {
-        this.cargandoBusqueda = false;
-        this.mensajeBusqueda = err.error?.mensaje || 'No se encontró la historia clínica.';
-      }
-    });
+  ngOnInit() {
+    this.atencionService.pacienteActivo$.subscribe(p => this.pacienteActivo = p);
   }
 
-  cargarHistorialAnterior(historiaId: number) {
-    this.cargandoHistorial = true;
-    this.atencionService.obtenerHistorialPaciente(historiaId).subscribe({
-      next: (historial) => {
-        this.historialMedico = historial;
-        this.cargandoHistorial = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar el historial médico', err);
-        this.cargandoHistorial = false;
-      }
-    });
+  finalizarAtencion() {
+    if (confirm('¿Desea cerrar la sesión del paciente actual?')) {
+      // Limpia la memoria y fuerza la redirección al buscador
+      this.atencionService.setPacienteActivo(null);
+      this.router.navigate(['/atencion-medica/historial-clinico']);
+    }
   }
 }

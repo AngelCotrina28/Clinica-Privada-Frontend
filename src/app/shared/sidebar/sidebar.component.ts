@@ -23,7 +23,6 @@ export class SidebarComponent implements OnInit {
   colapsado = signal(false);
   adminAbierto = signal(false);
   admisionAbierto = signal(false);
-  atencionAbierto = signal(false);
 
   rolActual = signal<string>('');
 
@@ -55,12 +54,8 @@ export class SidebarComponent implements OnInit {
 
     {
       label: '🩺 Atención Médica',
-      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'],
-      children: [
-        { label: 'Historial Clínico', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
-        { label: 'Registro de Resultados', route: '/atencion-medica/registro-resultados', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
-        { label: 'Recetas Médicas', route: '/atencion-medica/receta-medica', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
-      ]
+      route: '/atencion-medica',
+      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO']
     },
 
     {
@@ -95,7 +90,6 @@ export class SidebarComponent implements OnInit {
     if (this.colapsado()) {
       this.adminAbierto.set(false);
       this.admisionAbierto.set(false); // Aprovechamos para limpiar este también
-      this.atencionAbierto.set(false); // NUEVO: Cierra Atención si se colapsa la barra
     }
   }
 
@@ -112,20 +106,14 @@ export class SidebarComponent implements OnInit {
     this.admisionAbierto.update(v => !v);
   }
 
-  toggleAtencion(): void {
-    if (this.colapsado()) this.colapsado.set(false);
-    this.atencionAbierto.update(v => !v);
-  }
   estaAbierto(label: string): boolean {
     if (label.includes('Admisión')) return this.admisionAbierto();
     if (label.includes('Administración')) return this.adminAbierto();
-    if (label.includes('Atención')) return this.atencionAbierto(); // NUEVO
     return false;
   }
 
   toggle(label: string): void {
     if (label.includes('Admisión')) this.toggleAdmision();
     else if (label.includes('Administración')) this.toggleAdmin();
-    else if (label.includes('Atención')) this.toggleAtencion(); // NUEVO
   }
 }

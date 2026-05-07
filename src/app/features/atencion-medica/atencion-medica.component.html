@@ -1,147 +1,23 @@
-<app-header titulo="Módulo de Atención Médica" Trabajador="Dr. Carlos Mendoza" />
+<app-header titulo="Módulo de Atención Médica" Trabajador="Dr. Carlos Mendoza"></app-header>
 
 <main class="contenedor">
-
-  <!-- Consulta de Historial Clinico -->
-  <section style="margin-bottom: 2rem;">
-    <h2 class="subtitulo-seccion">Consultar Historial Clínico</h2>
-    <form style="display: flex; gap: 15px; align-items: center; margin-bottom: 1rem;">
-      <label>
-        <input type="radio" name="tipo" value="DNI" [(ngModel)]="tipoBusqueda"> Buscar por DNI
-      </label>
-      <label>
-        <input type="radio" name="tipo" value="NUMERO" [(ngModel)]="tipoBusqueda"> Buscar por N° Historia
-      </label>
-
-      <input type="text" name="termino" [(ngModel)]="terminoBusqueda"
-        [placeholder]="tipoBusqueda === 'DNI' ? 'Ingrese DNI...' : 'Ej: HC-00001'"
-        style="padding: 5px; min-width: 200px;">
-
-      <button type="button" (click)="buscarPaciente()" [disabled]="cargandoBusqueda">
-        {{ cargandoBusqueda ? 'Buscando...' : 'Buscar' }}
-      </button>
-    </form>
-
-    @if (mensajeBusqueda) {
-    <p style="color: red; font-weight: bold;">{{ mensajeBusqueda }}</p>
-    }
-
-    @if (pacienteEncontrado) {
-    <fieldset style="background-color: #f4fcf8; border: 1px solid #20c997;">
-      <legend style="color: #20c997; font-weight: bold;">Datos del Paciente Seleccionado</legend>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <p><strong>N° Historia:</strong> {{ pacienteEncontrado.numeroHistoria }}</p>
-        <p><strong>Paciente:</strong> {{ pacienteEncontrado.nombreCompleto }}</p>
-        <p><strong>DNI:</strong> {{ pacienteEncontrado.dniPaciente }}</p>
-        <p><strong>F. Nacimiento:</strong> {{ pacienteEncontrado.fechaNacimiento }}</p>
-        <p><strong>Género:</strong> {{ pacienteEncontrado.genero }}</p>
-        <p><strong>Teléfono:</strong> {{ pacienteEncontrado.telefono || 'No registrado' }}</p>
-      </div>
-    </fieldset>
-    <div style="margin-top: 25px;">
-      <h3 style="color: #2c3e50; border-bottom: 2px solid #20c997; padding-bottom: 8px;">
-        🩺 Historial de Atenciones Anteriores
-      </h3>
-
-      @if (cargandoHistorial) {
-      <p style="color: #0d6efd;">Buscando atenciones médicas previas...</p>
-      }
-
-      @if (!cargandoHistorial && historialMedico.length === 0) {
-      <p style="color: #6c757d; font-style: italic;">
-        Este paciente no registra atenciones médicas previas en el sistema.
-      </p>
-      }
-
-      <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-        @for (atencion of historialMedico; track atencion.id) {
-        <div
-          style="background-color: #f8f9fa; border-left: 4px solid #0d6efd; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-          <div
-            style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">
-            <strong style="color: #495057;">🗓️ Fecha: {{ atencion.fechaHoraInicio | date:'dd/MM/yyyy HH:mm' }}</strong>
-            <span
-              style="background-color: #e9ecef; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: bold; color: #495057;">
-              👨‍⚕️ {{ atencion.medicoNombre }}
-            </span>
-          </div>
-          <p style="margin: 5px 0; color: #212529;"><strong>Motivo de Consulta:</strong> {{ atencion.motivoConsulta ||
-            'No registrado' }}</p>
-          <p style="margin: 5px 0; color: #212529;"><strong>Diagnóstico Principal:</strong> {{
-            atencion.diagnosticoPrincipal || 'No registrado' }}</p>
-          <p style="margin: 5px 0; color: #212529;"><strong>Tratamiento Indicado:</strong> {{ atencion.tratamiento ||
-            'No registrado' }}</p>
-        </div>
-        }
-      </div>
+  @if (pacienteActivo) {
+  <div class="paciente-banner">
+    <div class="paciente-info">
+      <h2>{{ pacienteActivo.nombreCompleto }}</h2>
+      <p>DNI: {{ pacienteActivo.dniPaciente }} | HC: {{ pacienteActivo.numeroHistoria }}</p>
     </div>
-    }
-  </section>
-  <hr style="margin-bottom: 2rem; border: 0; border-top: 1px solid #eee;">
+    <button (click)="finalizarAtencion()" class="btn-finalizar">Finalizar Atención</button>
+  </div>
 
-  <!-- Historia Clínica -->
-  <section>
-    <h2 class="subtitulo-seccion">Registro de Resultados de Atención</h2>
-    <form>
-      <fieldset>
-        <legend>Historia Clínica del Paciente Actual</legend>
+  <nav class="tabs-clinicas">
+    <a routerLink="historial-clinico" routerLinkActive="active">📋 Historial Clínico</a>
+    <a routerLink="registro-resultados" routerLinkActive="active">✍️ Registrar Resultados</a>
+    <a routerLink="receta-medica" routerLinkActive="active">💊 Emitir Receta</a>
+  </nav>
+  }
 
-        <label for="nro_cita">N° Cita / Orden:</label>
-        <input type="text" id="nro_cita" value="CE-045" readonly>
-
-        <label for="diagnostico">Diagnóstico (CIE-10):</label>
-        <input type="text" id="diagnostico" required>
-
-        <label for="notas_evolucion">Notas de Evolución:</label>
-        <textarea id="notas_evolucion" rows="5"></textarea>
-
-        <button type="submit">Guardar en Historia Clínica</button>
-      </fieldset>
-    </form>
-  </section>
-
-  <!-- Receta -->
-  <section>
-    <h2 class="subtitulo-seccion">Emisión de Recetas Médicas</h2>
-    <form>
-      <fieldset>
-        <legend>Receta Digital</legend>
-
-        <label for="medicamento">Medicamento:</label>
-        <input type="text" id="medicamento" list="medicamentos_list">
-        <datalist id="medicamentos_list">
-          @for (med of medicamentosDisponibles; track med) {
-          <option [value]="med">
-            }
-        </datalist>
-
-        <label for="dosis">Dosis e Indicaciones:</label>
-        <input type="text" id="dosis">
-
-        <button type="button">Añadir a la Receta</button>
-
-        <div class="tabla-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Medicamento</th>
-                <th>Indicaciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of receta; track item.medicamento) {
-              <tr>
-                <td>{{ item.medicamento }}</td>
-                <td>{{ item.indicaciones }}</td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
-        <button type="submit">Emitir Receta Digital</button>
-      </fieldset>
-    </form>
-  </section>
-
+  <div class="workspace-content">
+    <router-outlet></router-outlet>
+  </div>
 </main>
