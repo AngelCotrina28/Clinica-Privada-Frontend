@@ -1,0 +1,221 @@
+<app-header titulo="Consulta Externa" Trabajador="Recepción Central" />
+
+<main class="contenedor">
+    <section>
+        <h2 class="subtitulo-seccion">Programación de Citas Médicas</h2>
+
+        @if (exitoMensaje()) {
+        <div class="alerta alerta--exito" style="margin-bottom: 1rem;">
+            <span>✓</span>
+            <p>{{ exitoMensaje() }}</p><button (click)="exitoMensaje.set('')">✕</button>
+        </div>
+        }
+
+        <div class="stepper-container"
+            style="display: flex; justify-content: center; margin: 2rem 0; text-align: center;">
+            <div [style.opacity]="pasoActual() >= 1 ? '1' : '0.5'">
+                <div
+                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    1</div>
+                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Especialidad</div>
+            </div>
+            <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
+
+            <div [style.opacity]="pasoActual() >= 2 ? '1' : '0.5'">
+                <div
+                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    2</div>
+                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Médico</div>
+            </div>
+            <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
+
+            <div [style.opacity]="pasoActual() >= 3 ? '1' : '0.5'">
+                <div
+                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    3</div>
+                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Fecha y Hora</div>
+            </div>
+            <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
+
+            <div [style.opacity]="pasoActual() >= 4 ? '1' : '0.5'">
+                <div
+                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    4</div>
+                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Confirmar</div>
+            </div>
+        </div>
+
+        <div class="bloque" style="max-width: 700px; margin: 0 auto;">
+
+            @if (pasoActual() === 1) {
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿En qué especialidad desea
+                atenderse?</h3>
+
+            <!-- BUSCADOR AUTOCOMPLETABLE -->
+            <div class="autocompletado-container" style="max-width: 400px; margin: 2rem auto; position: relative;">
+                <label class="campo__etiqueta" style="text-align: left;">Buscar especialidad:</label>
+                <div class="campo-busqueda-wrapper">
+                    <span class="icono-input">🔍</span>
+                    <input type="text" class="campo__input input-con-icono" placeholder="Ingrese la Especialidad"
+                        [(ngModel)]="terminoBusquedaEspecialidad" (input)="filtrarEspecialidades()"
+                        (focus)="filtrarEspecialidades()" (blur)="cerrarDropdown()" autocomplete="off">
+                </div>
+
+                <!-- LISTA DESPLEGABLE FLOTANTE -->
+                @if (mostrarDropdownEspecialidad) {
+                <ul class="dropdown-lista">
+                    @for (esp of especialidadesFiltradas; track esp.id) {
+                    <li class="dropdown-item" [class.dropdown-item--activo]="cita.especialidadId === esp.id"
+                        (click)="seleccionarEspecialidad(esp)">
+                        {{ esp.nombre }}
+                    </li>
+                    }
+
+                    <!-- Mensaje si escribe algo y no hay coincidencias -->
+                    @if (especialidadesFiltradas.length === 0 && terminoBusquedaEspecialidad.trim().length > 0) {
+                    <li class="dropdown-vacio">No se encontraron especialidades que empiecen con "{{
+                        terminoBusquedaEspecialidad }}"</li>
+                    }
+                </ul>
+                }
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!cita.especialidadId">
+                    Siguiente Paso
+                </button>
+            </div>
+            }
+
+            @if (pasoActual() === 2) {
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿Con quién desea atenderse?</h3>
+
+            @if (cargandoMedicos) {
+            <div style="text-align: center; padding: 2rem;">
+                <div class="spinner spinner--teal"></div>
+                <p style="color: #718096; margin-top: 1rem;">Buscando especialistas disponibles...</p>
+            </div>
+            } @else {
+            @if (medicosDisponibles.length === 0) {
+            <div class="alerta alerta--info" style="margin: 2rem 0;">
+                <span>ℹ️</span>
+                <p>No hay médicos registrados o activos actualmente para la especialidad de <strong>{{
+                        terminoBusquedaEspecialidad }}</strong>.</p>
+            </div>
+            } @else {
+            <div class="medico-grid">
+                @for (medico of medicosDisponibles; track medico.id) {
+                <!-- Tarjeta del Médico -->
+                <div class="tarjeta-medico" [class.tarjeta-medico--activa]="medicoSeleccionado?.id === medico.id"
+                    (click)="medicoSeleccionado = medico">
+                    <div class="tarjeta-medico__avatar">👨‍⚕️</div>
+                    <div class="tarjeta-medico__info">
+                        <h4 class="tarjeta-medico__nombre">{{ medico.nombreCompleto }}</h4>
+                        <span class="tarjeta-medico__cmp">CMP: {{ medico.colegiatura || 'Sin registro' }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+            }
+
+            <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn--contorno" (click)="pasoAnterior()">Volver</button>
+                <!-- Se deshabilita si la lista está vacía o si no ha seleccionado uno -->
+                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!medicoSeleccionado">
+                    Siguiente Paso
+                </button>
+            </div>
+            }
+
+            @if (pasoActual() === 3) {
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Seleccione Fecha y Hora</h3>
+
+            <div class="fecha-hora-container" style="max-width: 400px; margin: 2rem auto;">
+                <div class="campo">
+                    <label class="campo__etiqueta" style="text-align: left; font-size: 1rem;">
+                        📅 Ingrese la Fecha y Hora de la Cita: <span class="requerido">*</span>
+                    </label>
+                    <input type="datetime-local" class="campo__input"
+                        style="padding: 1rem; font-size: 1.1rem; margin-top: 0.5rem;" name="fechaHora"
+                        [(ngModel)]="cita.fechaHora" [min]="obtenerFechaMinima()" required />
+                    <span style="font-size: 0.85rem; color: #718096; margin-top: 8px; display: block;">
+                        * No se permiten programar citas en horarios pasados.
+                    </span>
+                </div>
+
+                <!-- Vista previa de la fecha seleccionada usando el pipe nativo de Angular -->
+                @if (cita.fechaHora) {
+                <div class="alerta alerta--info" style="margin-top: 1.5rem;">
+                    <span style="font-size: 1.2rem;">🗓️</span>
+                    <p>Ha seleccionado: <strong>{{ cita.fechaHora | date:'dd/MM/yyyy, h:mm a' }}</strong></p>
+                </div>
+                }
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn--contorno" (click)="pasoAnterior()">Volver</button>
+                <!-- El botón se desactiva si no ha seleccionado una fecha válida -->
+                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!cita.fechaHora">
+                    Siguiente Paso
+                </button>
+            </div>
+            }
+
+            @if (pasoActual() === 4) {
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Resumen de la Cita</h3>
+
+            <div class="resultado" style="max-width: 500px; margin: 2rem auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div class="resultado__cabecera" style="background-color: #0d2a4e; color: white;">
+                    <span style="font-weight: 600;">📋 Detalles de Programación</span>
+                </div>
+
+                <div class="resultado__campo">
+                    <span class="resultado__clave">N° Historia Clínica ID</span>
+                    <span class="resultado__valor">
+                        <!-- Si no hay historia clínica, se muestra una alerta -->
+                        @if (cita.historiaClinicaId) {
+                        <span class="resultado__num">{{ cita.historiaClinicaId }}</span>
+                        } @else {
+                        <span style="color: #e53e3e; font-weight: bold;">⚠️ No asignada (Requerida)</span>
+                        }
+                    </span>
+                </div>
+
+                <div class="resultado__campo">
+                    <span class="resultado__clave">Especialidad Seleccionada</span>
+                    <span class="resultado__valor" style="font-weight: bold; color: #00C2A0;">
+                        {{ terminoBusquedaEspecialidad }}
+                    </span>
+                </div>
+
+                <div class="resultado__campo">
+                    <span class="resultado__clave">Médico Asignado</span>
+                    <span class="resultado__valor">
+                        👨‍⚕️ {{ medicoSeleccionado?.nombreCompleto }}
+                        <span style="font-size: 0.8rem; color: #a0aec0;">(CMP: {{ medicoSeleccionado?.colegiatura ||
+                            'N/A' }})</span>
+                    </span>
+                </div>
+
+                <div class="resultado__campo">
+                    <span class="resultado__clave">Fecha y Hora</span>
+                    <span class="resultado__valor">
+                        📅 {{ cita.fechaHora | date:'dd/MM/yyyy' }} a las ⏰ {{ cita.fechaHora | date:'h:mm a' }}
+                    </span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn--contorno" (click)="pasoAnterior()"
+                    [disabled]="exitoMensaje() !== ''">Volver</button>
+                <button class="btn btn--primario" (click)="programarCita()"
+                    [disabled]="!cita.historiaClinicaId || exitoMensaje() !== ''">
+                    Confirmar y Agendar
+                </button>
+            </div>
+            }
+
+        </div>
+    </section>
+</main>

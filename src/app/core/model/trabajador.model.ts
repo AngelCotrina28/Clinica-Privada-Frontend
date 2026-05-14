@@ -9,6 +9,6 @@ export interface Trabajador {
   colegiatura: string;
   rolId: number;
   nombreRol: string;
-  especialidades: string;
+  especialidades: string[];
   activo: boolean;
 }
