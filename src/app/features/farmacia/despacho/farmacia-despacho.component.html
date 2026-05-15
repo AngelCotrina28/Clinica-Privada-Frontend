@@ -1,0 +1,165 @@
+<!-- ============================================================
+  farmacia-despacho.component.html
+  Sub-sección: Despacho de Medicamentos
+  ============================================================ -->
+
+<app-header titulo="Farmacia — Despacho" [usuario]="usuarioNombre" />
+
+<main class="contenedor">
+  <section class="seccion">
+
+    <div class="seccion__cabecera">
+      <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
+    </div>
+
+    <!-- Alertas -->
+    @if (errorMensaje()) {
+      <div class="alerta alerta--error">
+        <span>⚠</span><p>{{ errorMensaje() }}</p>
+        <button (click)="errorMensaje.set('')">✕</button>
+      </div>
+    }
+    @if (exitoMensaje()) {
+      <div class="alerta alerta--exito">
+        <span>✓</span><p>{{ exitoMensaje() }}</p>
+        <button (click)="exitoMensaje.set('')">✕</button>
+      </div>
+    }
+
+    <!-- ── Búsqueda de órdenes ── -->
+    <div class="bloque">
+      <h3 class="bloque__titulo">Buscar Orden de Entrega</h3>
+      <div class="barra-busqueda">
+        <label class="campo__etiqueta" for="busqueda_orden" style="margin-bottom: 0.5rem;">N° Receta o DNI del Paciente:</label>
+        <div class="campo-busqueda-inline">
+          <input id="busqueda_orden" type="text" class="campo__input"
+            [(ngModel)]="terminoBusqueda"
+            placeholder="Ej: REC-9921 o DNI del paciente"
+            (keydown.enter)="buscarOrden()" />
+          <button class="btn btn--primario" (click)="buscarOrden()" [disabled]="cargandoBusqueda()">
+            @if (cargandoBusqueda()) { <span class="spinner"></span> } Buscar
+          </button>
+        </div>
+        <small class="texto-secundario">Ingrese el número de receta o el DNI para localizar las órdenes pendientes de despacho.</small>
+      </div>
+    </div>
+
+    <!-- ── Tabla de órdenes pendientes ── -->
+    <div class="bloque">
+      <h3 class="bloque__titulo">Órdenes Pendientes de Despacho</h3>
+      <div class="tabla-responsive">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>N° Receta</th>
+              <th>Paciente</th>
+              <th>DNI</th>
+              <th>Origen</th>
+              <th>Medicamentos</th>
+              <th>Estado de Pago</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (orden of ordenesPendientes; track orden.nroReceta) {
+              <tr>
+                <td><code>{{ orden.nroReceta }}</code></td>
+                <td><strong>{{ orden.paciente }}</strong></td>
+                <td>{{ orden.dni }}</td>
+                <td>
+                  <span class="badge badge--origen">{{ orden.origen }}</span>
+                </td>
+                <td>
+                  <ul class="lista-meds">
+                    @for (med of orden.medicamentos; track med) {
+                      <li>{{ med }}</li>
+                    }
+                  </ul>
+                </td>
+                <td>
+                  <span class="badge" [class.badge--activo]="orden.estadoPago === 'Pagado'" [class.badge--alerta]="orden.estadoPago !== 'Pagado'">
+                    {{ orden.estadoPago }}
+                  </span>
+                </td>
+                <td>
+                  <div class="acciones-td">
+                    <button class="btn btn--sm btn--primario"
+                      [disabled]="orden.estadoPago !== 'Pagado'"
+                      (click)="registrarEntrega(orden)"
+                      title="{{ orden.estadoPago !== 'Pagado' ? 'El pago debe estar confirmado para despachar' : 'Registrar entrega' }}">
+                      Registrar Entrega
+                    </button>
+                    <button class="btn btn--sm btn--ghost" (click)="imprimirOrden(orden)">
+                      🖨️ Imprimir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="text-center">
+                  @if (cargandoBusqueda()) {
+                    <span class="cargando-inline"><span class="spinner spinner--teal"></span> Buscando órdenes...</span>
+                  } @else {
+                    <span class="sin-datos">No hay órdenes pendientes de despacho.</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<!-- ══ MODAL CONFIRMAR ENTREGA ════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="ordenSeleccionada" (click)="ordenSeleccionada = null">
+  <div class="modal-contenedor" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-titulo">Confirmar Entrega de Medicamentos</h3>
+      <button class="btn-cerrar-modal" (click)="ordenSeleccionada = null">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="resultado resultado--orden">
+        <div class="resultado__cabecera">
+          <span class="etiqueta etiqueta--orden">N° Receta</span>
+          <code class="resultado__num">{{ ordenSeleccionada!.nroReceta }}</code>
+        </div>
+        <div class="resultado__grid">
+          <div class="resultado__campo">
+            <span class="resultado__clave">Paciente</span>
+            <span class="resultado__valor">{{ ordenSeleccionada!.paciente }}</span>
+          </div>
+          <div class="resultado__campo">
+            <span class="resultado__clave">DNI</span>
+            <span class="resultado__valor">{{ ordenSeleccionada!.dni }}</span>
+          </div>
+          <div class="resultado__campo">
+            <span class="resultado__clave">Origen</span>
+            <span class="resultado__valor">{{ ordenSeleccionada!.origen }}</span>
+          </div>
+          <div class="resultado__campo">
+            <span class="resultado__clave">Estado de Pago</span>
+            <span class="resultado__valor texto-acento">{{ ordenSeleccionada!.estadoPago }}</span>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <p><strong>Medicamentos a despachar:</strong></p>
+          <ul class="lista-meds lista-meds--detalle">
+            @for (med of ordenSeleccionada!.medicamentos; track med) {
+              <li>{{ med }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--ghost" (click)="ordenSeleccionada = null">Cancelar</button>
+        <button class="btn btn--primario" [disabled]="confirmando()" (click)="confirmarEntrega()">
+          @if (confirmando()) { <span class="spinner"></span> } ✅ Confirmar Entrega
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

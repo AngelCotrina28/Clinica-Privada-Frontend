@@ -1,0 +1,87 @@
+<!-- ============================================================
+  farmacia-stock-bajo.component.html
+  Sub-sección: Alertas de Stock Bajo
+  ============================================================ -->
+
+<app-header titulo="Farmacia — Alertas de Stock" [usuario]="usuarioNombre" />
+
+<main class="contenedor">
+  <section class="seccion">
+
+    <div class="seccion__cabecera">
+      <h2 class="subtitulo-seccion">⚠️ Alertas de Stock Bajo</h2>
+    </div>
+
+    @if (errorMensaje()) {
+      <div class="alerta alerta--error">
+        <span>⚠</span><p>{{ errorMensaje() }}</p>
+        <button (click)="errorMensaje.set('')">✕</button>
+      </div>
+    }
+
+    <div class="bloque">
+      <div class="encabezado-flexible">
+        <h3 class="bloque__titulo">Medicamentos por debajo del stock mínimo</h3>
+        <button class="btn btn--ghost btn--sm" (click)="cargar()">🔄 Actualizar</button>
+      </div>
+
+      <div class="tabla-responsive">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Stock Actual</th>
+              <th>Stock Mínimo</th>
+              <th>Déficit</th>
+              <th>Precio Unit.</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (med of medicamentos; track med.id) {
+              <tr class="fila-alerta">
+                <td><code>{{ med.codigo }}</code></td>
+                <td>
+                  <strong>{{ med.nombre }}</strong>
+                  @if (med.presentacion) {
+                    <br><small class="texto-secundario">{{ med.presentacion }}</small>
+                  }
+                </td>
+                <td>{{ med.categoriaNombre }}</td>
+                <td class="texto-danger"><strong>{{ med.stockActual }}</strong></td>
+                <td>{{ med.stockMinimo }}</td>
+                <td>
+                  <span class="badge badge--alerta">− {{ med.stockMinimo - med.stockActual }} unidades</span>
+                </td>
+                <td>S/ {{ med.precioUnitario | number:'1.2-2' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="text-center">
+                  @if (cargando()) {
+                    <span class="cargando-inline"><span class="spinner spinner--teal"></span> Cargando alertas...</span>
+                  } @else {
+                    <div class="sin-datos-exito">
+                      <span>✅</span>
+                      <p>¡Todos los medicamentos tienen stock suficiente!</p>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (totalPaginas > 1) {
+        <div class="paginacion">
+          <button class="btn btn--ghost btn--sm" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">← Anterior</button>
+          <span class="paginacion__info">Página {{ paginaActual + 1 }} de {{ totalPaginas }}</span>
+          <button class="btn btn--ghost btn--sm" [disabled]="paginaActual >= totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">Siguiente →</button>
+        </div>
+      }
+    </div>
+
+  </section>
+</main>

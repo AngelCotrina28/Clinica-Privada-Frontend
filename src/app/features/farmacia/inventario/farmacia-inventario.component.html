@@ -1,0 +1,320 @@
+<!-- ============================================================
+  farmacia-inventario.component.html
+  Sub-sección: Control de Inventario y Medicamentos
+  ============================================================ -->
+
+<app-header titulo="Farmacia — Inventario" [usuario]="usuarioNombre" />
+
+<main class="contenedor">
+  <section class="seccion">
+
+    <div class="seccion__cabecera">
+      <h2 class="subtitulo-seccion">Control de Inventario y Medicamentos</h2>
+    </div>
+
+    <!-- Alertas -->
+    @if (errorMensaje()) {
+      <div class="alerta alerta--error">
+        <span>⚠</span><p>{{ errorMensaje() }}</p>
+        <button (click)="errorMensaje.set('')">✕</button>
+      </div>
+    }
+    @if (exitoMensaje()) {
+      <div class="alerta alerta--exito">
+        <span>✓</span><p>{{ exitoMensaje() }}</p>
+        <button (click)="exitoMensaje.set('')">✕</button>
+      </div>
+    }
+
+    <!-- ── Barra de filtros ── -->
+    <div class="bloque">
+      <div class="encabezado-flexible">
+        <h3 class="bloque__titulo">Filtros de búsqueda</h3>
+        <button class="btn btn--primario" (click)="abrirModalCrear()" *ngIf="esAdmin">
+          + Nuevo Medicamento
+        </button>
+      </div>
+
+      <div class="filtros-grid">
+        <div class="campo">
+          <label class="campo__etiqueta">Nombre o Código</label>
+          <input class="campo__input" type="text" placeholder="Buscar..." maxlength="30"
+            [(ngModel)]="filtros.nombre" (keydown.enter)="buscar()" />
+        </div>
+
+        <div class="campo">
+          <label class="campo__etiqueta">Categoría</label>
+          <select class="campo__input campo__select" [(ngModel)]="filtros.categoriaId" (change)="buscar()">
+            <option [ngValue]="undefined">Todas las categorías</option>
+            @for (cat of categorias; track cat.id) {
+              <option [ngValue]="cat.id">{{ cat.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="campo campo--checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="filtros.soloActivos" (change)="buscar()" />
+            <span>Solo activos</span>
+          </label>
+        </div>
+
+        <div class="grupo-botones">
+          <button class="btn btn--primario" (click)="buscar()" [disabled]="cargando()">
+            @if (cargando()) { <span class="spinner"></span> } Buscar
+          </button>
+          <button class="btn btn--ghost" (click)="limpiarFiltros()">Limpiar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tabla de medicamentos ── -->
+    <div class="bloque">
+      <div class="tabla-responsive">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre / Presentación</th>
+              <th>Categoría</th>
+              <th>Stock Actual</th>
+              <th>Stock Mín.</th>
+              <th>Precio Unit.</th>
+              <th>Receta</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (med of medicamentos; track med.id) {
+              <tr [class.fila-alerta]="med.stockBajo">
+                <td><code>{{ med.codigo }}</code></td>
+                <td>
+                  <strong>{{ med.nombre }}</strong>
+                  @if (med.nombreGenerico) {
+                    <br><small class="texto-secundario">{{ med.nombreGenerico }}</small>
+                  }
+                  @if (med.presentacion) {
+                    <br><small class="texto-secundario">{{ med.presentacion }}</small>
+                  }
+                </td>
+                <td>{{ med.categoriaNombre }}</td>
+                <td>
+                  {{ med.stockActual }}
+                  @if (med.stockBajo) {
+                    <span class="badge badge--alerta" title="Stock por debajo del mínimo ({{ med.stockMinimo }})">⚠️ Bajo</span>
+                  }
+                </td>
+                <td>{{ med.stockMinimo }}</td>
+                <td>S/ {{ med.precioUnitario | number:'1.2-2' }}</td>
+                <td>
+                  <span class="badge" [class.badge--receta]="med.requiereReceta" [class.badge--libre]="!med.requiereReceta">
+                    {{ med.requiereReceta ? 'SÍ' : 'NO' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class.badge--activo]="med.activo" [class.badge--inactivo]="!med.activo">
+                    {{ med.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="acciones-td">
+                    <button class="btn-icon" title="Ver detalle" (click)="verDetalle(med)">👁️</button>
+                    <button class="btn-icon" title="Ver historial" (click)="verHistorial(med)" *ngIf="esAdmin">📋</button>
+                    <button class="btn-icon" title="Editar" (click)="abrirModalEditar(med)" *ngIf="esAdmin">✏️</button>
+                    @if (med.activo && esAdmin) {
+                      <button class="btn-icon btn-icon--danger" title="Inactivar" (click)="toggleEstado(med)">🗑️</button>
+                    }
+                    @if (!med.activo && esAdmin) {
+                      <button class="btn-icon btn-icon--success" title="Activar" (click)="toggleEstado(med)">✅</button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="text-center">
+                  @if (cargando()) {
+                    <span class="cargando-inline"><span class="spinner spinner--teal"></span> Cargando medicamentos...</span>
+                  } @else {
+                    <span class="sin-datos">No se encontraron medicamentos con los filtros indicados.</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      @if (totalPaginas > 1) {
+        <div class="paginacion">
+          <button class="btn btn--ghost btn--sm" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">← Anterior</button>
+          <span class="paginacion__info">Página {{ paginaActual + 1 }} de {{ totalPaginas }} ({{ totalElementos }} registros)</span>
+          <button class="btn btn--ghost btn--sm" [disabled]="paginaActual >= totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">Siguiente →</button>
+        </div>
+      }
+    </div>
+
+  </section>
+</main>
+
+<!-- ══ MODAL CREAR / EDITAR ══════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModalSiOverlay($event)">
+  <div class="modal-contenedor" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h3 class="modal-titulo">{{ isEditMode ? 'Editar Medicamento' : 'Registrar Nuevo Medicamento' }}</h3>
+      <button class="btn-cerrar-modal" (click)="cerrarModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <form class="formulario-grid" [formGroup]="medForm" (ngSubmit)="guardarMedicamento()">
+
+        <div class="form-seccion-titulo">Identificación</div>
+
+        <div class="form-grupo">
+          <label>Código Único <span class="requerido">*</span></label>
+          <input type="text" formControlName="codigo" placeholder="Ej: MED-001" maxlength="30" [attr.disabled]="isEditMode ? true : null" />
+          <small class="text-danger" *ngIf="medForm.get('codigo')?.invalid && medForm.get('codigo')?.touched">
+            Código obligatorio (máx. 30 caracteres)
+          </small>
+        </div>
+
+        <div class="form-grupo">
+          <label>Nombre Comercial <span class="requerido">*</span></label>
+          <input type="text" formControlName="nombre" placeholder="Nombre del medicamento" maxlength="200" />
+        </div>
+
+        <div class="form-grupo">
+          <label>Nombre Genérico</label>
+          <input type="text" formControlName="nombreGenerico" placeholder="DCI o nombre genérico" maxlength="200" />
+        </div>
+
+        <div class="form-grupo">
+          <label>Categoría <span class="requerido">*</span></label>
+          <select formControlName="categoriaId">
+            <option value="" disabled>Seleccionar categoría...</option>
+            @for (cat of categorias; track cat.id) {
+              <option [value]="cat.id">{{ cat.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-seccion-titulo">Detalles del Producto</div>
+
+        <div class="form-grupo">
+          <label>Presentación</label>
+          <input type="text" formControlName="presentacion" placeholder="Ej: Caja x 100 tabletas 500mg" maxlength="100" />
+        </div>
+
+        <div class="form-grupo">
+          <label>Laboratorio</label>
+          <input type="text" formControlName="laboratorio" placeholder="Nombre del laboratorio" maxlength="150" />
+        </div>
+
+        <div class="form-grupo form-grupo--full">
+          <label>Descripción</label>
+          <textarea formControlName="descripcion" rows="2" placeholder="Indicaciones, contraindicaciones, etc."></textarea>
+        </div>
+
+        <div class="form-seccion-titulo">Stock y Precios</div>
+
+        <div class="form-grupo">
+          <label>Precio Unitario (S/) <span class="requerido">*</span></label>
+          <input type="number" formControlName="precioUnitario" step="0.01" min="0.01" placeholder="0.00" />
+        </div>
+
+        <div class="form-grupo" *ngIf="!isEditMode">
+          <label>Stock Inicial <span class="requerido">*</span></label>
+          <input type="number" formControlName="stockInicial" min="0" placeholder="0" />
+        </div>
+
+        <div class="form-grupo">
+          <label>Stock Mínimo (alerta)</label>
+          <input type="number" formControlName="stockMinimo" min="0" placeholder="0" />
+        </div>
+
+        <div class="form-grupo form-grupo--checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="requiereReceta" />
+            <span>Requiere Receta Médica</span>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn--ghost" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn--primario" [disabled]="medForm.invalid || guardando()">
+            @if (guardando()) { <span class="spinner"></span> } Guardar
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ MODAL DETALLE ══════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="medDetalle" (click)="medDetalle = null">
+  <div class="modal-contenedor modal-contenedor--detalle" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-titulo">Detalle — {{ medDetalle!.nombre }}</h3>
+      <button class="btn-cerrar-modal" (click)="medDetalle = null">✕</button>
+    </div>
+    <div class="modal-body detalle-grid">
+      <div class="detalle-campo"><span class="detalle-clave">Código</span><code>{{ medDetalle!.codigo }}</code></div>
+      <div class="detalle-campo"><span class="detalle-clave">Nombre Genérico</span>{{ medDetalle!.nombreGenerico || '—' }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Categoría</span>{{ medDetalle!.categoriaNombre }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Presentación</span>{{ medDetalle!.presentacion || '—' }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Laboratorio</span>{{ medDetalle!.laboratorio || '—' }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Precio Unitario</span>S/ {{ medDetalle!.precioUnitario | number:'1.2-2' }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Stock Actual</span>{{ medDetalle!.stockActual }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Stock Mínimo</span>{{ medDetalle!.stockMinimo }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Requiere Receta</span>{{ medDetalle!.requiereReceta ? 'SÍ' : 'NO' }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Estado</span>{{ medDetalle!.activo ? 'Activo' : 'Inactivo' }}</div>
+      <div class="detalle-campo"><span class="detalle-clave">Creado por</span>{{ medDetalle!.creadoPor }}</div>
+      <div class="detalle-campo detalle-campo--full"><span class="detalle-clave">Descripción</span>{{ medDetalle!.descripcion || '—' }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL HISTORIAL ════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="historialAbierto" (click)="historialAbierto = false">
+  <div class="modal-contenedor modal-contenedor--historial" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-titulo">Historial de Cambios</h3>
+      <button class="btn-cerrar-modal" (click)="historialAbierto = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabla-responsive">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Operación</th>
+              <th>Campo</th>
+              <th>Valor Anterior</th>
+              <th>Valor Nuevo</th>
+              <th>Usuario</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (h of historialItems; track h.id) {
+              <tr>
+                <td><span class="badge badge--{{ h.tipoOperacion.toLowerCase() }}">{{ h.tipoOperacion }}</span></td>
+                <td>{{ h.campoModificado || '—' }}</td>
+                <td>{{ h.valorAnterior || '—' }}</td>
+                <td>{{ h.valorNuevo || '—' }}</td>
+                <td>{{ h.trabajador }}</td>
+                <td>{{ h.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6" class="text-center sin-datos">Sin registros de historial.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
