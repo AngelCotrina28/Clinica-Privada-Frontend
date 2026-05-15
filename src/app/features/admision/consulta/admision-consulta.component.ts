@@ -156,9 +156,6 @@ export class AdmisionConsultaComponent implements OnInit {
 
     console.log('Enviando cita al backend:', payload);
 
-    // 2. Mostramos el mensaje de éxito (Simulación)
     this.exitoMensaje.set('¡Cita programada correctamente! (Falta conectar a BD)');
-
-    // Aquí luego llamaremos a this.citaService.crear(payload).subscribe(...)
   }
 }
