@@ -11,10 +11,6 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent)
   },
-<<<<<<< HEAD
-=======
-
->>>>>>> 493cebeb0b0735ed9444b44c5ee4385f742d73a5
   {
     path: 'dashboard',
     canActivate: [roleGuard],
@@ -27,38 +23,13 @@ export const routes: Routes = [
     data: { roles: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
     children: [
       { path: '', redirectTo: 'historias', pathMatch: 'full' },
-<<<<<<< HEAD
-      {
-        path: 'historias',
-        loadComponent: () => import('./features/admision/historias/admision-historias.component').then(m => m.AdmisionHistoriasComponent)
-      },
-      {
-        path: 'emergencia',
-        canActivate: [roleGuard],
-        data: { roles: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] },
-        loadComponent: () => import('./features/admision/emergencia/admision-emergencia.component').then(m => m.AdmisionEmergenciaComponent)
-      },
-      {
-        path: 'consulta',
-        loadComponent: () => import('./features/admision/consulta/admision-consulta.component').then(m => m.AdmisionConsultaComponent)
-      },
-=======
       { path: 'historias', loadComponent: () => import('./features/admision/historias/admision-historias.component').then(m => m.AdmisionHistoriasComponent) },
       { path: 'emergencia', canActivate: [roleGuard], data: { roles: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] }, loadComponent: () => import('./features/admision/emergencia/admision-emergencia.component').then(m => m.AdmisionEmergenciaComponent) },
       { path: 'consulta', loadComponent: () => import('./features/admision/consulta/admision-consulta.component').then(m => m.AdmisionConsultaComponent) },
->>>>>>> 493cebeb0b0735ed9444b44c5ee4385f742d73a5
     ]
   },
   {
     path: 'atencion-medica',
-<<<<<<< HEAD
-    canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR', 'MEDICO'] },
-    loadComponent: () => import('./features/atencion-medica/atencion-medica.component').then(m => m.AtencionMedicaComponent)
-  },
-
-  // ── FARMACIA CON RUTAS HIJAS ─────────────────────────────────
-=======
     loadComponent: () => import('./features/atencion-medica/atencion-medica.component').then(m => m.AtencionMedicaComponent),
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR', 'MEDICO'] },
@@ -82,39 +53,12 @@ export const routes: Routes = [
       }
     ]
   },
->>>>>>> 493cebeb0b0735ed9444b44c5ee4385f742d73a5
   {
     path: 'farmacia',
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
-<<<<<<< HEAD
-    children: [
-      { path: '', redirectTo: 'despacho', pathMatch: 'full' },
-      {
-        path: 'despacho',
-        loadComponent: () =>
-          import('./features/farmacia/despacho/farmacia-despacho.component')
-            .then(m => m.FarmaciaDespachoComponent)
-      },
-      {
-        path: 'inventario',
-        loadComponent: () =>
-          import('./features/farmacia/inventario/farmacia-inventario.component')
-            .then(m => m.FarmaciaInventarioComponent)
-      },
-      {
-        path: 'stock-bajo',
-        loadComponent: () =>
-          import('./features/farmacia/stock-bajo/farmacia-stock-bajo.component')
-            .then(m => m.FarmaciaStockBajoComponent)
-      },
-    ]
-  },
-
-=======
     loadComponent: () => import('./features/farmacia/farmacia.component').then(m => m.FarmaciaComponent)
   },
->>>>>>> 493cebeb0b0735ed9444b44c5ee4385f742d73a5
   {
     path: 'caja-facturacion',
     canActivate: [roleGuard],
