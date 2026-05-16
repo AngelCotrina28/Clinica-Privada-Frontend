@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HeaderComponent } from '../../../shared/header/header.component';
 import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../admision.models';
@@ -71,16 +70,6 @@ import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../admision.model
                   <span class="resultado__clave">Registrado por</span>
                   <span class="resultado__valor">{{ historiaEncontrada()!.creadoPor }}</span>
                 </div>
-              </div>
-              <div class="resultado__acciones">
-                <button class="btn btn--sm btn--primario"
-                  (click)="router.navigate(['/admision/emergencia'], { queryParams: { historiaId: historiaEncontrada()!.id, nombre: historiaEncontrada()!.nombreCompleto, numeroHistoria: historiaEncontrada()!.numeroHistoria } })">
-                  → Generar Orden Emergencia
-                </button>
-                <button class="btn btn--sm btn--contorno"
-                  (click)="router.navigate(['/admision/consulta'], { queryParams: { historiaId: historiaEncontrada()!.id } })">
-                  → Programar Cita
-                </button>
               </div>
             </div>
           }
@@ -154,31 +143,6 @@ import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../admision.model
           </div>
         }
  
-        @if (historiaCreada()) {
-          <div class="resultado resultado--creado">
-            <div class="resultado__cabecera">
-              <span class="etiqueta etiqueta--creada">Historia Creada</span>
-              <code class="resultado__num">{{ historiaCreada()!.numeroHistoria }}</code>
-            </div>
-            <div class="resultado__grid">
-              <div class="resultado__campo">
-                <span class="resultado__clave">Paciente</span>
-                <span class="resultado__valor">{{ historiaCreada()!.nombreCompleto }}</span>
-              </div>
-              <div class="resultado__campo">
-                <span class="resultado__clave">DNI / CE</span>
-                <span class="resultado__valor">{{ historiaCreada()!.dniPaciente }}</span>
-              </div>
-            </div>
-            @if (historiaCreada()!.redirectUrl) {
-              <div class="redirect-aviso">
-                <span class="spinner spinner--teal"></span>
-                Redirigiendo al flujo de emergencia...
-              </div>
-            }
-          </div>
-        }
- 
       </section>
     </main>
   `,
@@ -190,13 +154,12 @@ export class AdmisionHistoriasComponent {
   dniBusqueda = '';
   mostrarFormNueva = false;
   historiaEncontrada = signal<HistoriaClinicaResponse | null>(null);
-  historiaCreada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
   cargando = signal(false);
   errorMensaje = signal('');
   exitoMensaje = signal('');
 
-  constructor(private http: HttpClient, public router: Router) { }
+  constructor(private http: HttpClient) { }
 
   buscarHistoria(): void {
     if (!this.dniBusqueda.trim()) return;
@@ -219,9 +182,10 @@ export class AdmisionHistoriasComponent {
     this.nuevaHistoria.desdeAdmision = true;
     this.http.post<HistoriaClinicaResponse>(`${this.API}/admision/historia`, this.nuevaHistoria).subscribe({
       next: resp => {
-        this.historiaCreada.set(resp); this.mostrarFormNueva = false; this.cargando.set(false);
+        this.historiaEncontrada.set(resp); this.mostrarFormNueva = false; this.cargando.set(false);
+        this.dniBusqueda = resp.dniPaciente;
+        this.nuevaHistoria = this.initHistoria();
         this.exitoMensaje.set(`Historia ${resp.numeroHistoria} creada.`);
-        if (resp.redirectUrl) setTimeout(() => this.router.navigateByUrl(resp.redirectUrl!), 1400);
       },
       error: (e: HttpErrorResponse) => { this.errorMensaje.set(e.error?.mensaje ?? 'Error al crear.'); this.cargando.set(false); }
     });
@@ -231,5 +195,5 @@ export class AdmisionHistoriasComponent {
   private initHistoria(): AbrirHistoriaRequest {
     return { dniPaciente: '', nombreCompleto: '', telefono: '', email: '', fechaNacimiento: '', genero: '', direccion: '', desdeAdmision: true };
   }
-  private limpiar(): void { this.errorMensaje.set(''); this.exitoMensaje.set(''); this.historiaEncontrada.set(null); this.historiaCreada.set(null); }
+  private limpiar(): void { this.errorMensaje.set(''); this.exitoMensaje.set(''); this.historiaEncontrada.set(null); }
 }

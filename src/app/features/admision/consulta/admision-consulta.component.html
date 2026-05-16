@@ -1,16 +1,137 @@
-<app-header titulo="Consulta Externa" Trabajador="Recepción Central" />
+<app-header titulo="Consulta Externa" Trabajador="Recepcion Central" />
 
 <main class="contenedor">
     <section>
-        <h2 class="subtitulo-seccion">Programación de Citas Médicas</h2>
+        <h2 class="subtitulo-seccion">Programacion de Citas Medicas</h2>
 
-        @if (exitoMensaje()) {
-        <div class="alerta alerta--exito" style="margin-bottom: 1rem;">
-            <span>✓</span>
-            <p>{{ exitoMensaje() }}</p><button (click)="exitoMensaje.set('')">✕</button>
+        @if (errorMensaje()) {
+        <div class="alerta alerta--error" style="margin-bottom: 1rem;">
+            <span>!</span>
+            <p>{{ errorMensaje() }}</p><button (click)="errorMensaje.set('')">x</button>
         </div>
         }
 
+        @if (exitoMensaje()) {
+        <div class="alerta alerta--exito" style="margin-bottom: 1rem;">
+            <span>OK</span>
+            <p>{{ exitoMensaje() }}</p><button (click)="exitoMensaje.set('')">x</button>
+        </div>
+        }
+
+        <div class="bloque">
+            <h3 class="bloque__titulo">Verificar Historia Clinica</h3>
+            <div class="grupo-acciones">
+                <label class="campo__etiqueta" for="dni_paciente_consulta">DNI / CE del Paciente:</label>
+                <input id="dni_paciente_consulta" type="text" class="campo__input"
+                    [(ngModel)]="dniBusqueda" placeholder="Ej: 12345678" maxlength="12"
+                    (keydown.enter)="buscarHistoria()" autocomplete="off" />
+                <div class="grupo-botones">
+                    <button class="btn btn--primario" (click)="buscarHistoria()"
+                        [disabled]="cargandoHistoria() || !dniBusqueda.trim()">
+                        @if (cargandoHistoria()) { <span class="spinner"></span> } Buscar Historia
+                    </button>
+                    <button class="btn btn--contorno"
+                        (click)="mostrarFormNueva = true; nuevaHistoria.dniPaciente = dniBusqueda.trim(); limpiarHistoriaSeleccionada()">
+                        Abrir Nueva Historia
+                    </button>
+                </div>
+            </div>
+
+            @if (historiaSeleccionada()) {
+            <div class="resultado resultado--encontrado">
+                <div class="resultado__cabecera">
+                    <span class="etiqueta etiqueta--encontrada">
+                        {{ historiaSeleccionada()!.nuevaHistoria ? 'Historia Creada' : 'Encontrada' }}
+                    </span>
+                    <code class="resultado__num">{{ historiaSeleccionada()!.numeroHistoria }}</code>
+                </div>
+                <div class="resultado__grid">
+                    <div class="resultado__campo">
+                        <span class="resultado__clave">Paciente</span>
+                        <span class="resultado__valor">{{ historiaSeleccionada()!.nombreCompleto }}</span>
+                    </div>
+                    <div class="resultado__campo">
+                        <span class="resultado__clave">DNI / CE</span>
+                        <span class="resultado__valor">{{ historiaSeleccionada()!.dniPaciente || '-' }}</span>
+                    </div>
+                    <div class="resultado__campo">
+                        <span class="resultado__clave">Historia ID</span>
+                        <span class="resultado__valor">{{ historiaSeleccionada()!.id }}</span>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        @if (mostrarFormNueva) {
+        <div class="bloque bloque--nuevo">
+            <h3 class="bloque__titulo">Datos del Nuevo Paciente</h3>
+            <form #historiaForm="ngForm" (ngSubmit)="abrirNuevaHistoria(historiaForm)" novalidate>
+                <div class="form-grid">
+                    <div class="campo">
+                        <label class="campo__etiqueta">DNI / CE <span class="requerido">*</span></label>
+                        <input type="text" class="campo__input" name="dniPaciente"
+                            [(ngModel)]="nuevaHistoria.dniPaciente" required minlength="8" maxlength="12"
+                            #dniF="ngModel" [class.campo__input--error]="dniF.invalid && dniF.touched" />
+                        @if (dniF.invalid && dniF.touched) {
+                        <span class="campo__error">DNI obligatorio (min. 8 caracteres)</span>
+                        }
+                    </div>
+                    <div class="campo">
+                        <label class="campo__etiqueta">Nombre Completo <span class="requerido">*</span></label>
+                        <input type="text" class="campo__input" name="nombreCompleto"
+                            [(ngModel)]="nuevaHistoria.nombreCompleto" required maxlength="150"
+                            #nombreF="ngModel" [class.campo__input--error]="nombreF.invalid && nombreF.touched" />
+                        @if (nombreF.invalid && nombreF.touched) {
+                        <span class="campo__error">Nombre obligatorio</span>
+                        }
+                    </div>
+                    <div class="campo">
+                        <label class="campo__etiqueta">Telefono</label>
+                        <input type="tel" class="campo__input" name="telefono"
+                            [(ngModel)]="nuevaHistoria.telefono" maxlength="15" placeholder="987 654 321" />
+                    </div>
+                    <div class="campo">
+                        <label class="campo__etiqueta">Email</label>
+                        <input type="email" class="campo__input" name="email"
+                            [(ngModel)]="nuevaHistoria.email" #emailF="ngModel"
+                            [class.campo__input--error]="emailF.invalid && emailF.touched" />
+                        @if (emailF.invalid && emailF.touched) {
+                        <span class="campo__error">Formato de email invalido</span>
+                        }
+                    </div>
+                    <div class="campo">
+                        <label class="campo__etiqueta">Fecha de Nacimiento</label>
+                        <input type="date" class="campo__input" name="fechaNacimiento"
+                            [(ngModel)]="nuevaHistoria.fechaNacimiento" />
+                    </div>
+                    <div class="campo">
+                        <label class="campo__etiqueta">Genero</label>
+                        <select class="campo__input campo__select" name="genero" [(ngModel)]="nuevaHistoria.genero">
+                            <option value="">-- Seleccionar --</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="O">Otro</option>
+                        </select>
+                    </div>
+                    <div class="campo campo--full">
+                        <label class="campo__etiqueta">Direccion</label>
+                        <input type="text" class="campo__input" name="direccion"
+                            [(ngModel)]="nuevaHistoria.direccion" placeholder="Av. Ejemplo 123, Lima" />
+                    </div>
+                </div>
+                <div class="grupo-botones grupo-botones--form">
+                    <button type="submit" class="btn btn--primario"
+                        [disabled]="historiaForm.invalid || cargandoHistoria()">
+                        @if (cargandoHistoria()) { <span class="spinner"></span> } Registrar y Continuar Consulta
+                    </button>
+                    <button type="button" class="btn btn--ghost" (click)="cancelarNueva()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+        }
+
+        @if (historiaSeleccionada()) {
         <div class="stepper-container"
             style="display: flex; justify-content: center; margin: 2rem 0; text-align: center;">
             <div [style.opacity]="pasoActual() >= 1 ? '1' : '0.5'">
@@ -25,7 +146,7 @@
                 <div
                     style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
                     2</div>
-                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Médico</div>
+                <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Medico</div>
             </div>
             <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
 
@@ -46,22 +167,18 @@
         </div>
 
         <div class="bloque" style="max-width: 700px; margin: 0 auto;">
-
             @if (pasoActual() === 1) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿En qué especialidad desea
-                atenderse?</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">En que especialidad desea atenderse?</h3>
 
-            <!-- BUSCADOR AUTOCOMPLETABLE -->
             <div class="autocompletado-container" style="max-width: 400px; margin: 2rem auto; position: relative;">
                 <label class="campo__etiqueta" style="text-align: left;">Buscar especialidad:</label>
                 <div class="campo-busqueda-wrapper">
-                    <span class="icono-input">🔍</span>
+                    <span class="icono-input">?</span>
                     <input type="text" class="campo__input input-con-icono" placeholder="Ingrese la Especialidad"
                         [(ngModel)]="terminoBusquedaEspecialidad" (input)="filtrarEspecialidades()"
                         (focus)="filtrarEspecialidades()" (blur)="cerrarDropdown()" autocomplete="off">
                 </div>
 
-                <!-- LISTA DESPLEGABLE FLOTANTE -->
                 @if (mostrarDropdownEspecialidad) {
                 <ul class="dropdown-lista">
                     @for (esp of especialidadesFiltradas; track esp.id) {
@@ -71,7 +188,6 @@
                     </li>
                     }
 
-                    <!-- Mensaje si escribe algo y no hay coincidencias -->
                     @if (especialidadesFiltradas.length === 0 && terminoBusquedaEspecialidad.trim().length > 0) {
                     <li class="dropdown-vacio">No se encontraron especialidades que empiecen con "{{
                         terminoBusquedaEspecialidad }}"</li>
@@ -88,7 +204,7 @@
             }
 
             @if (pasoActual() === 2) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿Con quién desea atenderse?</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Con quien desea atenderse?</h3>
 
             @if (cargandoMedicos) {
             <div style="text-align: center; padding: 2rem;">
@@ -98,17 +214,16 @@
             } @else {
             @if (medicosDisponibles.length === 0) {
             <div class="alerta alerta--info" style="margin: 2rem 0;">
-                <span>ℹ️</span>
-                <p>No hay médicos registrados o activos actualmente para la especialidad de <strong>{{
+                <span>i</span>
+                <p>No hay medicos registrados o activos actualmente para la especialidad de <strong>{{
                         terminoBusquedaEspecialidad }}</strong>.</p>
             </div>
             } @else {
             <div class="medico-grid">
                 @for (medico of medicosDisponibles; track medico.id) {
-                <!-- Tarjeta del Médico -->
                 <div class="tarjeta-medico" [class.tarjeta-medico--activa]="medicoSeleccionado?.id === medico.id"
                     (click)="medicoSeleccionado = medico">
-                    <div class="tarjeta-medico__avatar">👨‍⚕️</div>
+                    <div class="tarjeta-medico__avatar">DR</div>
                     <div class="tarjeta-medico__info">
                         <h4 class="tarjeta-medico__nombre">{{ medico.nombreCompleto }}</h4>
                         <span class="tarjeta-medico__cmp">CMP: {{ medico.colegiatura || 'Sin registro' }}</span>
@@ -121,7 +236,6 @@
 
             <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
                 <button class="btn btn--contorno" (click)="pasoAnterior()">Volver</button>
-                <!-- Se deshabilita si la lista está vacía o si no ha seleccionado uno -->
                 <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!medicoSeleccionado">
                     Siguiente Paso
                 </button>
@@ -134,7 +248,7 @@
             <div class="fecha-hora-container" style="max-width: 400px; margin: 2rem auto;">
                 <div class="campo">
                     <label class="campo__etiqueta" style="text-align: left; font-size: 1rem;">
-                        📅 Ingrese la Fecha y Hora de la Cita: <span class="requerido">*</span>
+                        Ingrese la Fecha y Hora de la Cita: <span class="requerido">*</span>
                     </label>
                     <input type="datetime-local" class="campo__input"
                         style="padding: 1rem; font-size: 1.1rem; margin-top: 0.5rem;" name="fechaHora"
@@ -144,10 +258,9 @@
                     </span>
                 </div>
 
-                <!-- Vista previa de la fecha seleccionada usando el pipe nativo de Angular -->
                 @if (cita.fechaHora) {
                 <div class="alerta alerta--info" style="margin-top: 1.5rem;">
-                    <span style="font-size: 1.2rem;">🗓️</span>
+                    <span>i</span>
                     <p>Ha seleccionado: <strong>{{ cita.fechaHora | date:'dd/MM/yyyy, h:mm a' }}</strong></p>
                 </div>
                 }
@@ -155,7 +268,6 @@
 
             <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
                 <button class="btn btn--contorno" (click)="pasoAnterior()">Volver</button>
-                <!-- El botón se desactiva si no ha seleccionado una fecha válida -->
                 <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!cita.fechaHora">
                     Siguiente Paso
                 </button>
@@ -167,19 +279,19 @@
 
             <div class="resultado" style="max-width: 500px; margin: 2rem auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div class="resultado__cabecera" style="background-color: #0d2a4e; color: white;">
-                    <span style="font-weight: 600;">📋 Detalles de Programación</span>
+                    <span style="font-weight: 600;">Detalles de Programacion</span>
                 </div>
 
                 <div class="resultado__campo">
-                    <span class="resultado__clave">N° Historia Clínica ID</span>
+                    <span class="resultado__clave">Historia Clinica</span>
                     <span class="resultado__valor">
-                        <!-- Si no hay historia clínica, se muestra una alerta -->
-                        @if (cita.historiaClinicaId) {
-                        <span class="resultado__num">{{ cita.historiaClinicaId }}</span>
-                        } @else {
-                        <span style="color: #e53e3e; font-weight: bold;">⚠️ No asignada (Requerida)</span>
-                        }
+                        <span class="resultado__num">{{ historiaSeleccionada()!.numeroHistoria }}</span>
                     </span>
+                </div>
+
+                <div class="resultado__campo">
+                    <span class="resultado__clave">Paciente</span>
+                    <span class="resultado__valor">{{ historiaSeleccionada()!.nombreCompleto }}</span>
                 </div>
 
                 <div class="resultado__campo">
@@ -190,9 +302,9 @@
                 </div>
 
                 <div class="resultado__campo">
-                    <span class="resultado__clave">Médico Asignado</span>
+                    <span class="resultado__clave">Medico Asignado</span>
                     <span class="resultado__valor">
-                        👨‍⚕️ {{ medicoSeleccionado?.nombreCompleto }}
+                        {{ medicoSeleccionado?.nombreCompleto }}
                         <span style="font-size: 0.8rem; color: #a0aec0;">(CMP: {{ medicoSeleccionado?.colegiatura ||
                             'N/A' }})</span>
                     </span>
@@ -201,7 +313,7 @@
                 <div class="resultado__campo">
                     <span class="resultado__clave">Fecha y Hora</span>
                     <span class="resultado__valor">
-                        📅 {{ cita.fechaHora | date:'dd/MM/yyyy' }} a las ⏰ {{ cita.fechaHora | date:'h:mm a' }}
+                        {{ cita.fechaHora | date:'dd/MM/yyyy' }} a las {{ cita.fechaHora | date:'h:mm a' }}
                     </span>
                 </div>
             </div>
@@ -215,7 +327,12 @@
                 </button>
             </div>
             }
-
         </div>
+        } @else {
+        <div class="alerta alerta--info" style="margin-top: 1rem;">
+            <span>i</span>
+            <p>Primero verifique o cree la historia clinica del paciente para programar la cita.</p>
+        </div>
+        }
     </section>
 </main>
