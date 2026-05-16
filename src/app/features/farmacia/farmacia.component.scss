@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // ============================================================
 // farmacia.component.scss
 // Estilos compartidos del módulo Farmacia
@@ -5,10 +6,13 @@
 // Ubicación: src/app/features/farmacia/farmacia.component.scss
 // ============================================================
 
+=======
+>>>>>>> 493cebeb0b0735ed9444b44c5ee4385f742d73a5
 :host {
   display: flex;
   flex-direction: column;
   flex: 1;
+<<<<<<< HEAD
   overflow: hidden;
 }
 
@@ -705,3 +709,11 @@
     }
   }
 }
+=======
+  overflow-y: auto;
+}
+
+main section { margin-bottom: 3.5rem; }
+
+h3 { margin-top: 2.5rem; }
+>>>>>>> 493cebeb0b0735ed9444b44c5ee4385f742d73a5
