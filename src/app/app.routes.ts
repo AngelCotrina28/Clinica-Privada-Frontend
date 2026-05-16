@@ -1,6 +1,18 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './core/guards/role.guard';
 
+const ROLES_TODOS = [
+  'ADMINISTRADOR',
+  'JEFE_ENFERMERIA',
+  'ENFERMERO',
+  'RECEPCIONISTA',
+  'MEDICO',
+  'TECNICO_FARMACIA',
+  'CAJERO'
+];
+
+const ROLES_ADMISION = ['ADMINISTRADOR', 'JEFE_ENFERMERIA', 'ENFERMERO', 'RECEPCIONISTA'];
+
 export const routes: Routes = [
   {
     path: '',
@@ -11,75 +23,44 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent)
   },
-
-  // Inicio — todos los roles autenticados llegan aquí
   {
     path: 'dashboard',
     canActivate: [roleGuard],
-    data: {
-      roles: [
-        'ADMINISTRADOR',
-        'JEFE_ENFERMERIA',
-        'ENFERMERO',
-        'RECEPCIONISTA',
-        'MEDICO',
-        'TECNICO_FARMACIA',
-        'CAJERO'
-      ]
-    },
+    data: { roles: ROLES_TODOS },
     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
   },
-
-  // Admisión y consultas
-  // Roles con acceso parcial distinto por subsección — el guard del padre
-  // sólo verifica que el rol pertenezca a esta sección en general.
   {
     path: 'admision',
     canActivate: [roleGuard],
-    data: {
-      roles: ['JEFE_ENFERMERIA', 'ENFERMERO', 'RECEPCIONISTA']
-    },
+    data: { roles: ROLES_ADMISION },
     children: [
       {
         path: '',
         redirectTo: 'historias',
         pathMatch: 'full'
       },
-
-      // Gestión de historias — los 3 roles de admisión la necesitan
       {
         path: 'historias',
         canActivate: [roleGuard],
-        data: {
-          roles: ['JEFE_ENFERMERIA', 'ENFERMERO', 'RECEPCIONISTA']
-        },
+        data: { roles: ROLES_ADMISION },
         loadComponent: () =>
           import('./features/admision/historias/admision-historias.component').then(
             m => m.AdmisionHistoriasComponent
           )
       },
-
-      // Flujo de emergencia — jefa (acceso total) y enfermera (sin estado de cuenta)
-      // El control fino de estado de cuenta se maneja a nivel de componente/permisos
       {
         path: 'emergencia',
         canActivate: [roleGuard],
-        data: {
-          roles: ['JEFE_ENFERMERIA', 'ENFERMERO']
-        },
+        data: { roles: ['ADMINISTRADOR', 'JEFE_ENFERMERIA', 'ENFERMERO'] },
         loadComponent: () =>
           import('./features/admision/emergencia/admision-emergencia.component').then(
             m => m.AdmisionEmergenciaComponent
           )
       },
-
-      // Consulta externa — exclusivo de recepcionista
       {
         path: 'consulta',
         canActivate: [roleGuard],
-        data: {
-          roles: ['RECEPCIONISTA']
-        },
+        data: { roles: ROLES_ADMISION },
         loadComponent: () =>
           import('./features/admision/consulta/admision-consulta.component').then(
             m => m.AdmisionConsultaComponent
@@ -87,15 +68,10 @@ export const routes: Routes = [
       }
     ]
   },
-
-  // Atención médica — exclusivo del médico
-  // No incluye ADMINISTRADOR: el admin no opera esta sección
   {
     path: 'atencion-medica',
     canActivate: [roleGuard],
-    data: {
-      roles: ['MEDICO']
-    },
+    data: { roles: ['ADMINISTRADOR', 'MEDICO'] },
     children: [
       {
         path: '',
@@ -125,40 +101,26 @@ export const routes: Routes = [
       }
     ]
   },
-
-  // Farmacia — exclusivo del técnico de farmacia
-  // No incluye ADMINISTRADOR: el admin no opera esta sección
   {
     path: 'farmacia',
     canActivate: [roleGuard],
-    data: {
-      roles: ['TECNICO_FARMACIA']
-    },
+    data: { roles: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
     loadComponent: () =>
       import('./features/farmacia/farmacia.component').then(m => m.FarmaciaComponent)
   },
-
-  // Caja y facturación — cajero (apertura, cobro, cuadre) y admin (cierre, anulación)
-  // Ambos entran; el control de qué opciones ve cada uno va en el componente
   {
     path: 'caja-facturacion',
     canActivate: [roleGuard],
-    data: {
-      roles: ['ADMINISTRADOR', 'CAJERO']
-    },
+    data: { roles: ['ADMINISTRADOR', 'CAJERO'] },
     loadComponent: () =>
       import('./features/caja-facturacion/caja-facturacion.component').then(
         m => m.CajaFacturacionComponent
       )
   },
-
-  // Administración — exclusivo del administrador
   {
     path: 'administracion',
     canActivate: [roleGuard],
-    data: {
-      roles: ['ADMINISTRADOR']
-    },
+    data: { roles: ['ADMINISTRADOR'] },
     children: [
       {
         path: '',
@@ -170,6 +132,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/administracion/administracion-trabajadores/administracion-trabajadores.component').then(
             m => m.AdministracionTrabajadoresComponent
+          )
+      },
+      {
+        path: 'horarios-medicos',
+        loadComponent: () =>
+          import('./features/administracion/horarios-medicos/horarios-medicos.component').then(
+            m => m.HorariosMedicosComponent
           )
       },
       {
@@ -188,7 +157,6 @@ export const routes: Routes = [
       }
     ]
   },
-
   {
     path: '**',
     redirectTo: 'login'

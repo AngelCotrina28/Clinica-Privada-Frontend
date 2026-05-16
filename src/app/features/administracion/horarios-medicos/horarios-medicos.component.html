@@ -1,0 +1,202 @@
+<app-header titulo="Horarios Medicos" />
+
+<main class="horarios">
+  <section class="panel">
+    <h2>Programacion mensual por especialidad</h2>
+
+    @if (mensaje()) { <div class="alerta exito">{{ mensaje() }}</div> }
+    @if (error()) { <div class="alerta error">{{ error() }}</div> }
+
+    <div class="grid-form">
+      <label>
+        Especialidad
+        <select [(ngModel)]="especialidadId" (change)="cambiarEspecialidad()">
+          <option [ngValue]="null">Seleccionar</option>
+          @for (e of especialidades; track e.id) {
+            <option [ngValue]="e.id">{{ e.nombre }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Medico
+        <select [(ngModel)]="medicoId">
+          <option [ngValue]="null">Seleccionar</option>
+          @for (m of medicosFiltrados; track m.id) {
+            <option [ngValue]="m.id">{{ m.nombreCompleto }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Mes de trabajo
+        <input type="month" [(ngModel)]="mes" (change)="cambiarMes()" />
+      </label>
+
+      <label>
+        Inicio
+        <input type="time" step="1800" [(ngModel)]="horaInicio" />
+      </label>
+
+      <label>
+        Fin
+        <input type="time" step="1800" [(ngModel)]="horaFin" />
+      </label>
+    </div>
+
+    <div class="acciones">
+      <button class="secundario" (click)="crearLunesAViernes()">Seleccionar lunes a viernes</button>
+      <button class="secundario" (click)="seleccionarTodoMes()">Seleccionar todo el mes</button>
+      <button class="secundario" (click)="limpiarSeleccion()">Limpiar seleccion</button>
+      <button class="primario" (click)="crearTurnosSeleccionados()">
+        Registrar seleccion ({{ fechasSeleccionadas().length }})
+      </button>
+      <button class="secundario" (click)="reemplazarSeleccion()">Reemplazar seleccion</button>
+      <button class="peligro" (click)="eliminarSeleccion()">Eliminar seleccion</button>
+    </div>
+
+    <p class="reglas">
+      Reglas: maximo 12 horas por jornada, bloques de 30 minutos, sin cruces por medico ni consultorio.
+      Medicina General permite 2 medicos simultaneos; las demas especialidades permiten 1 por bloque.
+      Si la hora final es menor que la inicial, el turno termina al dia siguiente.
+    </p>
+  </section>
+
+  @if (turnoEditando(); as turno) {
+    <section class="panel panel-edicion">
+      <div class="cabecera-lista">
+        <div>
+          <h2>Editar turno</h2>
+          <p class="subtitulo">{{ turno.nombreMedico }} - {{ turno.especialidad }} - {{ turno.fecha }}</p>
+        </div>
+        <button class="secundario" (click)="cancelarEdicion()">Cancelar</button>
+      </div>
+
+      <div class="grid-form grid-form--edicion">
+        <label>
+          Especialidad
+          <select [(ngModel)]="editEspecialidadId" (change)="cambiarEspecialidadEdicion()">
+            <option [ngValue]="null">Seleccionar</option>
+            @for (e of especialidades; track e.id) {
+              <option [ngValue]="e.id">{{ e.nombre }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Medico
+          <select [(ngModel)]="editMedicoId">
+            <option [ngValue]="null">Seleccionar</option>
+            @for (m of medicosEdicion; track m.id) {
+              <option [ngValue]="m.id">{{ m.nombreCompleto }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Fecha
+          <input type="date" [(ngModel)]="editFecha" />
+        </label>
+
+        <label>
+          Inicio
+          <input type="time" step="1800" [(ngModel)]="editHoraInicio" />
+        </label>
+
+        <label>
+          Fin
+          <input type="time" step="1800" [(ngModel)]="editHoraFin" />
+        </label>
+      </div>
+
+      <div class="acciones acciones--derecha">
+        <button class="peligro" (click)="eliminar(turno)">Eliminar turno</button>
+        <button class="primario" (click)="guardarEdicion()">Guardar cambios</button>
+      </div>
+    </section>
+  }
+
+  <section class="panel">
+    <div class="cabecera-lista">
+      <div>
+        <h2>Calendario de especialidad</h2>
+        <p class="subtitulo">Usa este calendario para seleccionar dias y registrar horarios masivos.</p>
+      </div>
+      <span class="contador">{{ fechasSeleccionadas().length }} dias seleccionados</span>
+    </div>
+
+    @if (cargandoEdicion()) {
+      <p class="vacio">Cargando turnos de la especialidad...</p>
+    } @else {
+      <div class="calendario">
+        @for (d of ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']; track d) {
+          <div class="dia-nombre">{{ d }}</div>
+        }
+
+        @for (dia of dias; track dia.fecha) {
+          <button type="button" class="dia"
+            [class.dia--fuera]="dia.fueraMes"
+            [class.dia--hoy]="dia.hoy"
+            [class.dia--seleccionado]="estaSeleccionado(dia.fecha)"
+            [class.dia--con-turnos]="turnosDelDia(dia.fecha).length > 0"
+            [disabled]="dia.fueraMes"
+            (mousedown)="iniciarSeleccion(dia, $event)"
+            (mouseenter)="arrastrarSeleccion(dia)">
+            <span class="dia__numero">{{ dia.dia }}</span>
+            <span class="dia__turnos">
+              @for (t of turnosDelDia(dia.fecha).slice(0, 2); track t.id) {
+                <small>{{ t.horaInicio.slice(0, 5) }} {{ t.nombreMedico.split(' ')[0] }}</small>
+              }
+              @if (turnosDelDia(dia.fecha).length > 2) {
+                <small>+{{ turnosDelDia(dia.fecha).length - 2 }} mas</small>
+              }
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="panel panel-maestro">
+    <div class="cabecera-lista">
+      <div>
+        <h2>Calendario maestro de turnos</h2>
+        <p class="subtitulo">Vista global de todos los horarios registrados en el mes.</p>
+      </div>
+      <button class="secundario" (click)="cargarTurnosMaestro()">Actualizar maestro</button>
+    </div>
+
+    @if (cargandoMaestro()) {
+      <p class="vacio">Cargando turnos del hospital...</p>
+    } @else if (turnosMaestro().length === 0) {
+      <p class="vacio">No hay turnos registrados para este mes.</p>
+    } @else {
+      <div class="calendario calendario--maestro">
+        @for (d of ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']; track d) {
+          <div class="dia-nombre">{{ d }}</div>
+        }
+
+        @for (dia of dias; track 'master-' + dia.fecha) {
+          <div class="dia maestro-dia"
+            [class.dia--fuera]="dia.fueraMes"
+            [class.dia--hoy]="dia.hoy"
+            [class.dia--con-turnos]="turnosMaestroDelDia(dia.fecha).length > 0">
+            <span class="dia__numero">{{ dia.dia }}</span>
+            <div class="maestro-dia__lista">
+              @for (t of turnosMaestroDelDia(dia.fecha); track t.id) {
+                <div class="turno-chip">
+                  <button type="button" class="turno-chip__contenido" (click)="editar(t)">
+                    <strong>{{ t.horaInicio.slice(0, 5) }}-{{ t.horaFin.slice(0, 5) }}</strong>
+                    <span>{{ t.nombreMedico }}</span>
+                    <small>{{ t.especialidad }} - {{ t.consultorio }}</small>
+                  </button>
+                  <button type="button" class="turno-chip__borrar" (click)="eliminar(t)">x</button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</main>

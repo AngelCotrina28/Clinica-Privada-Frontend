@@ -3,7 +3,7 @@
   Sub-sección: Control de Inventario y Medicamentos
   ============================================================ -->
 
-<app-header titulo="Farmacia — Inventario" [Trabajador]="usuarioNombre" />
+<app-header titulo="Farmacia - Inventario" />
 
 <main class="contenedor">
   <section class="seccion">
@@ -135,7 +135,7 @@
               <tr>
                 <td colspan="9" class="text-center">
                   @if (cargando()) {
-                    <span class="cargando-inline"><span class="spinner spinner--teal"></span> Cargando medicamentos...</span>
+                    <span class="cargando-inline"><span class="spinner spinner--azul"></span> Cargando medicamentos...</span>
                   } @else {
                     <span class="sin-datos">No se encontraron medicamentos con los filtros indicados.</span>
                   }

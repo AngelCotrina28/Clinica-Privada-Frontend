@@ -1,6 +1,6 @@
 // ============================================================
 // admision.component.scss
-// Paleta: azul marino #0d2a4e  ·  teal #00C2A0  ·  fondo #f4f6f9
+// Paleta: azul marino #0d2a4e  ·  azul institucional #2f6fae  ·  fondo #f4f6f9
 // Coherente con sidebar.component.scss y el diseño existente
 // ============================================================
 
@@ -66,8 +66,8 @@
 
     &.activo {
       background: #f0fdfb;
-      color: #00a387;
-      border-left-color: #00C2A0;
+      color: #245987;
+      border-left-color: #2f6fae;
       font-weight: 600;
 
       .sub-sidebar__icon {
@@ -105,7 +105,7 @@
   gap: 1.5rem;
 
   &__cabecera {
-    border-bottom: 3px solid #00C2A0;
+    border-bottom: 3px solid #2f6fae;
     padding-bottom: 0.5rem;
     margin-bottom: 0.25rem;
   }
@@ -126,7 +126,7 @@
   padding: 1.5rem;
 
   &--nuevo {
-    border-top: 3px dashed rgba(#00C2A0, 0.35);
+    border-top: 3px dashed rgba(#2f6fae, 0.28);
     background: #fafffe;
   }
 
@@ -186,8 +186,8 @@
 
     &:focus {
       outline: none;
-      border-color: #00C2A0;
-      box-shadow: 0 0 0 3px rgba(0, 194, 160, 0.15);
+      border-color: #2f6fae;
+      box-shadow: 0 0 0 3px rgba(47, 111, 174, 0.15);
     }
 
     &--error {
@@ -247,13 +247,13 @@
   }
 
   &--primario {
-    background: #00C2A0;
+    background: #2f6fae;
     color: #fff;
-    border-color: #00C2A0;
+    border-color: #2f6fae;
 
     &:not(:disabled):hover {
-      background: #00a387;
-      border-color: #00a387;
+      background: #245987;
+      border-color: #245987;
     }
   }
 
@@ -294,9 +294,9 @@
   animation: girar 0.7s linear infinite;
   flex-shrink: 0;
 
-  &--teal {
-    border-color: rgba(0, 194, 160, 0.25);
-    border-top-color: #00C2A0;
+  &--azul {
+    border-color: rgba(47, 111, 174, 0.22);
+    border-top-color: #2f6fae;
   }
 }
 
@@ -432,7 +432,7 @@
   }
 
   &--creado {
-    border-top: 3px solid #00C2A0;
+    border-top: 3px solid #2f6fae;
   }
 
   &--orden {
@@ -478,7 +478,7 @@
 }
 
 .texto-acento {
-  color: #00a387;
+  color: #245987;
   font-weight: 600;
 }
 
@@ -606,7 +606,7 @@
 
       &.activo {
         border-left: none;
-        border-bottom-color: #00C2A0;
+        border-bottom-color: #2f6fae;
       }
     }
   }
@@ -637,8 +637,8 @@
     border: 2px solid #e2e8f0;
 
     &:focus {
-      border-color: #00C2A0;
-      box-shadow: 0 0 0 3px rgba(0, 194, 160, 0.15);
+      border-color: #2f6fae;
+      box-shadow: 0 0 0 3px rgba(47, 111, 174, 0.15);
     }
   }
 }
@@ -672,15 +672,15 @@
 
   &:hover {
     background-color: #f0fdfb;
-    color: #00C2A0;
+    color: #2f6fae;
   }
 
   &--activo {
-    background-color: #00C2A0;
+    background-color: #2f6fae;
     color: #ffffff;
 
     &:hover {
-      background-color: #00a387;
+      background-color: #245987;
       color: #ffffff;
     }
   }
@@ -719,11 +719,11 @@
   }
 
   &--activa {
-    border-color: #00C2A0;
+    border-color: #2f6fae;
     background-color: #f0fdfb;
 
     .tarjeta-medico__nombre {
-      color: #00C2A0;
+      color: #2f6fae;
     }
   }
 
@@ -756,5 +756,64 @@
     font-size: 0.75rem;
     color: #a0aec0;
     font-weight: 700;
+  }
+}
+
+.horarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.horario-bloque {
+  min-height: 64px;
+  border: 2px solid #cbd5e0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0d2a4e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+
+  span {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  small {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #245987;
+    text-transform: uppercase;
+  }
+
+  &:not(:disabled):hover {
+    border-color: #2f6fae;
+    background: #f0fdfb;
+    transform: translateY(-1px);
+  }
+
+  &--activo {
+    border-color: #2f6fae;
+    background: #f0fdfb;
+    box-shadow: 0 0 0 3px rgba(0, 194, 160, 0.14);
+  }
+
+  &--ocupado,
+  &:disabled {
+    border-color: #fed7d7;
+    background: #fff5f5;
+    color: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+
+    small {
+      color: #c53030;
+    }
   }
 }

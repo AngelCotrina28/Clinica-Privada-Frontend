@@ -1,8 +1,122 @@
-// header.component.scss
-// Los estilos base de .header-top están en styles.scss (global).
-// Este archivo es para cualquier variación futura del header
-// (ej: modo oscuro, notificaciones, avatar de Trabajador).
-
 :host {
-  display: contents;
+  display: block;
+}
+
+.app-header {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--color-borde-suave);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
+}
+
+.app-header__title {
+  min-width: 0;
+
+  h1 {
+    color: var(--color-texto-titulo);
+    font-size: 1.35rem;
+    font-weight: 650;
+    line-height: 1.2;
+    margin: 0;
+  }
+}
+
+.app-header__eyebrow {
+  color: var(--color-texto-suave);
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 500;
+  margin-bottom: 0.18rem;
+  text-transform: capitalize;
+}
+
+.user-card {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.user-card__avatar {
+  align-items: center;
+  background: #e6f0fb;
+  border: 1px solid #c6daef;
+  border-radius: 50%;
+  color: #174a7c;
+  display: inline-flex;
+  flex: 0 0 42px;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+
+  svg {
+    fill: none;
+    height: 21px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+    width: 21px;
+  }
+}
+
+.user-card__meta {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+
+  strong {
+    color: var(--color-texto-titulo);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    color: var(--color-texto-suave);
+    font-size: 0.76rem;
+    font-weight: 500;
+  }
+}
+
+.logout-button {
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 7px;
+  color: #b42318;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.55rem 0.75rem;
+
+  &:hover {
+    background: #ffe4e4;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0.9rem 1rem;
+  }
+
+  .user-card {
+    width: 100%;
+  }
+
+  .logout-button {
+    margin-left: auto;
+  }
 }

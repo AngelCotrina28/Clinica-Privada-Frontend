@@ -3,7 +3,7 @@
   Sub-sección: Despacho de Medicamentos
   ============================================================ -->
 
-<app-header titulo="Farmacia — Despacho" [Trabajador]="usuarioNombre" />
+<app-header titulo="Farmacia - Despacho" />
 
 <main class="contenedor">
   <section class="seccion">
@@ -99,7 +99,7 @@
               <tr>
                 <td colspan="7" class="text-center">
                   @if (cargandoBusqueda()) {
-                    <span class="cargando-inline"><span class="spinner spinner--teal"></span> Buscando órdenes...</span>
+                    <span class="cargando-inline"><span class="spinner spinner--azul"></span> Buscando órdenes...</span>
                   } @else {
                     <span class="sin-datos">No hay órdenes pendientes de despacho.</span>
                   }

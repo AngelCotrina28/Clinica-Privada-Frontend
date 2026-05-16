@@ -1,34 +1,49 @@
-<div class="login-container"
-    style="max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
-    <h2 style="text-align: center;">Acceso al Sistema</h2>
-
-    <!-- Caja roja para mostrar errores de credenciales -->
-    <div *ngIf="errorMessage"
-        style="background-color: #ffebee; color: #c62828; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
-        {{ errorMessage }}
+<main class="login-page">
+  <section class="login-shell">
+    <div class="login-brand">
+      <div class="login-brand__mark">
+        <img src="/brand/logo-luz-del-tunel.png" alt="Luz del Tunel">
+      </div>
+      <div>
+        <span>Luz del Tunel</span>
+        <h1>Acceso al sistema</h1>
+        <p>Gestion asistencial, administrativa y financiera en un solo entorno.</p>
+      </div>
     </div>
 
-    <!-- El (ngSubmit) ejecuta la función onLogin() cuando se presiona Enter o el botón -->
-    <form (ngSubmit)="onLogin()">
+    <form class="login-card" (ngSubmit)="onLogin()">
+      <div class="login-card__header">
+        <h2>Iniciar sesion</h2>
+        <p>Ingresa tus credenciales institucionales.</p>
+      </div>
 
-        <div style="margin-bottom: 15px;">
-            <label for="username" style="display: block; margin-bottom: 5px;">Usuario:</label>
-            <!-- [(ngModel)] enlaza esta caja con la variable credentials.username -->
-            <input type="text" id="username" name="username" [(ngModel)]="credentials.username" required
-                style="width: 100%; padding: 8px; box-sizing: border-box;">
-        </div>
+      <div *ngIf="errorMessage" class="login-error">
+        {{ errorMessage }}
+      </div>
 
-        <div style="margin-bottom: 20px;">
-            <label for="password" style="display: block; margin-bottom: 5px;">Contraseña:</label>
-            <!-- [(ngModel)] enlaza esta caja con la variable credentials.password -->
-            <input type="password" id="password" name="password" [(ngModel)]="credentials.password" required
-                style="width: 100%; padding: 8px; box-sizing: border-box;">
-        </div>
+      <label for="username">
+        Usuario
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="credentials.username"
+          autocomplete="username"
+          required>
+      </label>
 
-        <button type="submit"
-            style="width: 100%; padding: 10px; background-color: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            Iniciar Sesión
-        </button>
+      <label for="password">
+        Contrasena
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="credentials.password"
+          autocomplete="current-password"
+          required>
+      </label>
 
+      <button type="submit">Entrar</button>
     </form>
-</div>
+  </section>
+</main>

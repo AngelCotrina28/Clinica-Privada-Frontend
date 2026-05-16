@@ -1,4 +1,4 @@
-<app-header titulo="Consulta Externa" Trabajador="Recepcion Central" />
+<app-header titulo="Consulta Externa" />
 
 <main class="contenedor">
     <section>
@@ -136,31 +136,31 @@
             style="display: flex; justify-content: center; margin: 2rem 0; text-align: center;">
             <div [style.opacity]="pasoActual() >= 1 ? '1' : '0.5'">
                 <div
-                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
                     1</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Especialidad</div>
             </div>
-            <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
+            <div style="width: 50px; height: 2px; background: #2f6fae; margin: 15px 10px 0;"></div>
 
             <div [style.opacity]="pasoActual() >= 2 ? '1' : '0.5'">
                 <div
-                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
                     2</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Medico</div>
             </div>
-            <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
+            <div style="width: 50px; height: 2px; background: #2f6fae; margin: 15px 10px 0;"></div>
 
             <div [style.opacity]="pasoActual() >= 3 ? '1' : '0.5'">
                 <div
-                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
                     3</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Fecha y Hora</div>
             </div>
-            <div style="width: 50px; height: 2px; background: #00C2A0; margin: 15px 10px 0;"></div>
+            <div style="width: 50px; height: 2px; background: #2f6fae; margin: 15px 10px 0;"></div>
 
             <div [style.opacity]="pasoActual() >= 4 ? '1' : '0.5'">
                 <div
-                    style="background: #00C2A0; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
                     4</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Confirmar</div>
             </div>
@@ -208,7 +208,7 @@
 
             @if (cargandoMedicos) {
             <div style="text-align: center; padding: 2rem;">
-                <div class="spinner spinner--teal"></div>
+                <div class="spinner spinner--azul"></div>
                 <p style="color: #718096; margin-top: 1rem;">Buscando especialistas disponibles...</p>
             </div>
             } @else {
@@ -222,7 +222,7 @@
             <div class="medico-grid">
                 @for (medico of medicosDisponibles; track medico.id) {
                 <div class="tarjeta-medico" [class.tarjeta-medico--activa]="medicoSeleccionado?.id === medico.id"
-                    (click)="medicoSeleccionado = medico">
+                    (click)="seleccionarMedico(medico)">
                     <div class="tarjeta-medico__avatar">DR</div>
                     <div class="tarjeta-medico__info">
                         <h4 class="tarjeta-medico__nombre">{{ medico.nombreCompleto }}</h4>
@@ -245,30 +245,61 @@
             @if (pasoActual() === 3) {
             <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Seleccione Fecha y Hora</h3>
 
-            <div class="fecha-hora-container" style="max-width: 400px; margin: 2rem auto;">
+            <div class="fecha-hora-container" style="max-width: 640px; margin: 2rem auto;">
                 <div class="campo">
                     <label class="campo__etiqueta" style="text-align: left; font-size: 1rem;">
-                        Ingrese la Fecha y Hora de la Cita: <span class="requerido">*</span>
+                        Seleccione la Fecha de la Cita: <span class="requerido">*</span>
                     </label>
-                    <input type="datetime-local" class="campo__input"
-                        style="padding: 1rem; font-size: 1.1rem; margin-top: 0.5rem;" name="fechaHora"
-                        [(ngModel)]="cita.fechaHora" [min]="obtenerFechaMinima()" required />
+                    <input type="date" class="campo__input"
+                        style="padding: 1rem; font-size: 1.1rem; margin-top: 0.5rem;" name="fechaSeleccionada"
+                        [(ngModel)]="fechaSeleccionada" [min]="obtenerFechaMinima()"
+                        (change)="cargarDisponibilidad()" required />
                     <span style="font-size: 0.85rem; color: #718096; margin-top: 8px; display: block;">
-                        * No se permiten programar citas en horarios pasados.
+                        * Se muestran bloques de 30 minutos dentro del turno del medico.
                     </span>
                 </div>
 
-                @if (cita.fechaHora) {
+                @if (cargandoHorarios) {
+                <div style="text-align: center; padding: 1.5rem;">
+                    <div class="spinner spinner--azul"></div>
+                    <p style="color: #718096; margin-top: 1rem;">Cargando bloques horarios...</p>
+                </div>
+                }
+
+                @if (!cargandoHorarios && fechaSeleccionada && bloquesHorarios.length === 0) {
                 <div class="alerta alerta--info" style="margin-top: 1.5rem;">
                     <span>i</span>
-                    <p>Ha seleccionado: <strong>{{ cita.fechaHora | date:'dd/MM/yyyy, h:mm a' }}</strong></p>
+                    <p>El medico seleccionado no tiene turnos disponibles para esta fecha.</p>
+                </div>
+                }
+
+                @if (bloquesHorarios.length > 0) {
+                <div class="horarios-grid">
+                    @for (bloque of bloquesHorarios; track bloque.turnoId + '-' + bloque.horaInicio) {
+                    <button type="button" class="horario-bloque"
+                        [class.horario-bloque--activo]="bloqueSeleccionado?.turnoId === bloque.turnoId && bloqueSeleccionado?.horaInicio === bloque.horaInicio"
+                        [class.horario-bloque--ocupado]="!bloque.disponible"
+                        [disabled]="!bloque.disponible"
+                        (click)="seleccionarBloque(bloque)">
+                        <span>{{ bloque.horaInicio.slice(0, 5) }}</span>
+                        <small>{{ bloque.disponible ? 'Disponible' : 'Ocupado' }}</small>
+                    </button>
+                    }
+                </div>
+                }
+
+                @if (bloqueSeleccionado) {
+                <div class="alerta alerta--info" style="margin-top: 1.5rem;">
+                    <span>i</span>
+                    <p>Horario seleccionado: <strong>{{ bloqueSeleccionado.horaInicio.slice(0, 5) }}</strong> en
+                        <strong>{{ bloqueSeleccionado.consultorio }}</strong>.</p>
                 </div>
                 }
             </div>
 
             <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
                 <button class="btn btn--contorno" (click)="pasoAnterior()">Volver</button>
-                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!cita.fechaHora">
+                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!bloqueSeleccionado">
                     Siguiente Paso
                 </button>
             </div>
@@ -296,7 +327,7 @@
 
                 <div class="resultado__campo">
                     <span class="resultado__clave">Especialidad Seleccionada</span>
-                    <span class="resultado__valor" style="font-weight: bold; color: #00C2A0;">
+                    <span class="resultado__valor" style="font-weight: bold; color: #2f6fae;">
                         {{ terminoBusquedaEspecialidad }}
                     </span>
                 </div>
@@ -316,13 +347,26 @@
                         {{ cita.fechaHora | date:'dd/MM/yyyy' }} a las {{ cita.fechaHora | date:'h:mm a' }}
                     </span>
                 </div>
+
+                <div class="resultado__campo">
+                    <span class="resultado__clave">Consultorio</span>
+                    <span class="resultado__valor">{{ bloqueSeleccionado?.consultorio }}</span>
+                </div>
             </div>
+
+            @if (citaProgramada()) {
+            <div class="alerta alerta--exito" style="max-width: 500px; margin: 1rem auto 0;">
+                <span>OK</span>
+                <p>Cita registrada en BD: <strong>{{ citaProgramada()!.numeroCita }}</strong>.</p>
+            </div>
+            }
 
             <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
                 <button class="btn btn--contorno" (click)="pasoAnterior()"
                     [disabled]="exitoMensaje() !== ''">Volver</button>
                 <button class="btn btn--primario" (click)="programarCita()"
-                    [disabled]="!cita.historiaClinicaId || exitoMensaje() !== ''">
+                    [disabled]="!cita.historiaClinicaId || !bloqueSeleccionado || guardandoCita || !!citaProgramada()">
+                    @if (guardandoCita) { <span class="spinner"></span> }
                     Confirmar y Agendar
                 </button>
             </div>

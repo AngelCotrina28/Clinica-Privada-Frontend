@@ -1,16 +1,5 @@
-<!--
-  Este es el shell de la aplicación.
-  La estructura es idéntica a la del HTML original:
-    sidebar fijo a la izquierda
-    contenido-wrapper a la derecha (header + página)
-
-  <router-outlet> es donde Angular inyecta el componente
-  de cada feature según la ruta activa.
-  El header y sidebar están FUERA del outlet — 
-  así no se re-renderizan al cambiar de página.
--->
 <app-sidebar *ngIf="mostrarMenu" />
 
-<div class="contenido-wrapper">
+<div class="contenido-wrapper" [class.contenido-wrapper--login]="!mostrarMenu">
   <router-outlet />
 </div>

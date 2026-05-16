@@ -5,10 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { EspecialidadService } from '../../../core/services/especialidad.service';
 import { Especialidad } from '../../../core/model/especialidad.model';
-import { TrabajadorService } from '../../../core/services/trabajador.service';
+import { CitaService } from '../../../core/services/cita.service';
 import { Trabajador } from '../../../core/model/trabajador.model';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { AbrirHistoriaRequest, CitaRequest, HistoriaClinicaResponse } from '../admision.models';
+import { AbrirHistoriaRequest, CitaRequest, CitaResponse, HistoriaClinicaResponse, HorarioBloque } from '../admision.models';
 
 @Component({
   selector: 'app-admision-consulta',
@@ -25,6 +25,10 @@ export class AdmisionConsultaComponent implements OnInit {
 
   cita: CitaRequest = { historiaClinicaId: null, especialidadId: null, fechaHora: '' };
   medicoSeleccionado: Trabajador | null = null;
+  fechaSeleccionada = '';
+  bloquesHorarios: HorarioBloque[] = [];
+  bloqueSeleccionado: HorarioBloque | null = null;
+  citaProgramada = signal<CitaResponse | null>(null);
   exitoMensaje = signal('');
   errorMensaje = signal('');
 
@@ -40,12 +44,14 @@ export class AdmisionConsultaComponent implements OnInit {
   especialidadesFiltradas: Especialidad[] = [];
   medicosDisponibles: Trabajador[] = [];
   cargandoMedicos = false;
+  cargandoHorarios = false;
+  guardandoCita = false;
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     private especialidadService: EspecialidadService,
-    private trabajadorService: TrabajadorService
+    private citaService: CitaService
   ) { }
 
   ngOnInit(): void {
@@ -74,7 +80,7 @@ export class AdmisionConsultaComponent implements OnInit {
   obtenerFechaMinima(): string {
     const ahora = new Date();
     ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
-    return ahora.toISOString().slice(0, 16);
+    return ahora.toISOString().slice(0, 10);
   }
 
   buscarHistoria(): void {
@@ -153,6 +159,9 @@ export class AdmisionConsultaComponent implements OnInit {
     this.cita.especialidadId = esp.id;
     this.terminoBusquedaEspecialidad = esp.nombre;
     this.mostrarDropdownEspecialidad = false;
+    this.medicosDisponibles = [];
+    this.medicoSeleccionado = null;
+    this.limpiarSeleccionHorario();
   }
 
   cerrarDropdown(): void {
@@ -175,17 +184,15 @@ export class AdmisionConsultaComponent implements OnInit {
   }
 
   cargarMedicosPorEspecialidad(): void {
+    if (!this.cita.especialidadId) return;
     this.cargandoMedicos = true;
     this.medicosDisponibles = [];
     this.medicoSeleccionado = null;
+    this.limpiarSeleccionHorario();
 
-    this.trabajadorService.getMedicosActivos().subscribe({
+    this.citaService.listarMedicosPorEspecialidad(this.cita.especialidadId).subscribe({
       next: medicos => {
-        const especialidadElegida = this.terminoBusquedaEspecialidad.toLowerCase();
-        this.medicosDisponibles = medicos.filter(m =>
-          m.especialidades &&
-          m.especialidades.some(esp => esp.toLowerCase().includes(especialidadElegida))
-        );
+        this.medicosDisponibles = medicos;
         this.cargandoMedicos = false;
       },
       error: err => {
@@ -195,6 +202,41 @@ export class AdmisionConsultaComponent implements OnInit {
     });
   }
 
+  seleccionarMedico(medico: Trabajador): void {
+    this.medicoSeleccionado = medico;
+    this.limpiarSeleccionHorario();
+    this.cita.medicoId = medico.id;
+  }
+
+  cargarDisponibilidad(): void {
+    if (!this.medicoSeleccionado || !this.fechaSeleccionada) return;
+    this.cargandoHorarios = true;
+    this.bloquesHorarios = [];
+    this.bloqueSeleccionado = null;
+    this.cita.fechaHora = '';
+    this.cita.turnoId = null;
+    this.cita.consultorioId = null;
+
+    this.citaService.obtenerDisponibilidad(this.medicoSeleccionado.id, this.fechaSeleccionada).subscribe({
+      next: bloques => {
+        this.bloquesHorarios = bloques;
+        this.cargandoHorarios = false;
+      },
+      error: (e: HttpErrorResponse) => {
+        this.errorMensaje.set(e.error?.mensaje ?? 'Error al cargar horarios disponibles.');
+        this.cargandoHorarios = false;
+      }
+    });
+  }
+
+  seleccionarBloque(bloque: HorarioBloque): void {
+    if (!bloque.disponible || !this.fechaSeleccionada) return;
+    this.bloqueSeleccionado = bloque;
+    this.cita.fechaHora = `${this.fechaSeleccionada}T${bloque.horaInicio}`;
+    this.cita.turnoId = bloque.turnoId;
+    this.cita.consultorioId = bloque.consultorioId;
+  }
+
   pasoAnterior(): void {
     if (this.pasoActual() > 1) {
       this.pasoActual.update(p => p - 1);
@@ -202,21 +244,51 @@ export class AdmisionConsultaComponent implements OnInit {
   }
 
   programarCita(): void {
-    const payload = {
+    if (!this.cita.historiaClinicaId || !this.cita.especialidadId || !this.medicoSeleccionado || !this.bloqueSeleccionado) {
+      this.errorMensaje.set('Complete historia, especialidad, medico y horario.');
+      return;
+    }
+
+    const payload: CitaRequest = {
       historiaClinicaId: this.cita.historiaClinicaId,
       especialidadId: this.cita.especialidadId,
-      medicoId: this.medicoSeleccionado?.id,
-      fechaHora: this.cita.fechaHora
+      medicoId: this.medicoSeleccionado.id,
+      fechaHora: this.cita.fechaHora,
+      turnoId: this.bloqueSeleccionado.turnoId,
+      consultorioId: this.bloqueSeleccionado.consultorioId
     };
 
-    console.log('Enviando cita al backend:', payload);
-    this.exitoMensaje.set('Cita programada correctamente. (Falta conectar a BD)');
+    this.limpiarMensajes();
+    this.guardandoCita = true;
+    this.citaService.programar(payload).subscribe({
+      next: cita => {
+        this.citaProgramada.set(cita);
+        this.exitoMensaje.set(`Cita ${cita.numeroCita} programada correctamente.`);
+        this.guardandoCita = false;
+        this.cargarDisponibilidad();
+      },
+      error: (e: HttpErrorResponse) => {
+        this.errorMensaje.set(e.error?.mensaje ?? 'Error al programar la cita.');
+        this.guardandoCita = false;
+      }
+    });
   }
 
   limpiarHistoriaSeleccionada(): void {
     this.historiaSeleccionada.set(null);
     this.cita.historiaClinicaId = null;
     this.pasoActual.set(1);
+  }
+
+  private limpiarSeleccionHorario(): void {
+    this.fechaSeleccionada = '';
+    this.bloquesHorarios = [];
+    this.bloqueSeleccionado = null;
+    this.citaProgramada.set(null);
+    this.cita.medicoId = null;
+    this.cita.fechaHora = '';
+    this.cita.turnoId = null;
+    this.cita.consultorioId = null;
   }
 
   private seleccionarHistoria(historia: HistoriaClinicaResponse): void {

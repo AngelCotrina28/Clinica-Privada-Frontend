@@ -1,4 +1,4 @@
-<app-header titulo="Módulo de Atención Médica" Trabajador="Dr. Carlos Mendoza"></app-header>
+<app-header titulo="Modulo de Atencion Medica"></app-header>
 
 <main class="contenedor">
   @if (pacienteActivo) {
@@ -7,13 +7,13 @@
       <h2>{{ pacienteActivo.nombreCompleto }}</h2>
       <p>DNI: {{ pacienteActivo.dniPaciente }} | HC: {{ pacienteActivo.numeroHistoria }}</p>
     </div>
-    <button (click)="finalizarAtencion()" class="btn-finalizar">Finalizar Atención</button>
+    <button (click)="finalizarAtencion()" class="btn-finalizar">Finalizar Atencion</button>
   </div>
 
   <nav class="tabs-clinicas">
-    <a routerLink="historial-clinico" routerLinkActive="active">📋 Historial Clínico</a>
-    <a routerLink="registro-resultados" routerLinkActive="active">✍️ Registrar Resultados</a>
-    <a routerLink="receta-medica" routerLinkActive="active">💊 Emitir Receta</a>
+    <a routerLink="historial-clinico" routerLinkActive="active">Historial Clinico</a>
+    <a routerLink="registro-resultados" routerLinkActive="active">Registrar Resultados</a>
+    <a routerLink="receta-medica" routerLinkActive="active">Emitir Receta</a>
   </nav>
   }
 

@@ -53,5 +53,54 @@ export interface OrdenEmergenciaResponse {
 export interface CitaRequest {
   historiaClinicaId: number | null;
   especialidadId:    number | null;
+  medicoId?:         number | null;
   fechaHora:         string;
+  turnoId?:          number | null;
+  consultorioId?:    number | null;
+  motivoConsulta?:   string;
+}
+
+export interface HorarioBloque {
+  turnoId:       number;
+  consultorioId: number;
+  consultorio:   string;
+  horaInicio:    string;
+  horaFin:       string;
+  disponible:    boolean;
+  estado:        string;
+  citaId?:       number;
+  numeroCita?:   string;
+}
+
+export interface CitaResponse {
+  id:            number;
+  numeroCita:    string;
+  nombrePaciente: string;
+  nombreMedico:  string;
+  consultorio:   string;
+  fechaHoraCita: string;
+  estado:        string;
+}
+
+export interface TurnoRequest {
+  medicoId:       number;
+  especialidadId: number;
+  fecha:          string;
+  horaInicio:     string;
+  horaFin:        string;
+}
+
+export interface TurnoResponse {
+  id:            number;
+  medicoId:      number;
+  nombreMedico:  string;
+  especialidadId: number | null;
+  especialidad:  string;
+  consultorioId: number;
+  consultorio:   string;
+  fecha:         string;
+  diaSemana:     string;
+  horaInicio:    string;
+  horaFin:       string;
+  activo:        boolean;
 }

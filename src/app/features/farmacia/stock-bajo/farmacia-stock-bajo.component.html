@@ -3,7 +3,7 @@
   Sub-sección: Alertas de Stock Bajo
   ============================================================ -->
 
-<app-header titulo="Farmacia — Alertas de Stock" [Trabajador]="usuarioNombre" />
+<app-header titulo="Farmacia - Alertas de Stock" />
 
 <main class="contenedor">
   <section class="seccion">
@@ -60,7 +60,7 @@
               <tr>
                 <td colspan="7" class="text-center">
                   @if (cargando()) {
-                    <span class="cargando-inline"><span class="spinner spinner--teal"></span> Cargando alertas...</span>
+                    <span class="cargando-inline"><span class="spinner spinner--azul"></span> Cargando alertas...</span>
                   } @else {
                     <div class="sin-datos-exito">
                       <span>✅</span>

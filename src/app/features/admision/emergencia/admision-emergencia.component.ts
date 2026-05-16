@@ -17,7 +17,7 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule, HeaderComponent],
   template: `
-    <app-header titulo="Flujo de Emergencia" Trabajador="Recepcion Central" />
+    <app-header titulo="Flujo de Emergencia" />
 
     <main class="contenedor">
       <section>
@@ -157,7 +157,7 @@ import {
             <div class="campo">
               <label class="campo__etiqueta">Asignar Medico (Disponibles): <span class="requerido">*</span></label>
               @if (cargandoMedicos()) {
-                <div class="cargando-inline"><span class="spinner spinner--teal"></span> Cargando medicos...</div>
+                <div class="cargando-inline"><span class="spinner spinner--azul"></span> Cargando medicos...</div>
               }
               @if (!cargandoMedicos() && medicos().length === 0) {
                 <div class="sin-datos">

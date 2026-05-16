@@ -1,0 +1,338 @@
+.horarios {
+  min-height: 100%;
+  background: #f4f6f9;
+  padding: 2rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.panel-edicion {
+  border-color: #9ae6b4;
+  box-shadow: 0 12px 30px rgba(45, 55, 72, 0.08);
+}
+
+.panel-maestro {
+  border-color: #c6d7ff;
+}
+
+h2 {
+  color: #0d2a4e;
+  font-size: 1.1rem;
+  margin: 0 0 1rem;
+}
+
+.cabecera-lista h2 {
+  margin-bottom: 0.25rem;
+}
+
+.subtitulo {
+  color: #718096;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+}
+
+.grid-form--edicion {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+label {
+  color: #374151;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+select,
+input {
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  color: #1a202c;
+  font-size: 0.9rem;
+  padding: 0.62rem 0.75rem;
+}
+
+.acciones,
+.cabecera-lista {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.acciones--derecha {
+  justify-content: flex-end;
+}
+
+button {
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0.58rem 1rem;
+}
+
+.primario {
+  background: #2f6fae;
+  color: #fff;
+}
+
+.secundario {
+  background: #edf2f7;
+  color: #0d2a4e;
+}
+
+.peligro {
+  background: #fff5f5;
+  color: #c53030;
+}
+
+.reglas {
+  color: #718096;
+  font-size: 0.85rem;
+  margin: 1rem 0 0;
+}
+
+.alerta {
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.exito {
+  background: #f0fff4;
+  color: #276749;
+}
+
+.error {
+  background: #fff5f5;
+  color: #c53030;
+}
+
+.tabla-wrap {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  background: #0d2a4e;
+  color: #fff;
+  font-size: 0.78rem;
+  padding: 0.7rem;
+  text-align: left;
+}
+
+td {
+  border-bottom: 1px solid #edf2f7;
+  color: #2d3748;
+  padding: 0.7rem;
+}
+
+.vacio {
+  color: #718096;
+  margin: 0;
+}
+
+.contador {
+  color: #718096;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(88px, 1fr));
+  gap: 0.55rem;
+  user-select: none;
+}
+
+.dia-nombre {
+  color: #718096;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.dia {
+  align-items: stretch;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1a202c;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-height: 104px;
+  padding: 0.55rem;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: #2f6fae;
+    background: #f7fffd;
+  }
+
+  &--hoy {
+    border-color: #0d2a4e;
+  }
+
+  &--seleccionado {
+    background: #f0fdfb;
+    border-color: #2f6fae;
+    box-shadow: inset 0 0 0 2px rgba(47, 111, 174, 0.22);
+  }
+
+  &--con-turnos:not(.dia--seleccionado) {
+    border-color: #bee3f8;
+    background: #f7fbff;
+  }
+
+  &--fuera,
+  &:disabled {
+    background: #f7fafc;
+    color: #cbd5e0;
+    cursor: default;
+  }
+
+  &__numero {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+  }
+
+  &__turnos {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: auto;
+
+    small {
+      background: #edf2f7;
+      border-radius: 4px;
+      color: #0d2a4e;
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      overflow: hidden;
+      padding: 0.18rem 0.3rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.calendario--maestro {
+  .dia {
+    cursor: default;
+    min-height: 132px;
+
+    &:hover {
+      border-color: #e2e8f0;
+      background: #ffffff;
+    }
+  }
+}
+
+.maestro-dia__lista {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+}
+
+.turno-chip {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  border-radius: 5px;
+  color: #0d2a4e;
+  display: flex;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.22rem;
+
+  &__contenido {
+    background: transparent;
+    border-radius: 4px;
+    color: #0d2a4e;
+    display: grid;
+    flex: 1 1 auto;
+    gap: 0.05rem;
+    min-width: 0;
+    padding: 0.12rem 0.18rem;
+    text-align: left;
+
+    &:hover {
+      background: #eef6ff;
+    }
+
+    strong,
+    span,
+    small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    strong {
+      color: #1b4332;
+      font-size: 0.68rem;
+    }
+
+    span {
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    small {
+      color: #64748b;
+      font-size: 0.6rem;
+      font-weight: 700;
+    }
+  }
+
+  &__borrar {
+    background: #fff5f5;
+    color: #c53030;
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+    line-height: 1;
+    padding: 0.18rem 0.35rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .calendario {
+    grid-template-columns: repeat(7, minmax(44px, 1fr));
+    gap: 0.35rem;
+  }
+
+  .dia {
+    min-height: 78px;
+    padding: 0.4rem;
+  }
+
+  .dia__turnos small {
+    display: none;
+  }
+}

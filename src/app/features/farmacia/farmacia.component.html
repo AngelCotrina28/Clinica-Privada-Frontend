@@ -1,29 +1,28 @@
-<app-header titulo="Módulo de Farmacia" usuario="Farmacia Central" />
+<app-header titulo="Modulo de Farmacia" />
 
 <main class="contenedor">
-
   <section>
     <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
 
     <form class="grupo-acciones">
       <fieldset>
-        <legend>Buscar Órdenes de Entrega</legend>
-        <label for="nro_receta">N° Receta o DNI del Paciente:</label>
+        <legend>Buscar Ordenes de Entrega</legend>
+        <label for="nro_receta">Numero de receta o DNI del paciente:</label>
         <input type="text" id="nro_receta">
         <button type="submit">Buscar</button>
       </fieldset>
     </form>
 
-    <h3 class="subtitulo-seccion">Órdenes Pendientes de Despacho</h3>
+    <h3 class="subtitulo-seccion">Ordenes Pendientes de Despacho</h3>
     <div class="tabla-responsive">
       <table>
         <thead>
           <tr>
-            <th>N° Receta</th>
+            <th>Numero Receta</th>
             <th>Paciente</th>
             <th>Origen</th>
             <th>Estado de Pago</th>
-            <th>Acción</th>
+            <th>Accion</th>
           </tr>
         </thead>
         <tbody>
@@ -51,16 +50,16 @@
   <section id="gestion-medicamentos">
     <div class="encabezado-flexible">
       <h2 class="subtitulo-seccion">Control de Inventario y Medicamentos</h2>
-      <button type="button" class="btn-principal" (click)="abrirModalCrear()">+ Nuevo Medicamento</button>
+      <button type="button" class="btn-principal" (click)="abrirModalCrear()">Nuevo Medicamento</button>
     </div>
 
     <div class="grupo-acciones">
       <fieldset>
         <legend>Filtros de Inventario</legend>
         <div class="fila-formulario">
-          <input type="text" placeholder="Buscar por Nombre o Código (máx 30)..." maxlength="30">
+          <input type="text" placeholder="Buscar por nombre o codigo..." maxlength="30">
           <select>
-            <option value="">Todas las Categorías</option>
+            <option value="">Todas las Categorias</option>
           </select>
           <label>
             <input type="checkbox"> Ver solo Stock Bajo
@@ -73,12 +72,12 @@
       <table>
         <thead>
           <tr>
-            <th>Código</th>
-            <th>Nombre y Presentación</th>
-            <th>Categoría</th>
+            <th>Codigo</th>
+            <th>Nombre y Presentacion</th>
+            <th>Categoria</th>
             <th>Stock Actual</th>
             <th>Precio Unit.</th>
-            <th>Receta?</th>
+            <th>Receta</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -92,18 +91,18 @@
               </td>
               <td>{{ med.categoriaNombre }}</td>
               <td>
-                {{ med.stockActual }} 
+                {{ med.stockActual }}
                 @if (med.stockActual <= med.stockMinimo) {
-                  <span class="etiqueta-alerta" title="Stock por debajo del mínimo ({{med.stockMinimo}})">⚠️ Bajo</span>
+                  <span class="etiqueta-alerta" title="Stock por debajo del minimo ({{med.stockMinimo}})">Bajo</span>
                 }
               </td>
               <td>S/ {{ med.precioUnitario }}</td>
-              <td>{{ med.requiereReceta ? 'SÍ' : 'NO' }}</td>
+              <td>{{ med.requiereReceta ? 'SI' : 'NO' }}</td>
               <td>
                 <div class="grupo-acciones">
-                  <button type="button" class="btn-tabla" (click)="verDetalle(med)" title="Visualizar Detalle">👁️</button>
-                  <button type="button" class="btn-tabla" (click)="editarMedicamento(med)" title="Editar Medicamento">📝</button>
-                  <button type="button" class="btn-tabla btn-peligro" (click)="desactivar(med)" title="Desactivar (Soft Delete)">🗑️</button>
+                  <button type="button" class="btn-tabla" (click)="verDetalle(med)" title="Visualizar Detalle">Ver</button>
+                  <button type="button" class="btn-tabla" (click)="editarMedicamento(med)" title="Editar Medicamento">Editar</button>
+                  <button type="button" class="btn-tabla btn-peligro" (click)="desactivar(med)" title="Desactivar">Desactivar</button>
                 </div>
               </td>
             </tr>
@@ -116,20 +115,18 @@
   <dialog id="modalMedicamento" class="modal">
     <h3 class="subtitulo-seccion">Datos del Medicamento</h3>
     <form>
-      <div class="cuadrícula-formulario">
-        <label>Código (Único):</label>
+      <div class="cuadricula-formulario">
+        <label>Codigo:</label>
         <input type="text" required maxlength="30" placeholder="Ej: MED-001">
 
         <label>Nombre Comercial:</label>
         <input type="text" required maxlength="200">
 
-        <label>Nombre Genérico:</label>
+        <label>Nombre Generico:</label>
         <input type="text" maxlength="200">
 
-        <label>Categoría:</label>
-        <select required>
-          <!-- Opciones de categoría aquí -->
-        </select>
+        <label>Categoria:</label>
+        <select required></select>
 
         <label>Precio Unitario:</label>
         <input type="number" step="0.01" min="0.01" required>
@@ -137,26 +134,25 @@
         <label>Stock Inicial:</label>
         <input type="number" min="0" required>
 
-        <label>Stock Mínimo:</label>
+        <label>Stock Minimo:</label>
         <input type="number" min="0" value="0">
 
         <label>Laboratorio:</label>
         <input type="text" maxlength="150">
 
-        <label>Descripción:</label>
+        <label>Descripcion:</label>
         <textarea rows="2"></textarea>
 
         <div class="opciones-checkbox">
           <input type="checkbox" id="receta">
-          <label for="receta">Requiere Receta Médica</label>
+          <label for="receta">Requiere Receta Medica</label>
         </div>
       </div>
-      
+
       <div class="grupo-acciones">
         <button type="submit" class="btn-principal">Guardar Medicamento</button>
         <button type="button" class="btn-secundario" (click)="cerrarModal()">Cancelar</button>
       </div>
     </form>
   </dialog>
-
 </main>
