@@ -111,6 +111,37 @@
   margin: 0;
 }
 
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding-right: 2.75rem; // Espacio para que el texto no se monte en el ojo
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    color: #64748b; // Un color gris suave que combina con interfaces corporativas
+    min-height: auto; // Resetea el min-height del botón global de tu CSS
+    width: auto;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: transparent; // Evita que herede el fondo del botón de enviar
+      color: #1e293b; // Se oscurece un poco al pasar el mouse
+    }
+  }
+}
+
 .login-card button {
   background: var(--color-acento);
   color: #ffffff;

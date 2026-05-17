@@ -18,9 +18,14 @@ export class LoginComponent {
     };
 
     errorMessage = '';
+    showPassword = false;
 
     private authService = inject(AuthService);
     private router = inject(Router);
+
+    togglePasswordVisibility(): void {
+        this.showPassword = !this.showPassword;
+    }
 
     onLogin() {
         this.errorMessage = '';
