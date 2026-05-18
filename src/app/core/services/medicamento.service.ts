@@ -83,31 +83,10 @@ export class MedicamentoService {
   }
 
   inactivar(id: number): Observable<MedicamentoResponse> {
-    // Recuperamos el token guardado al iniciar sesión
-    const token = sessionStorage.getItem('token') ?? localStorage.getItem('token') ?? '';
-    
-    const headers = {
-      'Authorization': `Bearer ${token}`
-    };
-
-    return this.http.patch<MedicamentoResponse>(
-      `${this.API}/medicamentos/${id}/inactivar`, 
-      {}, 
-      { headers } // <-- Adjuntamos el token explícitamente en la cabecera de la mutación
-    );
+    return this.http.patch<MedicamentoResponse>(`${this.API}/medicamentos/${id}/inactivar`, {});
   }
 
   activar(id: number): Observable<MedicamentoResponse> {
-    const token = sessionStorage.getItem('token') ?? localStorage.getItem('token') ?? '';
-    
-    const headers = {
-      'Authorization': `Bearer ${token}`
-    };
-
-    return this.http.patch<MedicamentoResponse>(
-      `${this.API}/medicamentos/${id}/activar`, 
-      {}, 
-      { headers } // <-- Adjuntamos el token explícitamente aquí también
-    );
+    return this.http.patch<MedicamentoResponse>(`${this.API}/medicamentos/${id}/activar`, {});
   }
 }
