@@ -1,18 +1,9 @@
-<!-- ============================================================
-  farmacia-inventario.component.html
-  Sub-sección: Control de Inventario y Medicamentos
-  ============================================================ -->
-
 <app-header titulo="Farmacia - Inventario" />
 
 <main class="contenedor">
   <section class="seccion">
+    <h2 class="subtitulo-seccion">Control de Inventario y Medicamentos</h2>
 
-    <div class="seccion__cabecera">
-      <h2 class="subtitulo-seccion">Control de Inventario y Medicamentos</h2>
-    </div>
-
-    <!-- Alertas -->
     @if (errorMensaje()) {
       <div class="alerta alerta--error">
         <span>⚠</span><p>{{ errorMensaje() }}</p>
@@ -26,25 +17,29 @@
       </div>
     }
 
-    <!-- ── Barra de filtros ── -->
-    <div class="bloque">
-      <div class="encabezado-flexible">
-        <h3 class="bloque__titulo">Filtros de búsqueda</h3>
-        <button class="btn btn--primario" (click)="abrirModalCrear()" *ngIf="esAdmin">
+    <div class="bloque bloque--filtros-modernos">
+      <div class="filtros-superior">
+
+        <div class="campo-busqueda-inline-wrapper">
+          <div class="campo-busqueda-principal">
+            <input class="input-busqueda-moderno" type="text" 
+              placeholder="Buscar por código, nombre comercial o genérico..." maxlength="50"
+              [(ngModel)]="filtros.nombre" (keydown.enter)="buscar()" />
+          </div>
+          <button type="button" class="btn-buscar-moderno" (click)="buscar()" [disabled]="cargando()">
+            @if (cargando()) { <span class="spinner"></span> } Buscar
+          </button>
+        </div>
+        
+        <button type="button" class="btn-nuevo" (click)="abrirModalCrear()" *ngIf="esAdmin">
           + Nuevo Medicamento
         </button>
       </div>
 
-      <div class="filtros-grid">
-        <div class="campo">
-          <label class="campo__etiqueta">Nombre o Código</label>
-          <input class="campo__input" type="text" placeholder="Buscar..." maxlength="30"
-            [(ngModel)]="filtros.nombre" (keydown.enter)="buscar()" />
-        </div>
-
-        <div class="campo">
-          <label class="campo__etiqueta">Categoría</label>
-          <select class="campo__input campo__select" [(ngModel)]="filtros.categoriaId" (change)="buscar()">
+      <div class="filtros-inferior">
+        <div class="control-filtro">
+          <label class="control-filtro__etiqueta">Categoría</label>
+          <select class="select-moderno" [(ngModel)]="filtros.categoriaId" (change)="buscar()">
             <option [ngValue]="undefined">Todas las categorías</option>
             @for (cat of categorias; track cat.id) {
               <option [ngValue]="cat.id">{{ cat.nombre }}</option>
@@ -52,23 +47,16 @@
           </select>
         </div>
 
-        <div class="campo campo--checkbox">
-          <label class="checkbox-label">
+        <div class="control-filtro control-filtro--acciones">
+          <label class="checkbox-profesional">
             <input type="checkbox" [(ngModel)]="filtros.soloActivos" (change)="buscar()" />
-            <span>Solo activos</span>
+            <span class="checkbox-texto">Solo activos</span>
           </label>
-        </div>
-
-        <div class="grupo-botones">
-          <button class="btn btn--primario" (click)="buscar()" [disabled]="cargando()">
-            @if (cargando()) { <span class="spinner"></span> } Buscar
-          </button>
-          <button class="btn btn--ghost" (click)="limpiarFiltros()">Limpiar</button>
-        </div>
+          </div>
       </div>
     </div>
 
-    <!-- ── Tabla de medicamentos ── -->
+
     <div class="bloque">
       <div class="tabla-responsive">
         <table class="tabla">
@@ -107,29 +95,32 @@
                 </td>
                 <td>{{ med.stockMinimo }}</td>
                 <td>S/ {{ med.precioUnitario | number:'1.2-2' }}</td>
+                
                 <td>
-                  <span class="badge" [class.badge--receta]="med.requiereReceta" [class.badge--libre]="!med.requiereReceta">
+                  <span class="badge-clinica" [class.badge-clinica--receta]="med.requiereReceta" [class.badge-clinica--libre]="!med.requiereReceta">
                     {{ med.requiereReceta ? 'SÍ' : 'NO' }}
                   </span>
                 </td>
+                
                 <td>
-                  <span class="badge" [class.badge--activo]="med.activo" [class.badge--inactivo]="!med.activo">
-                    {{ med.activo ? 'Activo' : 'Inactivo' }}
+                  <span class="badge-clinica" [class.badge-clinica--activo]="med.activo" [class.badge-clinica--inactivo]="!med.activo">
+                    {{ med.activo ? 'ACTIVO' : 'INACTIVO' }}
                   </span>
                 </td>
+                
                 <td>
                   <div class="acciones-td">
-                    <button class="btn-icon" title="Ver detalle" (click)="verDetalle(med)">👁️</button>
-                    <button class="btn-icon" title="Ver historial" (click)="verHistorial(med)" *ngIf="esAdmin">📋</button>
-                    <button class="btn-icon" title="Editar" (click)="abrirModalEditar(med)" *ngIf="esAdmin">✏️</button>
+                    <button type="button" class="btn-icon" title="Editar" (click)="abrirModalEditar(med)" *ngIf="esAdmin">✏️</button>
+                    
                     @if (med.activo && esAdmin) {
-                      <button class="btn-icon btn-icon--danger" title="Inactivar" (click)="toggleEstado(med)">🗑️</button>
+                      <button type="button" class="btn-icon btn-icon--danger" title="Inactivar" (click)="toggleEstado(med)">🗑️</button>
                     }
                     @if (!med.activo && esAdmin) {
-                      <button class="btn-icon btn-icon--success" title="Activar" (click)="toggleEstado(med)">✅</button>
+                      <button type="button" class="btn-icon btn-icon--success" title="Activar" (click)="toggleEstado(med)">✅</button>
                     }
                   </div>
                 </td>
+
               </tr>
             } @empty {
               <tr>
@@ -146,7 +137,6 @@
         </table>
       </div>
 
-      <!-- Paginación -->
       @if (totalPaginas > 1) {
         <div class="paginacion">
           <button class="btn btn--ghost btn--sm" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">← Anterior</button>
@@ -155,14 +145,11 @@
         </div>
       }
     </div>
-
   </section>
 </main>
 
-<!-- ══ MODAL CREAR / EDITAR ══════════════════════════════════ -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModalSiOverlay($event)">
   <div class="modal-contenedor" (click)="$event.stopPropagation()">
-
     <div class="modal-header">
       <h3 class="modal-titulo">{{ isEditMode ? 'Editar Medicamento' : 'Registrar Nuevo Medicamento' }}</h3>
       <button class="btn-cerrar-modal" (click)="cerrarModal()">✕</button>
@@ -170,7 +157,6 @@
 
     <div class="modal-body">
       <form class="formulario-grid" [formGroup]="medForm" (ngSubmit)="guardarMedicamento()">
-
         <div class="form-seccion-titulo">Identificación</div>
 
         <div class="form-grupo">
@@ -248,14 +234,11 @@
             @if (guardando()) { <span class="spinner"></span> } Guardar
           </button>
         </div>
-
       </form>
     </div>
-
   </div>
 </div>
 
-<!-- ══ MODAL DETALLE ══════════════════════════════════════════ -->
 <div class="modal-overlay" *ngIf="medDetalle" (click)="medDetalle = null">
   <div class="modal-contenedor modal-contenedor--detalle" (click)="$event.stopPropagation()">
     <div class="modal-header">
@@ -279,7 +262,6 @@
   </div>
 </div>
 
-<!-- ══ MODAL HISTORIAL ════════════════════════════════════════ -->
 <div class="modal-overlay" *ngIf="historialAbierto" (click)="historialAbierto = false">
   <div class="modal-contenedor modal-contenedor--historial" (click)="$event.stopPropagation()">
     <div class="modal-header">

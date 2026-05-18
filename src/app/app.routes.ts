@@ -105,8 +105,23 @@ export const routes: Routes = [
     path: 'farmacia',
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
-    loadComponent: () =>
-      import('./features/farmacia/farmacia.component').then(m => m.FarmaciaComponent)
+    children: [
+        {
+          path: 'despacho',
+          loadComponent: () =>
+            import('./features/farmacia/despacho/farmacia-despacho.component').then(m => m.FarmaciaDespachoComponent)
+        },
+        {
+          path: 'inventario',
+          loadComponent: () =>
+            import('./features/farmacia/inventario/farmacia-inventario.component').then(m => m.FarmaciaInventarioComponent)
+        },
+        {
+          path: 'stock-bajo',
+          loadComponent: () =>
+            import('./features/farmacia/stock-bajo/farmacia-stock-bajo.component').then(m => m.FarmaciaStockBajoComponent)
+        }
+    ]
   },
   {
     path: 'caja-facturacion',

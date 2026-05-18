@@ -83,8 +83,13 @@ export class SidebarComponent implements OnInit {
     {
       label: 'Farmacia',
       icon: 'pharmacy',
-      route: '/farmacia',
-      rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA']
+      group: 'farmacia',
+      rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'],
+      children: [
+        { label: 'Despacho de Medicamentos',icon: 'pharmacy', route: '/farmacia/despacho',   rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
+        { label: 'Inventario',icon: 'pharmacy', route: '/farmacia/inventario',  rolesPermitidos: ['ADMINISTRADOR'] },
+        { label: 'Alertas de Stock',icon: 'pharmacy', route: '/farmacia/stock-bajo',  rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
+      ]
     },
     {
       label: 'Caja y Facturacion',

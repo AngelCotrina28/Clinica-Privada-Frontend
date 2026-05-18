@@ -162,17 +162,44 @@ export class FarmaciaInventarioComponent implements OnInit {
   }
 
   toggleEstado(med: MedicamentoResponse): void {
-    const accion = med.activo
+    const estadoOriginal = med.activo;
+
+    const peticionHttp = estadoOriginal
       ? this.medService.inactivar(med.id)
       : this.medService.activar(med.id);
+    
+    this.cargando.set(true);
 
-    accion.subscribe({
-      next: actualizado => {
+    peticionHttp.subscribe({
+      next: (response) => {
+        // Find index del elemento mutado
         const idx = this.medicamentos.findIndex(m => m.id === med.id);
-        if (idx !== -1) this.medicamentos[idx] = actualizado;
-        this.exitoMensaje.set(`Medicamento ${actualizado.activo ? 'activado' : 'inactivado'} correctamente.`);
+        
+        if (idx !== -1) {
+          this.medicamentos[idx] = {
+            ...this.medicamentos[idx],
+            activo: !estadoOriginal
+          };
+        }
+        
+        this.exitoMensaje.set(`Medicamento "${med.nombre}" ${estadoOriginal ? 'inactivado' : 'activado'} correctamente en la base de datos.`);
+        this.errorMensaje.set(''); // Limpiamos cualquier error previo
+        this.cargando.set(false);
       },
-      error: e => this.errorMensaje.set(e.error?.mensaje ?? 'Error al cambiar estado.')
+      error: (err) => {
+        // Si entra aquí, significa que la base de datos RECHAZÓ el cambio (ej: Error 403, 500, etc.)
+        console.error('Error detallado desde Spring Boot:', err);
+        
+        // Aseguramos que la interfaz se quede en su estado real en la BD
+        const idx = this.medicamentos.findIndex(m => m.id === med.id);
+        if (idx !== -1) {
+          this.medicamentos[idx].activo = estadoOriginal;
+        }
+
+        const mensajeError = err.error?.mensaje || err.message || 'No se pudo conectar con el servidor de la clínica.';
+        this.errorMensaje.set(`No se pudo cambiar el estado: ${mensajeError}`);
+        this.cargando.set(false);
+      }
     });
   }
 

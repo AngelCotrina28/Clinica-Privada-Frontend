@@ -1,16 +1,8 @@
-<!-- ============================================================
-  farmacia-despacho.component.html
-  Sub-sección: Despacho de Medicamentos
-  ============================================================ -->
-
-<app-header titulo="Farmacia - Despacho" />
+<app-header titulo=" Despacho" />
 
 <main class="contenedor">
-  <section class="seccion">
-
-    <div class="seccion__cabecera">
-      <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
-    </div>
+  <section>
+    <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
 
     <!-- Alertas -->
     @if (errorMensaje()) {
@@ -31,15 +23,17 @@
       <h3 class="bloque__titulo">Buscar Orden de Entrega</h3>
       <div class="barra-busqueda">
         <label class="campo__etiqueta" for="busqueda_orden" style="margin-bottom: 0.5rem;">N° Receta o DNI del Paciente:</label>
+        
         <div class="campo-busqueda-inline">
           <input id="busqueda_orden" type="text" class="campo__input"
             [(ngModel)]="terminoBusqueda"
             placeholder="Ej: REC-9921 o DNI del paciente"
             (keydown.enter)="buscarOrden()" />
-          <button class="btn btn--primario" (click)="buscarOrden()" [disabled]="cargandoBusqueda()">
+          <button class="btn-buscar" (click)="buscarOrden()" [disabled]="cargandoBusqueda()">
             @if (cargandoBusqueda()) { <span class="spinner"></span> } Buscar
           </button>
         </div>
+        
         <small class="texto-secundario">Ingrese el número de receta o el DNI para localizar las órdenes pendientes de despacho.</small>
       </div>
     </div>
