@@ -1,89 +1,15 @@
 // ============================================================
 // admision.component.scss
-// Paleta: azul marino #0d2a4e  ·  azul institucional #2f6fae  ·  fondo #f4f6f9
-// Coherente con sidebar.component.scss y el diseño existente
+// Compartido por: admision-emergencia y admision-consulta
+// Paleta: azul marino #0d2a4e · azul institucional #2f6fae · fondo #f4f6f9
 // ============================================================
 
+// ══ HOST ══════════════════════════════════════════════════════
 :host {
   display: flex;
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-}
-
-// ── Layout principal: sub-sidebar + contenido ─────────────────
-.modulo-layout {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-// ══ SUB-SIDEBAR ═══════════════════════════════════════════════
-.sub-sidebar {
-  width: 220px;
-  min-width: 220px;
-  background: #ffffff;
-  border-right: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  padding-top: 1.5rem;
-  overflow-y: auto;
-
-  &__titulo {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #a0aec0;
-    padding: 0 1.2rem 0.75rem;
-    margin: 0;
-  }
-
-  &__menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.2rem;
-    cursor: pointer;
-    text-decoration: none;
-    color: #4a5568;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-left: 3px solid transparent;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-
-    &:hover {
-      background: #f7fafc;
-      color: #0d2a4e;
-      border-left-color: #cbd5e0;
-    }
-
-    &.activo {
-      background: #f0fdfb;
-      color: #245987;
-      border-left-color: #2f6fae;
-      font-weight: 600;
-
-      .sub-sidebar__icon {
-        filter: none;
-      }
-    }
-  }
-
-  &__icon {
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
-
-  &__label {
-    line-height: 1.3;
-  }
 }
 
 // ══ CONTENEDOR PRINCIPAL ══════════════════════════════════════
@@ -115,15 +41,20 @@
   font-size: 1.4rem;
   font-weight: 700;
   color: #0d2a4e;
-  margin: 0;
+  margin: 0 0 1.5rem;
 }
 
 // ══ BLOQUE (card interna) ══════════════════════════════════════
 .bloque {
   background: #ffffff;
-  border-radius: 8px;
   border: 1px solid #e2e8f0;
+  border-radius: 10px;
   padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 
   &--nuevo {
     border-top: 3px dashed rgba(#2f6fae, 0.28);
@@ -134,11 +65,12 @@
     font-size: 1rem;
     font-weight: 700;
     color: #0d2a4e;
-    margin: 0 0 1.25rem;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
-// ══ GRUPO DE ACCIONES (campo + botones en línea) ═══════════════
+// ══ GRUPO DE ACCIONES (campo + botones en línea) ══════════════
 .grupo-acciones {
   display: flex;
   flex-direction: column;
@@ -212,7 +144,7 @@
   color: #e53e3e;
 }
 
-// Grid 2 columnas para formulario extendido
+// Grid 2 columnas para formularios extendidos
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -301,9 +233,7 @@
 }
 
 @keyframes girar {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 // ══ ALERTAS ═══════════════════════════════════════════════════
@@ -320,13 +250,7 @@
     flex: 1;
   }
 
-  &__icon {
-    font-size: 1rem;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  &__cerrar {
+  button {
     background: none;
     border: none;
     cursor: pointer;
@@ -336,9 +260,7 @@
     color: inherit;
     margin-left: auto;
 
-    &:hover {
-      opacity: 1;
-    }
+    &:hover { opacity: 1; }
   }
 
   &--error {
@@ -397,9 +319,7 @@
     padding: 0.6rem 1rem;
     border-bottom: 1px solid #f0f4f8;
 
-    &:last-child {
-      border-bottom: none;
-    }
+    &:last-child { border-bottom: none; }
   }
 
   &__clave {
@@ -427,32 +347,18 @@
     flex-wrap: wrap;
   }
 
-  &--encontrado {
-    border-top: 3px solid #4299e1;
-  }
-
-  &--creado {
-    border-top: 3px solid #2f6fae;
-  }
-
-  &--orden {
-    border-top: 3px solid #ed8936;
-  }
+  // Variantes por tipo
+  &--encontrado { border-top: 3px solid #4299e1; }
+  &--creado     { border-top: 3px solid #2f6fae; }
+  &--orden      { border-top: 3px solid #ed8936; }
 }
 
 @keyframes aparecer {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-// ── Etiquetas de estado ───────────────────────────────────────
+// ══ ETIQUETAS DE ESTADO ═══════════════════════════════════════
 .etiqueta {
   font-size: 0.72rem;
   font-weight: 700;
@@ -461,63 +367,14 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  &--encontrada {
-    background: #ebf8ff;
-    color: #2b6cb0;
-  }
-
-  &--creada {
-    background: #f0fff4;
-    color: #276749;
-  }
-
-  &--orden {
-    background: #fffaf0;
-    color: #c05621;
-  }
+  &--encontrada { background: #ebf8ff; color: #2b6cb0; }
+  &--creada     { background: #f0fff4; color: #276749; }
+  &--orden      { background: #fffaf0; color: #c05621; }
 }
 
 .texto-acento {
   color: #245987;
   font-weight: 600;
-}
-
-// ── Aviso de redirección ──────────────────────────────────────
-.redirect-aviso {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.7rem 1rem;
-  background: #f0fff4;
-  border-top: 1px solid #c6f6d5;
-  font-size: 0.85rem;
-  color: #276749;
-}
-
-// ── Cargando médicos inline ───────────────────────────────────
-.cargando-inline {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0;
-  color: #718096;
-  font-size: 0.875rem;
-}
-
-.sin-datos {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #a0aec0;
-  font-size: 0.875rem;
-  padding: 0.4rem 0;
-}
-
-.sin-datos-texto {
-  color: #a0aec0;
-  font-size: 0.875rem;
-  padding: 0.75rem 0;
-  margin: 0;
 }
 
 // ══ TABLA ═════════════════════════════════════════════════════
@@ -555,13 +412,8 @@
   tbody tr {
     transition: background 0.1s;
 
-    &:hover {
-      background: #f7fafc;
-    }
-
-    &:last-child td {
-      border-bottom: none;
-    }
+    &:hover { background: #f7fafc; }
+    &:last-child td { border-bottom: none; }
   }
 
   code {
@@ -574,45 +426,94 @@
   }
 }
 
-// ══ RESPONSIVE ════════════════════════════════════════════════
-@media (max-width: 768px) {
-  .modulo-layout {
-    flex-direction: column;
+// ══ MISCELÁNEOS ═══════════════════════════════════════════════
+.redirect-aviso {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  background: #f0fff4;
+  border-top: 1px solid #c6f6d5;
+  font-size: 0.85rem;
+  color: #276749;
+}
+
+.cargando-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.sin-datos {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #a0aec0;
+  font-size: 0.875rem;
+  padding: 0.4rem 0;
+}
+
+.sin-datos-texto {
+  color: #a0aec0;
+  font-size: 0.875rem;
+  padding: 0.75rem 0;
+  margin: 0;
+}
+
+// ══ STEPPER (consulta-externa) ════════════════════════════════
+// Usado en admision-consulta para los 4 pasos de la cita
+.stepper-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.stepper-paso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+
+  &--activo { opacity: 1; }
+
+  &__circulo {
+    background: #2f6fae;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
   }
 
-  .sub-sidebar {
-    width: 100%;
-    min-width: unset;
-    border-right: none;
-    border-bottom: 1px solid #e2e8f0;
-    flex-direction: row;
-    padding: 0;
-    overflow-x: auto;
-
-    &__titulo {
-      display: none;
-    }
-
-    &__menu {
-      display: flex;
-      flex-direction: row;
-    }
-
-    &__item {
-      border-left: none;
-      border-bottom: 3px solid transparent;
-      padding: 0.75rem 1rem;
-      white-space: nowrap;
-
-      &.activo {
-        border-left: none;
-        border-bottom-color: #2f6fae;
-      }
-    }
+  &__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0d2a4e;
+    white-space: nowrap;
   }
 }
 
-// ══ AUTOCOMPLETADO (COMBOBOX PERSONALIZADO) ════════════════════
+.stepper-linea {
+  width: 50px;
+  height: 2px;
+  background: #2f6fae;
+  margin-top: 16px;   // centra respecto al círculo de 32px
+  flex-shrink: 0;
+}
+
+// ══ AUTOCOMPLETADO (búsqueda especialidad) ════════════════════
 .autocompletado-container {
   position: relative;
 }
@@ -648,6 +549,7 @@
   top: 100%;
   left: 0;
   right: 0;
+  z-index: 100;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-top: none;
@@ -658,8 +560,6 @@
   max-height: 200px;
   overflow-y: auto;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  z-index: 100;
-  /* Asegura que flote sobre otros elementos */
 }
 
 .dropdown-item {
@@ -693,7 +593,7 @@
   font-style: italic;
 }
 
-// ══ TARJETAS DE MÉDICOS (STEPPER PASO 2) ══════════════════════
+// ══ TARJETAS DE MÉDICO (paso 2 - selección) ═══════════════════
 .medico-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -709,7 +609,7 @@
   border-radius: 8px;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   background-color: #ffffff;
 
   &:hover {
@@ -722,13 +622,12 @@
     border-color: #2f6fae;
     background-color: #f0fdfb;
 
-    .tarjeta-medico__nombre {
-      color: #2f6fae;
-    }
+    .tarjeta-medico__nombre { color: #2f6fae; }
   }
 
   &__avatar {
-    font-size: 2.2rem;
+    font-size: 1.4rem;
+    font-weight: 700;
     background: #edf2f7;
     width: 60px;
     height: 60px;
@@ -737,6 +636,7 @@
     justify-content: center;
     border-radius: 50%;
     flex-shrink: 0;
+    color: #4a5568;
   }
 
   &__info {
@@ -759,6 +659,7 @@
   }
 }
 
+// ══ GRILLA DE BLOQUES HORARIOS (paso 3) ═══════════════════════
 .horarios-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
@@ -801,7 +702,7 @@
   &--activo {
     border-color: #2f6fae;
     background: #f0fdfb;
-    box-shadow: 0 0 0 3px rgba(0, 194, 160, 0.14);
+    box-shadow: 0 0 0 3px rgba(47, 111, 174, 0.14);
   }
 
   &--ocupado,
@@ -812,8 +713,45 @@
     cursor: not-allowed;
     transform: none;
 
-    small {
-      color: #c53030;
-    }
+    small { color: #c53030; }
+  }
+}
+
+// ══ TOAST NOTIFICATION ════════════════════════════════════════
+.toast-flotante {
+  position: fixed;
+  top: 80px; /* Ajusta según el tamaño de tu header */
+  right: 24px;
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 450px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from { 
+    transform: translateX(100%); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}
+
+
+// ══ RESPONSIVE ════════════════════════════════════════════════
+@media (max-width: 768px) {
+  .modulo-layout {
+    flex-direction: column;
+  }
+
+  .stepper-linea {
+    width: 24px;
+  }
+
+  .medico-grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -24,12 +24,12 @@
       <div class="barra-busqueda">
         <label class="campo__etiqueta" for="busqueda_orden" style="margin-bottom: 0.5rem;">N° Receta o DNI del Paciente:</label>
         
-        <div class="campo-busqueda-inline">
+        <div class="campo-busqueda-inline-wrapper">
           <input id="busqueda_orden" type="text" class="campo__input"
             [(ngModel)]="terminoBusqueda"
             placeholder="Ej: REC-9921 o DNI del paciente"
             (keydown.enter)="buscarOrden()" />
-          <button class="btn-buscar" (click)="buscarOrden()" [disabled]="cargandoBusqueda()">
+          <button class="btn-buscar-moderno" (click)="buscarOrden()" [disabled]="cargandoBusqueda()">
             @if (cargandoBusqueda()) { <span class="spinner"></span> } Buscar
           </button>
         </div>
