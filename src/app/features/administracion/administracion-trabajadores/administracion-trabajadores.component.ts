@@ -3,13 +3,19 @@ import { CommonModule } from '@angular/common';
 import { TrabajadorService } from '../../../core/services/trabajador.service';
 import { Trabajador } from '../../../core/model/trabajador.model';
 import { EspecialidadService } from '../../../core/services/especialidad.service';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HeaderComponent } from '../../../shared/header/header.component';
+
+interface RolFiltro {
+  id: number;
+  nombre: string;
+}
 
 
 @Component({
   selector: 'app-administracion-trabajadores',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HeaderComponent],
   templateUrl: './administracion-trabajadores.component.html',
   styleUrl: './administracion-trabajadores.component.scss'
 })
@@ -22,6 +28,9 @@ export class AdministracionTrabajadoresComponent implements OnInit {
   isModalOpen: boolean = false;
   especialidadesDisponibles: any[] = [];
   especialidadesSeleccionadasIds: number[] = [];
+  busquedaTrabajador = '';
+  rolSeleccionado = '';
+  mostrarInactivos = false;
 
   constructor(
     private fb: FormBuilder, 
@@ -30,8 +39,6 @@ export class AdministracionTrabajadoresComponent implements OnInit {
       this.trabajadorForm = this.fb.group({
       dni: ['', [Validators.required, Validators.minLength(8)]],
       nombreCompleto: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       telefono: [''],
       fechaNacimiento: [''],
@@ -82,6 +89,35 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     });
   }
 
+  get rolesDisponibles(): RolFiltro[] {
+    const roles = new Map<number, string>();
+    this.listaTrabajadores.forEach(t => {
+      if (t.rolId && t.nombreRol) {
+        roles.set(t.rolId, t.nombreRol);
+      }
+    });
+
+    return Array.from(roles, ([id, nombre]) => ({ id, nombre }))
+      .sort((a, b) => a.nombre.localeCompare(b.nombre));
+  }
+
+  get trabajadoresFiltrados(): Trabajador[] {
+    const busqueda = this.busquedaTrabajador.trim().toLowerCase();
+
+    return this.listaTrabajadores.filter(t => {
+      const coincideEstado = this.mostrarInactivos || t.activo;
+      const coincideRol = !this.rolSeleccionado || String(t.rolId) === this.rolSeleccionado;
+      const coincideBusqueda = !busqueda || [
+        t.dni,
+        t.nombreCompleto,
+        t.email,
+        t.nombreRol
+      ].some(valor => valor?.toLowerCase().includes(busqueda));
+
+      return coincideEstado && coincideRol && coincideBusqueda;
+    });
+  }
+
   prepararEdicion(trabajador: Trabajador) {
     this.isEditMode = true;
     this.idSeleccionado = trabajador.id;
@@ -91,8 +127,6 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     this.trabajadorForm.patchValue({
       dni: trabajador.dni,
       nombreCompleto: trabajador.nombreCompleto,
-      username: trabajador.username,
-      email: trabajador.email,
       telefono: trabajador.telefono,
       fechaNacimiento: trabajador.fechaNacimiento,
       colegiatura: trabajador.colegiatura,

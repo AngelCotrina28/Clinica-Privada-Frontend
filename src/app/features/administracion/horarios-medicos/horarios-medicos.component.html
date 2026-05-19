@@ -1,8 +1,10 @@
-<app-header titulo="Horarios Medicos" />
+<app-header titulo="Modulo de Administracion" />
 
-<main class="horarios">
+<main class="contenedor horarios">
+  <h2 class="subtitulo-seccion">Horarios Medicos</h2>
+
   <section class="panel">
-    <h2>Programacion mensual por especialidad</h2>
+    <h3 class="panel__titulo">Programacion mensual por especialidad</h3>
 
     @if (mensaje()) { <div class="alerta exito">{{ mensaje() }}</div> }
     @if (error()) { <div class="alerta error">{{ error() }}</div> }
@@ -66,7 +68,7 @@
     <section class="panel panel-edicion">
       <div class="cabecera-lista">
         <div>
-          <h2>Editar turno</h2>
+          <h3 class="panel__titulo">Editar turno</h3>
           <p class="subtitulo">{{ turno.nombreMedico }} - {{ turno.especialidad }} - {{ turno.fecha }}</p>
         </div>
         <button class="secundario" (click)="cancelarEdicion()">Cancelar</button>
@@ -119,7 +121,7 @@
   <section class="panel">
     <div class="cabecera-lista">
       <div>
-        <h2>Calendario de especialidad</h2>
+        <h3 class="panel__titulo">Calendario de especialidad</h3>
         <p class="subtitulo">Usa este calendario para seleccionar dias y registrar horarios masivos.</p>
       </div>
       <span class="contador">{{ fechasSeleccionadas().length }} dias seleccionados</span>
@@ -160,7 +162,7 @@
   <section class="panel panel-maestro">
     <div class="cabecera-lista">
       <div>
-        <h2>Calendario maestro de turnos</h2>
+        <h3 class="panel__titulo">Calendario maestro de turnos</h3>
         <p class="subtitulo">Vista global de todos los horarios registrados en el mes.</p>
       </div>
       <button class="secundario" (click)="cargarTurnosMaestro()">Actualizar maestro</button>
