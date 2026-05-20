@@ -72,6 +72,10 @@ export const routes: Routes = [
     path: 'atencion-medica',
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR', 'MEDICO'] },
+    loadComponent: () =>
+      import('./features/atencion-medica/atencion-medica.component').then(
+        m => m.AtencionMedicaComponent
+      ),
     children: [
       {
         path: '',

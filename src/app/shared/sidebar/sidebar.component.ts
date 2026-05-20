@@ -51,6 +51,7 @@ export class SidebarComponent implements OnInit {
   colapsado = signal(false);
   gruposAbiertos = signal<Record<string, boolean>>({
     admision: true,
+    atencion: true,
     administracion: true
   });
   rolActual = signal('');
@@ -77,8 +78,13 @@ export class SidebarComponent implements OnInit {
     {
       label: 'Atencion Medica',
       icon: 'medical',
-      route: '/atencion-medica',
-      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO']
+      group: 'atencion',
+      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'],
+      children: [
+        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
+        { label: 'Registrar Resultados', icon: 'medical', route: '/atencion-medica/registro-resultados', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
+        { label: 'Receta Medica', icon: 'receipt', route: '/atencion-medica/receta-medica', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
+      ]
     },
     {
       label: 'Farmacia',
