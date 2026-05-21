@@ -51,7 +51,7 @@ export interface OrdenEmergenciaResponse {
 }
 
 export interface CitaRequest {
-  historiaClinicaId: number | null;
+  pacienteId:     number | null;
   especialidadId:    number | null;
   fechaHora:         string;
 }
