@@ -1,33 +1,62 @@
-<aside class="sidebar" [class.colapsado]="colapsado()">
-  <div class="sidebar-header">
-    <div class="sidebar-logo">RED DE CLÍNICA</div>
-    <button class="btn-toggle" (click)="toggleSidebar()">☰</button>
+<aside class="sidebar" [class.sidebar--collapsed]="colapsado()">
+  <div class="sidebar__brand">
+    <div class="brand-logo" aria-label="Logo Luz del Tunel"></div>
+    <div class="brand-copy">
+      <strong>Luz del Tunel</strong>
+      <span>Clinica privada</span>
+    </div>
+    <button type="button" class="sidebar__toggle" (click)="toggleSidebar()" aria-label="Alternar menu">
+      <span class="toggle-icon">{{ colapsado() ? '>' : '<' }}</span>
+    </button>
   </div>
 
-  <ul class="sidebar-menu">
+  <nav class="sidebar__nav" aria-label="Navegacion principal">
     <ng-container *ngFor="let item of navItemsFiltrados()">
+      <a *ngIf="!item.children"
+         class="nav-link"
+         [routerLink]="item.route"
+         routerLinkActive="nav-link--active">
+        <svg class="nav-link__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path *ngFor="let path of obtenerIcono(item.icon)" [attr.d]="path"></path>
+        </svg>
+        <span class="nav-link__label">{{ item.label }}</span>
+      </a>
 
-      <li *ngIf="!item.children">
-        <a [routerLink]="item.route" routerLinkActive="activo">
-          <span>{{ item.label }}</span>
-        </a>
-      </li>
+      <div *ngIf="item.children" class="nav-group" [class.nav-group--open]="grupoAbierto(item)">
+        <button type="button" class="nav-link nav-link--button" (click)="toggleGrupo(item)">
+          <svg class="nav-link__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path *ngFor="let path of obtenerIcono(item.icon)" [attr.d]="path"></path>
+          </svg>
+          <span class="nav-link__label">{{ item.label }}</span>
+          <span class="nav-link__chevron">{{ grupoAbierto(item) ? 'v' : '>' }}</span>
+        </button>
 
-      <li *ngIf="item.children">
-        <a (click)="toggle(item.label)" class="menu-desplegable" [class.activo-padre]="estaAbierto(item.label)">
-          <span>{{ item.label }}</span>
-          <span class="flecha" *ngIf="!colapsado()">{{ estaAbierto(item.label) ? '▼' : '▶' }}</span>
-        </a>
-
-        <ul class="submenu" *ngIf="estaAbierto(item.label) && !colapsado()">
-          <li *ngFor="let child of item.children">
-            <a [routerLink]="child.route" routerLinkActive="activo-sub">
-              {{ child.label }}
-            </a>
-          </li>
-        </ul>
-      </li>
-
+        <div class="nav-submenu" *ngIf="grupoAbierto(item) && !colapsado()">
+          <a *ngFor="let child of item.children"
+             [routerLink]="child.route"
+             routerLinkActive="nav-submenu__link--active"
+             class="nav-submenu__link">
+            <svg class="nav-submenu__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path *ngFor="let path of obtenerIcono(child.icon)" [attr.d]="path"></path>
+            </svg>
+            {{ child.label }}
+          </a>
+        </div>
+      </div>
     </ng-container>
-  </ul>
+  </nav>
+
+  <div class="sidebar__session">
+    <div class="session-avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8z"></path>
+        <path d="M5 21a7 7 0 0 1 14 0"></path>
+      </svg>
+    </div>
+    <div class="session-copy">
+      <strong>{{ usuarioActual()?.nombreCompleto || usuarioActual()?.username || 'Usuario' }}</strong>
+      <span>{{ rolVisible() }}</span>
+    </div>
+    <button type="button" class="session-logout" (click)="cerrarSesion()">Salir</button>
+  </div>
 </aside>

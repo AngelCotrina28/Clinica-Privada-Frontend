@@ -9,25 +9,24 @@ import { HeaderComponent } from '../../shared/header/header.component';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-
   resumen = [
     {
-      titulo:      'Pacientes en Emergencia',
+      titulo: 'Pacientes en Emergencia',
       descripcion: 'Actualmente hay',
-      valor:       '12',
-      sufijo:      'pacientes registrados en triaje.'
+      valor: '12',
+      sufijo: 'pacientes registrados en triaje.'
     },
     {
-      titulo:      'Citas del Día',
+      titulo: 'Citas del Dia',
       descripcion: 'Hay',
-      valor:       '45',
-      sufijo:      'citas programadas para hoy en Consulta Externa.'
+      valor: '45',
+      sufijo: 'citas programadas para hoy en Consulta Externa.'
     },
     {
-      titulo:      'Estado de Caja',
+      titulo: 'Estado de Caja',
       descripcion: 'Caja Principal:',
-      valor:       'Abierta',
-      sufijo:      ''
+      valor: 'Abierta',
+      sufijo: ''
     }
   ];
 }

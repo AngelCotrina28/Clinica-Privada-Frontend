@@ -1,24 +1,47 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Trabajador } from '../model/trabajador.model';
+import { CitaRequest, CitaResponse, HorarioBloque } from '../../features/admision/admision.models';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class CitaService {
-    private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/citas';
+  private readonly apiUrl = 'http://localhost:8080/api/citas';
 
-crear(cita: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, cita);
-}
+  constructor(private http: HttpClient) { }
 
-obtenerDisponibilidad(medicoId: number, fechaInicio: string, fechaFin: string): Observable<any[]> {
+  // --- Método para especialidades ---
+  listarMedicosPorEspecialidad(especialidadId: number): Observable<Trabajador[]> {
+    const params = new HttpParams().set('especialidadId', especialidadId.toString());
+    return this.http.get<Trabajador[]>(`${this.apiUrl}/medicos`, { params });
+  }
+
+  // --- Motor diario ---
+  obtenerDisponibilidad(medicoId: number, fecha: string): Observable<HorarioBloque[]> {
     const params = new HttpParams()
-    .set('medicoId', medicoId.toString())
-    .set('fechaInicio', fechaInicio)
-    .set('fechaFin', fechaFin);
+      .set('medicoId', medicoId.toString())
+      .set('fecha', fecha);
+    return this.http.get<HorarioBloque[]>(`${this.apiUrl}/disponibilidad`, { params });
+  }
 
-    return this.http.get<any[]>(`${this.apiUrl}/disponibilidad`, { params });
-}
+  // --- motor mensual ---
+  consultarDisponibilidadMensual(medicoId: number, fechaInicio: string, fechaFin: string): Observable<any[]> {
+    const params = new HttpParams()
+      .set('medicoId', medicoId.toString())
+      .set('fechaInicio', fechaInicio)
+      .set('fechaFin', fechaFin);
+
+    return this.http.get<any[]>(`${this.apiUrl}/disponibilidad/mensual`, { params });
+  }
+
+  // --- Creación de cita ---
+  programar(cita: CitaRequest): Observable<CitaResponse> {
+    return this.http.post<CitaResponse>(this.apiUrl, cita);
+  }
+
+  crear(cita: any): Observable<any> {
+    return this.programar(cita);
+  }
 }

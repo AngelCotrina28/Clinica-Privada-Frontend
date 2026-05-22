@@ -1,52 +1,107 @@
-// Estilos del dashboard — equivalente al index.css original
 :host {
   display: flex;
-  flex-direction: column;
   flex: 1;
-  overflow-y: auto;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .dashboard-main {
-  flex: 1;
-  padding: 2rem 1rem 3rem;
-  max-width: 1200px;
+  display: grid;
+  gap: 1rem;
   margin: 0 auto;
+  max-width: 1180px;
+  padding: 1.5rem;
   width: 100%;
+}
+
+.dashboard-hero {
+  align-items: end;
+  background: #ffffff;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: 8px;
+  box-shadow: var(--sombra-suave);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.25rem;
+
+  span {
+    color: var(--color-acento-hover);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 0.2rem 0 0;
+  }
+
+  p {
+    color: var(--color-texto-suave);
+    font-weight: 700;
+    margin: 0;
+  }
 }
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .tarjeta-resumen {
-  background-color: var(--color-bg-blanco);
-  padding: 1.5rem;
-  border-radius: var(--borde-redondeado);
-  box-shadow: var(--sombra-suave);
-  border-left: 4px solid var(--color-texto-titulo);
-  transition: var(--transicion-estandar);
+  display: grid;
+  gap: 0.45rem;
+  min-height: 150px;
+  padding: 1.15rem;
+  position: relative;
 
-  &:hover {
-    border-left-color: var(--color-acento);
-    transform: translateY(-4px);
-    box-shadow: var(--sombra-hover);
+  &::before {
+    background: var(--color-acento);
+    border-radius: 999px;
+    content: "";
+    height: 4px;
+    left: 1.15rem;
+    position: absolute;
+    top: 1.15rem;
+    width: 42px;
   }
 
-  h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-  p  { font-size: 0.95rem; }
+  &:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-2px);
+  }
 
-  strong { color: var(--color-acento); }
+  strong {
+    color: var(--color-texto-titulo);
+    font-size: 2rem;
+    line-height: 1;
+    margin-top: 1.4rem;
+  }
+
+  p {
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+    font-weight: 650;
+    margin: 0;
+  }
 }
 
-footer {
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.8rem;
-  color: #aaa;
+.tarjeta-resumen__label {
+  color: var(--color-texto-parrafo);
+  font-size: 0.9rem;
+  font-weight: 850;
+  margin-top: 1.3rem;
+}
+
+@media (max-width: 760px) {
+  .dashboard-main {
+    padding: 1rem;
+  }
+
+  .dashboard-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

@@ -13,10 +13,11 @@ import { filter } from 'rxjs';
 })
 export class AppComponent {
 
-  mostrarMenu = true;
+  mostrarMenu = false;
   private router = inject(Router);
 
   constructor() {
+    this.mostrarMenu = this.router.url !== '/login';
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {

@@ -1,9 +1,34 @@
+<app-header titulo="Modulo de Administracion" />
+
 <main class="contenedor">
   <h2 class="subtitulo-seccion">Gestión de Trabajadores</h2>
 
   <div class="caja-filtros">
     <div class="grupo-busqueda-filtros">
-      <input type="text" placeholder="Buscar..." class="input-busqueda">
+      <div class="campo-filtro campo-filtro--busqueda">
+        <label for="buscar-trabajador">Buscar trabajador</label>
+        <input
+          id="buscar-trabajador"
+          type="text"
+          placeholder="DNI, nombre o correo"
+          class="input-busqueda"
+          [(ngModel)]="busquedaTrabajador">
+      </div>
+
+      <div class="campo-filtro campo-filtro--rol">
+        <label for="filtrar-rol">Rol</label>
+        <select id="filtrar-rol" class="select-filtro" [(ngModel)]="rolSeleccionado">
+          <option value="">Todos los roles</option>
+          @for (rol of rolesDisponibles; track rol.id) {
+            <option [value]="rol.id">{{ rol.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <label class="check-filtro">
+        <input type="checkbox" [(ngModel)]="mostrarInactivos">
+        <span>Mostrar inactivos</span>
+      </label>
     </div>
     <div class="grupo-acciones">
       <button type="button" class="btn-accion btn-primary" (click)="abrirModalParaCrear()">
@@ -25,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (t of listaTrabajadores; track t.id) {
+        @for (t of trabajadoresFiltrados; track t.id) {
           <tr>
             <td><strong>{{ t.dni }}</strong></td>
             <td>{{ t.nombreCompleto }}</td>
@@ -36,12 +61,30 @@
               </span>
             </td>
             <td class="td-acciones">
-              <button class="btn-icon btn-editar" title="Editar" (click)="prepararEdicion(t)">✏️</button>
+              <button class="btn-icon btn-editar" type="button" title="Editar" aria-label="Editar trabajador" (click)="prepararEdicion(t)">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                </svg>
+              </button>
               
               @if (t.activo) {
-                <button class="btn-icon btn-borrar" title="Desactivar" (click)="cambiarEstado(t)">🗑️</button>
+                <button class="btn-icon btn-borrar" type="button" title="Desactivar" aria-label="Desactivar trabajador" (click)="cambiarEstado(t)">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="m17 8 5 5"></path>
+                    <path d="m22 8-5 5"></path>
+                  </svg>
+                </button>
               } @else {
-                <button class="btn-icon btn-activar" title="Reactivar" (click)="cambiarEstado(t)">✅</button>
+                <button class="btn-icon btn-activar" type="button" title="Reactivar" aria-label="Reactivar trabajador" (click)="cambiarEstado(t)">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="m16 11 2 2 4-4"></path>
+                  </svg>
+                </button>
               }
             </td>
           </tr>
@@ -131,21 +174,17 @@
           </div>
         </div>
 
-        <div class="form-seccion-titulo">Cuenta de Usuario</div>
+        <div class="form-seccion-titulo">Acceso al Sistema</div>
 
         <div class="form-grupo">
-          <label>Nombre de Usuario (Username) <span class="requerido">*</span></label>
-          <input type="text" formControlName="username" placeholder="Ej. jrodriguez">
-        </div>
-
-        <div class="form-grupo">
-          <label>Correo Institucional <span class="requerido">*</span></label>
-          <input type="email" formControlName="email" placeholder="correo@clinica.com">
-        </div>
-
-        <div class="form-grupo">
-          <label>Contraseña Inicial <span class="requerido">*</span></label>
-          <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+          <label>
+            {{ isEditMode ? 'Nueva Contraseña' : 'Contraseña Inicial' }}
+            <span class="requerido" *ngIf="!isEditMode">*</span>
+          </label>
+          <input
+            type="password"
+            formControlName="password"
+            [placeholder]="isEditMode ? 'Dejar en blanco para mantener la actual' : 'Mínimo 6 caracteres'">
         </div>
 
         <div class="modal-footer" style="grid-column: span 2; margin-top: 1rem;">

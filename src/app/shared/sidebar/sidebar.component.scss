@@ -1,42 +1,281 @@
-// Estilos para el desplegable padre
-.menu-desplegable {
-  cursor: pointer;
+:host {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.sidebar {
+  background: #0b2f52;
+  color: #ffffff;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  
-  &.activo-padre {
-    background-color: #00C2A0; // El verde de tu imagen
-    color: white;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  width: 278px;
+  transition: width 0.22s ease;
+}
+
+.sidebar--collapsed {
+  width: 78px;
+
+  .brand-copy,
+  .nav-link__label,
+  .nav-link__chevron,
+  .session-copy,
+  .session-logout {
+    display: none;
+  }
+
+  .sidebar__brand {
+    gap: 0.45rem;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding: 0.8rem 0.55rem;
+  }
+
+  .sidebar__toggle {
+    margin: 0;
+  }
+
+  .sidebar__nav {
+    padding: 0.75rem 0.55rem;
+  }
+
+  .nav-link,
+  .sidebar__session {
+    justify-content: center;
+  }
+
+  .nav-link {
+    padding: 0.55rem;
   }
 }
 
-.flecha {
-  font-size: 0.7rem;
+.sidebar__brand {
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 54px minmax(0, 1fr) 34px;
+  min-height: 76px;
+  padding: 1rem;
 }
 
-// Estilo de los "Trocitos" blancos
-.submenu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background-color: #f1f1f1;
+.brand-logo {
+  background-color: rgba(255, 255, 255, 0.08);
+  background-image: url('/brand/logo-luz-del-tunel.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: 1px solid rgba(219, 234, 254, 0.24);
+  border-radius: 8px;
+  height: 34px;
+  width: 54px;
+}
 
-  li a {
-    display: block;
-    padding: 10px 15px 10px 30px;
-    background-color: white; // Trocito blanco
-    color: #333; // Texto negro
-    text-decoration: none;
+.brand-copy {
+  display: grid;
+  min-width: 0;
+
+  strong {
+    font-size: 0.94rem;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+
+  span {
+    color: #b9d5ef;
+    font-size: 0.72rem;
     font-weight: 500;
-    border-bottom: 1px solid #ddd;
-    border-left: 4px solid transparent;
-    transition: all 0.2s ease;
+  }
+}
 
-    &:hover, &.activo-sub {
-      border-left: 4px solid #00C2A0; // Borde verde indicador
-      background-color: #fafafa;
-      color: #005082;
-    }
+.sidebar__toggle {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  color: #e0f2fe;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 650;
+  height: 34px;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0;
+  width: 34px;
+}
+
+.toggle-icon {
+  display: block;
+  line-height: 1;
+}
+
+.sidebar__nav {
+  display: grid;
+  gap: 0.25rem;
+  overflow-y: auto;
+  padding: 0.85rem;
+}
+
+.nav-link {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #dbeafe;
+  display: flex;
+  gap: 0.7rem;
+  min-height: 44px;
+  padding: 0.55rem 0.65rem;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  width: 100%;
+
+  &:hover,
+  &--active {
+    background: rgba(74, 132, 190, 0.22);
+    border-color: rgba(157, 195, 230, 0.3);
+    color: #ffffff;
+  }
+}
+
+.nav-link--button {
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.nav-link__icon,
+.nav-submenu__icon,
+.session-avatar svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-link__icon {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  color: #c7ddf2;
+  flex: 0 0 32px;
+  height: 32px;
+  padding: 0.43rem;
+  stroke-width: 1.9;
+  width: 32px;
+}
+
+.nav-link__label {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 560;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-link__chevron {
+  color: #b9d5ef;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.nav-submenu {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.2rem 0 0.35rem 2.65rem;
+}
+
+.nav-submenu__link {
+  align-items: center;
+  border-left: 2px solid rgba(148, 163, 184, 0.35);
+  color: #c6dbf0;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.46rem 0.55rem;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 520;
+
+  &:hover,
+  &--active {
+    border-left-color: #6fa3d4;
+    color: #ffffff;
+  }
+}
+
+.nav-submenu__icon {
+  color: #9dc3e6;
+  flex: 0 0 18px;
+  height: 18px;
+  stroke-width: 2;
+  width: 18px;
+}
+
+.sidebar__session {
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 0.65rem;
+  margin-top: auto;
+  padding: 0.9rem;
+}
+
+.session-avatar {
+  align-items: center;
+  background: #174a7c;
+  border: 1px solid rgba(219, 234, 254, 0.32);
+  border-radius: 50%;
+  color: #dbeafe;
+  display: inline-flex;
+  flex: 0 0 38px;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+
+  svg {
+    height: 20px;
+    stroke-width: 1.8;
+    width: 20px;
+  }
+}
+
+.session-copy {
+  display: grid;
+  min-width: 0;
+
+  strong {
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    color: #b9d5ef;
+    font-size: 0.68rem;
+    font-weight: 500;
+  }
+}
+
+.session-logout {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 7px;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 0.42rem 0.55rem;
+
+  &:hover {
+    background: #9f1239;
+    border-color: #fda4af;
   }
 }
