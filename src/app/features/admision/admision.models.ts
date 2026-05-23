@@ -52,12 +52,13 @@ export interface OrdenEmergenciaResponse {
 
 export interface CitaRequest {
   historiaClinicaId: number | null;
-  especialidadId:    number | null;
-  medicoId?:         number | null;
-  fechaHora:         string;
-  turnoId?:          number | null;
-  consultorioId?:    number | null;
-  motivoConsulta?:   string;
+  pacienteId?: number | null;       
+  especialidadId: number | null;
+  medicoId?: number | null;
+  fechaHora: string;
+  turnoId?: number | null;          
+  consultorioId?: number | null;    
+  motivoConsulta?: string;          
 }
 
 export interface HorarioBloque {

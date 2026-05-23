@@ -134,46 +134,39 @@
         @if (historiaSeleccionada()) {
         <div class="stepper-container"
             style="display: flex; justify-content: center; margin: 2rem 0; text-align: center;">
+            
             <div [style.opacity]="pasoActual() >= 1 ? '1' : '0.5'">
-                <div
-                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
-                    1</div>
+                <div style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Especialidad</div>
             </div>
             <div style="width: 50px; height: 2px; background: #2f6fae; margin: 15px 10px 0;"></div>
 
             <div [style.opacity]="pasoActual() >= 2 ? '1' : '0.5'">
-                <div
-                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
-                    2</div>
+                <div style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Medico</div>
             </div>
             <div style="width: 50px; height: 2px; background: #2f6fae; margin: 15px 10px 0;"></div>
 
             <div [style.opacity]="pasoActual() >= 3 ? '1' : '0.5'">
-                <div
-                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
-                    3</div>
+                <div style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Fecha y Hora</div>
             </div>
             <div style="width: 50px; height: 2px; background: #2f6fae; margin: 15px 10px 0;"></div>
 
             <div [style.opacity]="pasoActual() >= 4 ? '1' : '0.5'">
-                <div
-                    style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
-                    4</div>
+                <div style="background: #2f6fae; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
                 <div style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;">Confirmar</div>
             </div>
         </div>
 
         <div class="bloque" style="max-width: 700px; margin: 0 auto;">
             @if (pasoActual() === 1) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">En que especialidad desea atenderse?</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿En qué especialidad desea atenderse?</h3>
 
             <div class="autocompletado-container" style="max-width: 400px; margin: 2rem auto; position: relative;">
                 <label class="campo__etiqueta" style="text-align: left;">Buscar especialidad:</label>
                 <div class="campo-busqueda-wrapper">
-                    <span class="icono-input">?</span>
+                    <span class="icono-input">🔍</span>
                     <input type="text" class="campo__input input-con-icono" placeholder="Ingrese la Especialidad"
                         [(ngModel)]="terminoBusquedaEspecialidad" (input)="filtrarEspecialidades()"
                         (focus)="filtrarEspecialidades()" (blur)="cerrarDropdown()" autocomplete="off">
@@ -204,7 +197,7 @@
             }
 
             @if (pasoActual() === 2) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Con quien desea atenderse?</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿Con quién desea atenderse?</h3>
 
             @if (cargandoMedicos) {
             <div style="text-align: center; padding: 2rem;">
@@ -243,63 +236,103 @@
             }
 
             @if (pasoActual() === 3) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Seleccione Fecha y Hora</h3>
+            <h3 class="bloque__titulo text-center mb-4" style="font-size: 1.5rem;">Disponibilidad de {{ medicoSeleccionado?.nombreCompleto }}</h3>
 
-            <div class="fecha-hora-container" style="max-width: 640px; margin: 2rem auto;">
-                <div class="campo">
-                    <label class="campo__etiqueta" style="text-align: left; font-size: 1rem;">
-                        Seleccione la Fecha de la Cita: <span class="requerido">*</span>
-                    </label>
-                    <input type="date" class="campo__input"
-                        style="padding: 1rem; font-size: 1.1rem; margin-top: 0.5rem;" name="fechaSeleccionada"
-                        [(ngModel)]="fechaSeleccionada" [min]="obtenerFechaMinima()"
-                        (change)="cargarDisponibilidad()" required />
-                    <span style="font-size: 0.85rem; color: #718096; margin-top: 8px; display: block;">
-                        * Se muestran bloques de 30 minutos dentro del turno del medico.
-                    </span>
-                </div>
-
-                @if (cargandoHorarios) {
-                <div style="text-align: center; padding: 1.5rem;">
-                    <div class="spinner spinner--azul"></div>
-                    <p style="color: #718096; margin-top: 1rem;">Cargando bloques horarios...</p>
-                </div>
-                }
-
-                @if (!cargandoHorarios && fechaSeleccionada && bloquesHorarios.length === 0) {
-                <div class="alerta alerta--info" style="margin-top: 1.5rem;">
-                    <span>i</span>
-                    <p>El medico seleccionado no tiene turnos disponibles para esta fecha.</p>
-                </div>
-                }
-
-                @if (bloquesHorarios.length > 0) {
-                <div class="horarios-grid">
-                    @for (bloque of bloquesHorarios; track bloque.turnoId + '-' + bloque.horaInicio) {
-                    <button type="button" class="horario-bloque"
-                        [class.horario-bloque--activo]="bloqueSeleccionado?.turnoId === bloque.turnoId && bloqueSeleccionado?.horaInicio === bloque.horaInicio"
-                        [class.horario-bloque--ocupado]="!bloque.disponible"
-                        [disabled]="!bloque.disponible"
-                        (click)="seleccionarBloque(bloque)">
-                        <span>{{ bloque.horaInicio.slice(0, 5) }}</span>
-                        <small>{{ bloque.disponible ? 'Disponible' : 'Ocupado' }}</small>
+            <div class="calendario-mensual-container mx-auto" style="max-width: 900px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; background: white;">
+                
+                <div class="d-flex justify-content-between align-items-center p-3 text-white" style="background-color: #2d3748;">
+                    <button class="btn btn-sm btn-outline-light text-white border-0" (click)="cambiarMes(-1)">
+                        <b>&larr; Mes Anterior</b>
                     </button>
+                    <h4 class="m-0 text-capitalize fw-bold" style="letter-spacing: 1px;">{{ mesesNombres[mesActual] }} {{ anioActual }}</h4>
+                    <button class="btn btn-sm btn-outline-light text-white border-0" (click)="cambiarMes(1)">
+                        <b>Siguiente Mes &rarr;</b>
+                    </button>
+                </div>
+
+                <div class="d-flex text-center fw-bold py-2" style="background-color: #f7fafc; color: #4a5568; border-bottom: 2px solid #e2e8f0;">
+                    <div style="width: 14.28%;">Lun</div>
+                    <div style="width: 14.28%;">Mar</div>
+                    <div style="width: 14.28%;">Mié</div>
+                    <div style="width: 14.28%;">Jue</div>
+                    <div style="width: 14.28%;">Vie</div>
+                    <div style="width: 14.28%;">Sáb</div>
+                    <div style="width: 14.28%;">Dom</div>
+                </div>
+
+                <div class="d-flex flex-wrap" style="border-left: 1px solid #e2e8f0;">
+                    @for (dia of diasCalendario; track $index) {
+                        <div class="p-2 d-flex flex-column" 
+                            (click)="abrirModalHorarios(dia)"
+                            style="width: 14.28%; min-height: 120px; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;"
+                            [ngStyle]="{
+                                'background-color': dia.vacio ? '#fbfdfe' : (dia.esPasado ? '#edf2f7' : '#ffffff'),
+                                'cursor': (dia.vacio || dia.esPasado || !dia.horasDisponibles || dia.horasDisponibles.length === 0) ? 'not-allowed' : 'pointer'
+                            }">
+                            
+                            @if (!dia.vacio) {
+                                <div class="text-end fw-bold mb-2" [style.color]="dia.esPasado ? '#a0aec0' : '#2d3748'">
+                                    {{ dia.numero }}
+                                </div>
+
+                                @if (!dia.esPasado && dia.turnos?.length > 0) {
+                                    <div class="mt-auto d-flex flex-column gap-1">
+                                        @for (turno of dia.turnos; track turno) {
+                                            <div class="text-white text-center rounded px-1 py-1" 
+                                                style="font-size: 0.75rem; font-weight: 600; background-color: #3182ce;">
+                                                Turno {{ turno | lowercase }}
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
                     }
                 </div>
-                }
-
-                @if (bloqueSeleccionado) {
-                <div class="alerta alerta--info" style="margin-top: 1.5rem;">
-                    <span>i</span>
-                    <p>Horario seleccionado: <strong>{{ bloqueSeleccionado.horaInicio.slice(0, 5) }}</strong> en
-                        <strong>{{ bloqueSeleccionado.consultorio }}</strong>.</p>
-                </div>
-                }
             </div>
 
-            <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+            @if (mostrarModalHorarios && diaSeleccionadoModal) {
+            <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(2px);">
+                <div class="modal-content" style="background: white; border-radius: 12px; width: 90%; max-width: 550px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom: 1px solid #e2e8f0;">
+                        <h4 class="m-0 text-dark fw-bold">Seleccione el horario</h4>
+                        <button class="btn-close" (click)="cerrarModalHorarios()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #a0aec0;">&times;</button>
+                    </div>
+                    
+                    <p class="text-muted mb-4">Horarios disponibles para el <b>{{ diaSeleccionadoModal.numero }} de {{ mesesNombres[mesActual] }}</b>:</p>
+                    
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        @for (hora of diaSeleccionadoModal.horasDisponibles; track hora) {
+                        <button 
+                            class="btn shadow-sm"
+                            [ngStyle]="{
+                                'background-color': cita.fechaHora.includes(hora) ? '#008f76' : '#00C2A0',
+                                'color': 'white',
+                                'border': 'none',
+                                'padding': '12px 10px',
+                                'border-radius': '6px',
+                                'font-weight': 'bold',
+                                'width': 'calc(25% - 8px)',
+                                'transition': 'all 0.2s'
+                            }"
+                            (click)="seleccionarHoraCalendario(hora)">
+                            {{ hora }}
+                        </button>
+                        }
+                    </div>
+                    
+                    <div class="text-end mt-4 pt-3" style="border-top: 1px solid #e2e8f0;">
+                        <span class="badge" style="background-color: #00C2A0; float: left; padding: 8px 12px; font-size: 0.85rem;">DISPONIBLE</span>
+                        <button class="btn btn-light border fw-bold" (click)="cerrarModalHorarios()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <div class="text-center mt-4 d-flex gap-2 justify-content-center">
                 <button class="btn btn--contorno" (click)="pasoAnterior()">Volver</button>
-                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!bloqueSeleccionado">
+                <button class="btn btn--primario" (click)="siguientePaso()" [disabled]="!cita.fechaHora">
                     Siguiente Paso
                 </button>
             </div>
@@ -310,7 +343,7 @@
 
             <div class="resultado" style="max-width: 500px; margin: 2rem auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div class="resultado__cabecera" style="background-color: #0d2a4e; color: white;">
-                    <span style="font-weight: 600;">Detalles de Programacion</span>
+                    <span style="font-weight: 600;">Detalles de Programación</span>
                 </div>
 
                 <div class="resultado__campo">
@@ -347,11 +380,6 @@
                         {{ cita.fechaHora | date:'dd/MM/yyyy' }} a las {{ cita.fechaHora | date:'h:mm a' }}
                     </span>
                 </div>
-
-                <div class="resultado__campo">
-                    <span class="resultado__clave">Consultorio</span>
-                    <span class="resultado__valor">{{ bloqueSeleccionado?.consultorio }}</span>
-                </div>
             </div>
 
             @if (citaProgramada()) {
@@ -365,7 +393,7 @@
                 <button class="btn btn--contorno" (click)="pasoAnterior()"
                     [disabled]="exitoMensaje() !== ''">Volver</button>
                 <button class="btn btn--primario" (click)="programarCita()"
-                    [disabled]="!cita.historiaClinicaId || !bloqueSeleccionado || guardandoCita || !!citaProgramada()">
+                    [disabled]="!cita.historiaClinicaId || !cita.fechaHora || guardandoCita || !!citaProgramada()">
                     @if (guardandoCita) { <span class="spinner"></span> }
                     Confirmar y Agendar
                 </button>
