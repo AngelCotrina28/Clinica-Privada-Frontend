@@ -26,7 +26,7 @@ export class AdmisionEmergenciaComponent implements OnInit {
   ordenesHoy = signal<OrdenEmergenciaResponse[]>([]);
   ordenGenerada = signal<OrdenEmergenciaResponse | null>(null);
   orden: GenerarOrdenRequest = { historiaClinicaId: null, medicoId: null, motivo: '' };
-
+  fechaImpresion: Date = new Date();
   dniBusqueda = '';
   mostrarFormNueva = false;
   historiaSeleccionada = signal<HistoriaClinicaResponse | null>(null);
@@ -191,5 +191,11 @@ export class AdmisionEmergenciaComponent implements OnInit {
   private limpiarMensajes(): void {
     this.errorMensaje.set('');
     this.exitoMensaje.set('');
+  }
+  imprimirOrden(): void {
+    this.fechaImpresion = new Date();
+    setTimeout(() => {
+      window.print();
+    }, 50);
   }
 }

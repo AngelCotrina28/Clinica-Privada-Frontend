@@ -268,7 +268,7 @@
             @if (cargando()) { <span class="spinner"></span> }
             Registrar Orden de Emergencia
           </button>
-          <button type="button" class="btn btn--contorno" [disabled]="!ordenGenerada()">
+          <button type="button" class="btn btn--contorno" [disabled]="!ordenGenerada()" (click)="imprimirOrden()">
             Imprimir Orden
           </button>
         </div>
@@ -336,3 +336,42 @@
 
   </section>
 </main>
+
+@if (ordenGenerada()) {
+  <div class="ticket-impresion">
+    <div class="ticket-header">
+      <img src="/brand/logo-luz-del-tunel.png" alt="Logo Clínica" class="ticket-logo">
+      <h2>CLÍNICA LUZ DEL TÚNEL</h2>
+      <h3>ORDEN DE EMERGENCIA</h3>
+    </div>
+    
+    <div class="ticket-divider">================================</div>
+    
+    <div class="ticket-info">
+      <p><strong>NRO ORDEN:</strong> {{ ordenGenerada()!.numeroOrden }}</p>
+      <p><strong>FECHA:</strong> {{ fechaImpresion | date:'dd/MM/yyyy - HH:mm' }}</p>
+      <p><strong>ESTADO:</strong> {{ ordenGenerada()!.estado }}</p>
+    </div>
+
+    <div class="ticket-divider">--------------------------------</div>
+    <div class="ticket-seccion">DATOS DEL PACIENTE</div>
+    <div class="ticket-divider">--------------------------------</div>
+    <div class="ticket-info">
+      <p><strong>NOMBRE:</strong><br>{{ ordenGenerada()!.nombrePaciente }}</p>
+    </div>
+
+    <div class="ticket-divider">--------------------------------</div>
+    <div class="ticket-seccion">DETALLES DE ATENCIÓN</div>
+    <div class="ticket-divider">--------------------------------</div>
+    <div class="ticket-info">
+      <p><strong>ESPECIALIDAD:</strong><br>{{ ordenGenerada()!.especialidadMedico }}</p>
+      <p><strong>MÉDICO:</strong><br>{{ ordenGenerada()!.nombreMedico }}</p>
+    </div>
+
+    <div class="ticket-divider">================================</div>
+    <div class="ticket-footer">
+      <p>Por favor, espere el llamado</p>
+      <p>del medico en la sala.</p>
+    </div>
+  </div>
+}
