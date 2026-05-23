@@ -58,6 +58,15 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'auditoria-ordenes',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] },
+        loadComponent: () =>
+          import('./features/admision/auditoria-ordenes/admision-auditoria-ordenes.component').then(
+            m => m.AdmisionAuditoriaOrdenesComponent
+          )
+      },
+      {
         path: 'consulta',
         canActivate: [roleGuard],
         data: { roles: ROLES_ADMISION },

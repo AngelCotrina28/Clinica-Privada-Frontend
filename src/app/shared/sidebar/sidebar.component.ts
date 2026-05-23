@@ -72,6 +72,7 @@ export class SidebarComponent implements OnInit {
       children: [
         { label: 'Historias Clinicas', icon: 'record', route: '/admision/historias', rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
         { label: 'Emergencia', icon: 'emergency', route: '/admision/emergencia', rolesPermitidos: ['ADMINISTRADOR', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
+        { label: 'Auditoria de Ordenes', icon: 'receipt', route: '/admision/auditoria-ordenes', rolesPermitidos: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] },
         { label: 'Consulta Externa', icon: 'calendar', route: '/admision/consulta', rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] }
       ]
     },

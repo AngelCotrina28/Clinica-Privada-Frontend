@@ -1,0 +1,97 @@
+.tabla--auditoria {
+  min-width: 1040px;
+
+  td {
+    vertical-align: top;
+  }
+}
+
+.tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contador-resultados,
+.texto-secundario {
+  color: #718096;
+  font-size: 0.82rem;
+}
+
+.texto-secundario {
+  display: block;
+  margin-top: 0.2rem;
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.6fr) minmax(160px, 0.6fr) minmax(260px, 1.4fr);
+  gap: 1rem;
+  align-items: end;
+
+  .campo {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 820px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: #edf2f7;
+  color: #4a5568;
+
+  &--pendiente {
+    background: #fffaf0;
+    color: #b7791f;
+  }
+
+  &--en-atencion {
+    background: #ebf8ff;
+    color: #2b6cb0;
+  }
+
+  &--finalizado {
+    background: #f0fff4;
+    color: #276749;
+  }
+
+  &--cancelado {
+    background: #fff5f5;
+    color: #c53030;
+  }
+}
+
+.paginador {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2f7;
+
+  &__resumen {
+    color: #718096;
+    font-size: 0.85rem;
+  }
+
+  &__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+}

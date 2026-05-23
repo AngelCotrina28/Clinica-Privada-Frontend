@@ -39,15 +39,25 @@ export interface GenerarOrdenRequest {
 export interface OrdenEmergenciaResponse {
   id:                 number;
   numeroOrden:        string;
+  historiaClinicaId:  number;
   numeroHistoria:     string;
   dniPaciente:        string;
   nombrePaciente:     string;
+  medicoId:           number;
   nombreMedico:       string;
   especialidadMedico: string;
   estado:             string;
   motivo?:            string;
   generadoPor:        string;
   createdAt:          string;
+}
+
+export interface PageResponse<T> {
+  contenido:      T[];
+  paginaActual:   number;
+  totalPaginas:   number;
+  totalElementos: number;
+  ultima:         boolean;
 }
 
 export interface CitaRequest {

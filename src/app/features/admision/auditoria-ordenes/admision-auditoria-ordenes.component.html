@@ -1,0 +1,161 @@
+<app-header titulo="Auditoria de Ordenes" />
+
+<main class="contenedor">
+  <section>
+    <h2 class="subtitulo-seccion">Auditoria de Ordenes de Emergencia</h2>
+
+    @if (errorMensaje()) {
+      <div class="alerta alerta--error">
+        <span>!</span>
+        <p>{{ errorMensaje() }}</p>
+        <button type="button" (click)="errorMensaje.set('')">x</button>
+      </div>
+    }
+
+    <div class="bloque">
+      <h3 class="bloque__titulo">Filtros de busqueda</h3>
+
+      <form (ngSubmit)="aplicarFiltros()" novalidate>
+        <div class="filtros-grid">
+          <div class="campo">
+            <label class="campo__etiqueta" for="fecha_desde">Desde</label>
+            <input
+              id="fecha_desde"
+              type="date"
+              class="campo__input"
+              name="desde"
+              [(ngModel)]="filtros.desde"
+            />
+          </div>
+
+          <div class="campo">
+            <label class="campo__etiqueta" for="fecha_hasta">Hasta</label>
+            <input
+              id="fecha_hasta"
+              type="date"
+              class="campo__input"
+              name="hasta"
+              [(ngModel)]="filtros.hasta"
+            />
+          </div>
+
+          <div class="campo campo--busqueda">
+            <label class="campo__etiqueta" for="busqueda_orden">Paciente o medico</label>
+            <input
+              id="busqueda_orden"
+              type="search"
+              class="campo__input"
+              name="busqueda"
+              [(ngModel)]="filtros.busqueda"
+              placeholder="Nombre de paciente o medico"
+              maxlength="100"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="grupo-botones">
+          <button type="submit" class="btn btn--primario" [disabled]="cargando()">
+            @if (cargando()) { <span class="spinner"></span> }
+            Buscar
+          </button>
+          <button type="button" class="btn btn--ghost" [disabled]="cargando()" (click)="limpiarFiltros()">
+            Limpiar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bloque">
+      <div class="tabla-cabecera">
+        <h3 class="bloque__titulo">Resultados</h3>
+        <span class="contador-resultados">
+          {{ totalElementos() }} ordenes encontradas
+        </span>
+      </div>
+
+      @if (cargando()) {
+        <div class="cargando-inline">
+          <span class="spinner spinner--azul"></span>
+          Consultando ordenes...
+        </div>
+      } @else if (ordenes().length === 0) {
+        <p class="sin-datos-texto">No hay ordenes que coincidan con los filtros.</p>
+      } @else {
+        <div class="tabla-responsive">
+          <table class="tabla tabla--auditoria">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Nro Orden</th>
+                <th>Paciente</th>
+                <th>DNI / CE</th>
+                <th>Medico</th>
+                <th>Especialidad</th>
+                <th>Estado</th>
+                <th>Generado por</th>
+                <th>Motivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (orden of ordenes(); track orden.id) {
+                <tr>
+                  <td>{{ orden.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td><code>{{ orden.numeroOrden }}</code></td>
+                  <td>
+                    <strong>{{ orden.nombrePaciente }}</strong>
+                    <span class="texto-secundario">{{ orden.numeroHistoria }}</span>
+                  </td>
+                  <td>{{ orden.dniPaciente || '-' }}</td>
+                  <td>{{ orden.nombreMedico }}</td>
+                  <td>{{ orden.especialidadMedico || 'Medicina General' }}</td>
+                  <td><span [class]="estadoClase(orden.estado)">{{ orden.estado }}</span></td>
+                  <td>{{ orden.generadoPor }}</td>
+                  <td>{{ orden.motivo || '-' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="paginador">
+          <span class="paginador__resumen">
+            Mostrando {{ inicioResultado() }}-{{ finResultado() }} de {{ totalElementos() }}
+          </span>
+
+          <div class="paginador__acciones">
+            <button
+              type="button"
+              class="btn btn--sm btn--ghost"
+              [disabled]="resultado().paginaActual === 0"
+              (click)="cambiarPagina(resultado().paginaActual - 1)"
+            >
+              Anterior
+            </button>
+
+            @for (pagina of paginasVisibles(); track pagina) {
+              <button
+                type="button"
+                class="btn btn--sm"
+                [class.btn--primario]="pagina === resultado().paginaActual"
+                [class.btn--ghost]="pagina !== resultado().paginaActual"
+                (click)="cambiarPagina(pagina)"
+              >
+                {{ pagina + 1 }}
+              </button>
+            }
+
+            <button
+              type="button"
+              class="btn btn--sm btn--ghost"
+              [disabled]="resultado().ultima"
+              (click)="cambiarPagina(resultado().paginaActual + 1)"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</main>
