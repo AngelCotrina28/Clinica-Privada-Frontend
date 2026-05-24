@@ -2,19 +2,21 @@
     <h2 class="subtitulo-seccion">Registro de Resultados de Atención</h2>
 
     <form (ngSubmit)="guardarAtencion()">
-        <fieldset>
+        <fieldset [disabled]="cargando">
             <legend>Historia Clínica del Paciente Actual</legend>
 
             <label for="nro_cita">N° Cita / Orden:</label>
             <input type="text" id="nro_cita" value="CE-045" readonly>
 
-            <label for="diagnostico">Diagnóstico (CIE-10):</label>
-            <input type="text" id="diagnostico" required>
+            <label for="diagnostico">Diagnóstico:</label>
+            <input type="text" id="diagnostico" name="diagnostico" [(ngModel)]="diagnosticoCie10" required>
 
             <label for="notas_evolucion">Notas de Evolución:</label>
-            <textarea id="notas_evolucion" rows="5"></textarea>
+            <textarea id="notas_evolucion" name="notas_evolucion" rows="5" [(ngModel)]="notasEvolucion"></textarea>
 
-            <button type="submit" class="btn btn--primario">Guardar en Historia Clínica</button>
+            <button type="submit" class="btn btn--primario">
+                {{ cargando ? 'Guardando en BD...' : 'Guardar en Historia Clínica' }}
+            </button>
         </fieldset>
     </form>
 </section>

@@ -59,7 +59,9 @@ export class HistorialClinicoComponent {
     this.cargandoHistorial = true;
     this.atencionService.obtenerHistorialPaciente(historiaId).subscribe({
       next: (historial) => {
-        this.historialMedico = historial;
+        this.historialMedico = historial.sort((a, b) => 
+          new Date(b.fechaHoraInicio).getTime() - new Date(a.fechaHoraInicio).getTime()
+        );
         this.cargandoHistorial = false;
       },
       error: (err) => {
