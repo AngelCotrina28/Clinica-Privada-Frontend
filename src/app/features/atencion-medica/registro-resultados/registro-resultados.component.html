@@ -6,7 +6,19 @@
             <legend>Historia Clínica del Paciente Actual</legend>
 
             <label for="nro_cita">N° Cita / Orden:</label>
-            <input type="text" id="nro_cita" value="CE-045" readonly>
+            <input 
+                type="text" 
+                id="nro_cita" 
+                name="nro_cita"
+                [(ngModel)]="numeroCita"
+                (ngModelChange)="onCitaChange($event)"
+                required>
+            
+            <div style="font-size: 0.85em; margin-bottom: 10px;">
+                <span *ngIf="verificandoCita" style="color: blue;">Consultando base de datos...</span>
+                <span *ngIf="!verificandoCita && numeroCita && !citaValida" style="color: red;">❌ El ID de la cita u orden no existe.</span>
+                <span *ngIf="!verificandoCita && numeroCita && citaValida" style="color: green;">✅ Cita encontrada.</span>
+            </div>
 
             <label for="diagnostico">Diagnóstico:</label>
             <input type="text" id="diagnostico" name="diagnostico" [(ngModel)]="diagnosticoCie10" required>
@@ -14,7 +26,10 @@
             <label for="notas_evolucion">Notas de Evolución:</label>
             <textarea id="notas_evolucion" name="notas_evolucion" rows="5" [(ngModel)]="notasEvolucion"></textarea>
 
-            <button type="submit" class="btn btn--primario">
+            <button 
+                type="submit" 
+                class="btn btn--primario"
+                [disabled]="!citaValida || verificandoCita">
                 {{ cargando ? 'Guardando en BD...' : 'Guardar en Historia Clínica' }}
             </button>
         </fieldset>
