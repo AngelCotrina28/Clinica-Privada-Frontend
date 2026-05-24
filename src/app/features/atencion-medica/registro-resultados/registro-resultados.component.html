@@ -14,10 +14,16 @@
                 (ngModelChange)="onCitaChange($event)"
                 required>
             
-            <div style="font-size: 0.85em; margin-bottom: 10px;">
+            <div style="font-size: 0.85em; margin-bottom: 10px; height: 20px;">
                 <span *ngIf="verificandoCita" style="color: blue;">Consultando base de datos...</span>
-                <span *ngIf="!verificandoCita && numeroCita && !citaValida" style="color: red;">❌ El ID de la cita u orden no existe.</span>
-                <span *ngIf="!verificandoCita && numeroCita && citaValida" style="color: green;">✅ Cita encontrada.</span>
+                
+                <ng-container *ngIf="!verificandoCita && numeroCita">
+                    <span *ngIf="estadoCita === 'NO_EXISTE'" style="color: red;">❌ El ID de la cita u orden no existe.</span>
+                    <span *ngIf="estadoCita === 'OTRA_FECHA'" style="color: orange;">⚠️ La cita/orden no corresponde al día de hoy.</span>
+                    <span *ngIf="estadoCita === 'ATENDIDA'" style="color: #d97706;">⚠️ Esta cita u orden ya fue registrada o finalizada.</span>
+                    <span *ngIf="estadoCita === 'VALIDA'" style="color: green;">✅ Código válido y listo para atención.</span>
+                    <span *ngIf="estadoCita === 'ERROR'" style="color: red;">❌ Error al conectar con el servidor.</span>
+                </ng-container>
             </div>
 
             <label for="diagnostico">Diagnóstico:</label>
@@ -29,7 +35,7 @@
             <button 
                 type="submit" 
                 class="btn btn--primario"
-                [disabled]="!citaValida || verificandoCita">
+                [disabled]="estadoCita !== 'VALIDA' || verificandoCita">
                 {{ cargando ? 'Guardando en BD...' : 'Guardar en Historia Clínica' }}
             </button>
         </fieldset>

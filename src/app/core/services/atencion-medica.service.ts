@@ -28,8 +28,8 @@
             return this.http.post<number>(`${this.apiUrl}/registro`, datos);
         }
 
-        verificarExistenciaCita(codigo: string): Observable<boolean> {
+        verificarExistenciaCita(codigo: string): Observable<{estado: string}> {
             const url = `${this.apiUrl}/verificar-cita/${codigo}`;
-            return this.http.get<boolean>(url);
+            return this.http.get<{estado: string}>(url);
         }
     }
