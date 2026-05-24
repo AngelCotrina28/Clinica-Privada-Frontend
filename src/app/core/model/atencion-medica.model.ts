@@ -9,3 +9,11 @@ export interface AtencionMedicaHistorial {
     diagnosticoSecundario?: string;
     tratamiento: string;
 }
+
+export interface AtencionMedicaRequest {
+    historiaClinicaId: number;
+    numeroCita?: string;
+    diagnosticoPrincipal: string;
+    notasEvolucion?: string;
+    medicoId: number;
+}
