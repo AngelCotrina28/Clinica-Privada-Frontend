@@ -20,7 +20,6 @@ export class CatalogoMedicosComponent implements OnInit {
   }
 
   cargarCatalogo(): void {
-    // Usamos el servicio de trabajadores para traer solo médicos
     this.trabajadorService.getMedicosActivos().subscribe({
       next: (data) => this.medicos = data,
       error: (err) => console.error('Error al cargar catálogo', err)

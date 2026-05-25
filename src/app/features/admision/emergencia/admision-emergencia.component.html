@@ -20,7 +20,6 @@
       </div>
     }
 
-    <!-- ══ BLOQUE: Verificar Historia Clínica ══════════════════════ -->
     <div class="bloque">
       <h3 class="bloque__titulo">Verificar Historia Clinica</h3>
       <div class="grupo-acciones">
@@ -79,7 +78,6 @@
       }
     </div>
 
-    <!-- ══ BLOQUE: Formulario Nueva Historia ═══════════════════════ -->
     @if (mostrarFormNueva) {
       <div class="bloque bloque--nuevo">
         <h3 class="bloque__titulo">Datos del Nuevo Paciente</h3>
@@ -194,7 +192,6 @@
       </div>
     }
 
-    <!-- ══ BLOQUE: Generar Orden de Emergencia ═════════════════════ -->
     <div class="bloque">
       <h3 class="bloque__titulo">Generar Orden de Atencion de Emergencia</h3>
 
@@ -275,7 +272,6 @@
       </form>
     </div>
 
-    <!-- ══ RESULTADO: Orden Generada ═══════════════════════════════ -->
     @if (ordenGenerada()) {
       <div class="resultado resultado--orden">
         <div class="resultado__cabecera">
@@ -303,7 +299,6 @@
       </div>
     }
 
-    <!-- ══ BLOQUE: Órdenes del Día ═════════════════════════════════ -->
     <div class="bloque">
       <h3 class="bloque__titulo">Ordenes de Emergencia Registradas Hoy</h3>
       @if (ordenesHoy().length === 0) {

@@ -161,12 +161,15 @@
 
         <div class="bloque" style="max-width: 700px; margin: 0 auto;">
             @if (pasoActual() === 1) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿En qué especialidad desea atenderse?</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.05rem;">¿En qué especialidad desea atenderse?</h3>
 
             <div class="autocompletado-container" style="max-width: 400px; margin: 2rem auto; position: relative;">
                 <label class="campo__etiqueta" style="text-align: left;">Buscar especialidad:</label>
                 <div class="campo-busqueda-wrapper">
-                    <span class="icono-input">🔍</span>
+                    <svg class="icono-input" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="11" cy="11" r="6"></circle>
+                        <path d="M16 16l4 4"></path>
+                    </svg>
                     <input type="text" class="campo__input input-con-icono" placeholder="Ingrese la Especialidad"
                         [(ngModel)]="terminoBusquedaEspecialidad" (input)="filtrarEspecialidades()"
                         (focus)="filtrarEspecialidades()" (blur)="cerrarDropdown()" autocomplete="off">
@@ -197,7 +200,7 @@
             }
 
             @if (pasoActual() === 2) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">¿Con quién desea atenderse?</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.05rem;">¿Con quién desea atenderse?</h3>
 
             @if (cargandoMedicos) {
             <div style="text-align: center; padding: 2rem;">
@@ -236,7 +239,7 @@
             }
 
             @if (pasoActual() === 3) {
-            <h3 class="bloque__titulo text-center mb-4" style="font-size: 1.5rem;">Disponibilidad de {{ medicoSeleccionado?.nombreCompleto }}</h3>
+            <h3 class="bloque__titulo text-center mb-4" style="font-size: 1.05rem;">Disponibilidad de {{ medicoSeleccionado?.nombreCompleto }}</h3>
 
             <div class="calendario-mensual-container mx-auto" style="max-width: 900px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; background: white;">
                 
@@ -339,7 +342,7 @@
             }
 
             @if (pasoActual() === 4) {
-            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.5rem;">Resumen de la Cita</h3>
+            <h3 class="bloque__titulo" style="text-align: center; font-size: 1.05rem;">Resumen de la Cita</h3>
 
             <div class="resultado" style="max-width: 500px; margin: 2rem auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div class="resultado__cabecera" style="background-color: #0d2a4e; color: white;">

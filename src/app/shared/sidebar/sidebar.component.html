@@ -6,7 +6,9 @@
       <span>Clinica privada</span>
     </div>
     <button type="button" class="sidebar__toggle" (click)="toggleSidebar()" aria-label="Alternar menu">
-      <span class="toggle-icon">{{ colapsado() ? '>' : '<' }}</span>
+      <svg class="toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path [attr.d]="colapsado() ? 'M9 6l6 6-6 6' : 'M15 6l-6 6 6 6'"></path>
+      </svg>
     </button>
   </div>
 
@@ -28,7 +30,9 @@
             <path *ngFor="let path of obtenerIcono(item.icon)" [attr.d]="path"></path>
           </svg>
           <span class="nav-link__label">{{ item.label }}</span>
-          <span class="nav-link__chevron">{{ grupoAbierto(item) ? 'v' : '>' }}</span>
+          <svg class="nav-link__chevron" viewBox="0 0 24 24" aria-hidden="true">
+            <path [attr.d]="grupoAbierto(item) ? 'M6 9l6 6 6-6' : 'M9 6l6 6-6 6'"></path>
+          </svg>
         </button>
 
         <div class="nav-submenu" *ngIf="grupoAbierto(item) && !colapsado()">

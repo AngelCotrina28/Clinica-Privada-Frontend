@@ -1,12 +1,3 @@
-// ============================================================
-// farmacia-despacho.component.ts
-// Sub-sección: Despacho de Medicamentos
-// Ubicación: src/app/features/farmacia/despacho/farmacia-despacho.component.ts
-//
-// NOTA: Las órdenes de despacho dependen del módulo de Caja/Facturación
-// (que aún no tiene su endpoint). Se usa data de demo con la estructura
-// real para que cuando el endpoint exista solo cambie el servicio.
-// ============================================================
 
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -39,7 +30,7 @@ export class FarmaciaDespachoComponent implements OnInit {
   confirmando       = signal(false);
   ordenSeleccionada: OrdenDespacho | null = null;
 
-  // Demo: en producción esto vendrá del endpoint de órdenes pagadas
+  // Datos temporales hasta integrar el endpoint de despacho.
   ordenesPendientes: OrdenDespacho[] = [
     {
       nroReceta:    'REC-9921',
@@ -78,7 +69,6 @@ export class FarmaciaDespachoComponent implements OnInit {
       return;
     }
     this.cargandoBusqueda.set(true);
-    // Filtro local hasta que exista endpoint real
     setTimeout(() => {
       this.ordenesPendientes = this.todasLasOrdenes.filter(o =>
         o.nroReceta.toLowerCase().includes(termino) ||
@@ -98,8 +88,7 @@ export class FarmaciaDespachoComponent implements OnInit {
     if (!this.ordenSeleccionada) return;
     this.confirmando.set(true);
 
-    // TODO: llamar endpoint POST /api/farmacia/despacho cuando esté disponible
-    // Por ahora simula éxito y retira la orden de la lista
+    // Simula la respuesta del backend mientras el endpoint real no existe.
     setTimeout(() => {
       this.ordenesPendientes = this.ordenesPendientes.filter(
         o => o.nroReceta !== this.ordenSeleccionada!.nroReceta
@@ -111,7 +100,7 @@ export class FarmaciaDespachoComponent implements OnInit {
   }
 
   imprimirOrden(orden: OrdenDespacho): void {
-    // TODO: llamar endpoint de impresión / PDF cuando esté disponible
+    // Pendiente de reemplazar por el endpoint de impresion/PDF.
     window.print();
   }
 }

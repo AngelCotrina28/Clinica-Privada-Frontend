@@ -32,7 +32,6 @@ export class LoginComponent {
 
         this.authService.login(this.credentials).subscribe({
             next: (response) => {
-                // Delegamos la decisión de a qué pantalla ir según el rol
                 this.redirigirSegunRol(response.rol);
             },
             error: (err) => {
@@ -47,10 +46,6 @@ export class LoginComponent {
         });
     }
 
-    /**
-     * Módulo de enrutamiento inteligente.
-     * Centraliza la lógica de "Aterrizaje" para cada tipo de trabajador.
-     */
     private redirigirSegunRol(rol: string): void {
         switch (rol) {
             case 'MEDICO':
@@ -69,7 +64,6 @@ export class LoginComponent {
                 break;
             case 'ADMINISTRADOR':
             default:
-                // El administrador y cualquier rol por defecto aterrizan en el Inicio
                 this.router.navigate(['/dashboard']);
                 break;
         }

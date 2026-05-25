@@ -21,7 +21,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
   pacienteActivo: HistoriaClinicaResponse | null = null;
   
-  // Nuevas variables para el control de la Cita
   numeroCita: string = '';
   estadoCita: string = '';
   verificandoCita: boolean = false;
@@ -30,7 +29,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
   notasEvolucion: string = '';
   cargando: boolean = false;
 
-  // Subject para manejar la entrada de texto con retraso
   private citaSubject = new Subject<string>();
   private citaSubscription!: Subscription;
 
@@ -39,12 +37,11 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
       this.pacienteActivo = paciente;
     });
 
-    // Configuración del validador asíncrono
     this.citaSubscription = this.citaSubject.pipe(
-      debounceTime(500), // Espera 500ms tras la última tecla pulsada
-      distinctUntilChanged(), // Solo busca si el valor ha cambiado
+      debounceTime(500),
+      distinctUntilChanged(),
       switchMap(termino => {
-        const codigoLimpio = termino.trim(); // Limpiamos espacios en blanco
+        const codigoLimpio = termino.trim();
         
         if (!codigoLimpio) {
           this.estadoCita = '';
@@ -54,7 +51,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
         
         this.verificandoCita = true;
         
-        // Enviamos el código alfanumérico al servicio
         return this.atencionService.verificarExistenciaCita(codigoLimpio).pipe(
           catchError(() => of({ estado: 'ERROR' }))
         );
@@ -67,16 +63,14 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Método que se activa cada vez que el usuario teclea en el input
   onCitaChange(valor: string) {
-    this.estadoCita = ''; // Se limpia el estado temporalmente mientras escribe
+    this.estadoCita = '';
     this.citaSubject.next(valor);
   }
 
  guardarAtencion() {
     if (!this.pacienteActivo) return;
     
-    // Única validación necesaria para la cita/orden
     if (this.estadoCita !== 'VALIDA') {
       alert('Debe ingresar un código válido y disponible.');
       return;
@@ -94,7 +88,7 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
       numeroCita: this.numeroCita, 
       diagnosticoPrincipal: this.diagnosticoCie10,
       notasEvolucion: this.notasEvolucion,
-      medicoId: 6 // Asumo que este ID lo volverás dinámico más adelante con el token de sesión
+      medicoId: 6
     };
 
     this.atencionService.registrarAtencion(request).subscribe({
@@ -111,7 +105,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Evita fugas de memoria al destruir el componente
     if (this.citaSubscription) {
       this.citaSubscription.unsubscribe();
     }

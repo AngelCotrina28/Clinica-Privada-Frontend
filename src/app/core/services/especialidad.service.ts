@@ -7,7 +7,6 @@ import { Especialidad } from '../model/especialidad.model';
   providedIn: 'root'
 })
 export class EspecialidadService {
-  // La ruta de tu backend que devuelve las especialidades
   private apiUrl = 'http://localhost:8080/api/especialidades';
 
   constructor(private http: HttpClient) { }

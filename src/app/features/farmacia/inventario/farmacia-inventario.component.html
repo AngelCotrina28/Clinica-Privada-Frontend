@@ -6,7 +6,7 @@
 
     @if (errorMensaje()) {
       <div class="alerta alerta--error">
-        <span>⚠</span><p>{{ errorMensaje() }}</p>
+        <span>Alerta</span><p>{{ errorMensaje() }}</p>
         <button (click)="errorMensaje.set('')">✕</button>
       </div>
     }
@@ -56,7 +56,6 @@
       </div>
     </div>
 
-
     <div class="bloque">
       <div class="tabla-responsive">
         <table class="tabla">
@@ -90,7 +89,7 @@
                 <td>
                   {{ med.stockActual }}
                   @if (med.stockBajo) {
-                    <span class="badge badge--alerta" title="Stock por debajo del mínimo ({{ med.stockMinimo }})">⚠️ Bajo</span>
+                    <span class="badge badge--alerta" title="Stock por debajo del mínimo ({{ med.stockMinimo }})">Bajo</span>
                   }
                 </td>
                 <td>{{ med.stockMinimo }}</td>
@@ -110,13 +109,28 @@
                 
                 <td>
                   <div class="acciones-td">
-                    <button type="button" class="btn-icon" title="Editar" (click)="abrirModalEditar(med)" *ngIf="esAdmin">✏️</button>
-                    
+                    <button type="button" class="btn-icon" title="Editar" aria-label="Editar" (click)="abrirModalEditar(med)" *ngIf="esAdmin">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"></path>
+                        <path d="M14 7l3 3"></path>
+                      </svg>
+                    </button>
+
                     @if (med.activo && esAdmin) {
-                      <button type="button" class="btn-icon btn-icon--danger" title="Inactivar" (click)="toggleEstado(med)">🗑️</button>
+                      <button type="button" class="btn-icon btn-icon--danger" title="Inactivar" aria-label="Inactivar" (click)="toggleEstado(med)">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M5 7h14"></path>
+                          <path d="M9 7V5h6v2"></path>
+                          <path d="M8 10v9h8v-9"></path>
+                        </svg>
+                      </button>
                     }
                     @if (!med.activo && esAdmin) {
-                      <button type="button" class="btn-icon btn-icon--success" title="Activar" (click)="toggleEstado(med)">✅</button>
+                      <button type="button" class="btn-icon btn-icon--success" title="Activar" aria-label="Activar" (click)="toggleEstado(med)">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M5 12l4 4L19 6"></path>
+                        </svg>
+                      </button>
                     }
                   </div>
                 </td>

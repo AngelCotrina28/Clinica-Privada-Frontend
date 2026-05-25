@@ -24,10 +24,9 @@ h3.bloque__titulo {
 }
 
 .barra-busqueda {
-  max-width: 700px; // Limita el ancho para que no se estire en pantallas gigantes
+  max-width: 700px;
 }
 
-// Estilo auxiliar para el spinner de carga
 .spinner {
   width: 18px;
   height: 18px;
@@ -50,12 +49,8 @@ h3.bloque__titulo {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  margin-bottom: 2rem; // Despega por completo los filtros de la tabla
+  margin-bottom: 2rem;
 }
-
-// ==========================================================================
-// ESTRUCTURA DE LA FILA SUPERIOR (BUSCADOR DESACOPLADO Y BOTÓN NUEVO)
-// ==========================================================================
 
 .filtros-superior {
   display: flex;
@@ -65,7 +60,6 @@ h3.bloque__titulo {
   width: 100%;
 }
 
-// Envoltorio para separar físicamente el input del botón buscar con un gap
 .campo-busqueda-inline-wrapper {
   display: flex;
   gap: 1rem; 
@@ -74,7 +68,6 @@ h3.bloque__titulo {
   align-items: center;
 }
 
-// Contenedor del input (Ya no contiene al botón adentro)
 .campo-busqueda-principal {
   display: flex;
   flex: 1;
@@ -101,11 +94,10 @@ h3.bloque__titulo {
   outline: none;
 }
 
-// Botón Buscar Independiente con bordes redondeados completos
 .btn-buscar-moderno {
   height: 42px;
   padding: 0 1.5rem;
-  background-color: #2b6cb0; // Azul institucional
+  background-color: #2b6cb0;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -132,7 +124,6 @@ h3.bloque__titulo {
   }
 }
 
-// Botón + Nuevo Medicamento
 .btn-nuevo{
   background: #1e293b;
   color: white;
@@ -150,10 +141,6 @@ h3.bloque__titulo {
 
   &:hover { background: #0f172a; }
 }
-
-// ==========================================================================
-// ESTRUCTURA DE LA FILA INFERIOR (CATEGORÍAS Y ACCIONES)
-// ==========================================================================
 
 .filtros-inferior {
   display: flex;
@@ -225,10 +212,6 @@ h3.bloque__titulo {
   }
 }
 
-// ==========================================================================
-// BADGES DE LA TABLA (COLORES DE RECETA E INFRAESTRUCTURA)
-// ==========================================================================
-
 .badge-clinica {
   display: inline-block;
   padding: 0.35rem 0.75rem;
@@ -240,32 +223,27 @@ h3.bloque__titulo {
   letter-spacing: 0.03em;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 
-  // SÍ Requiere Receta -> Verde institucional suave
   &--receta {
     background-color: #dcfce7; 
     color: #16a34a;            
   }
 
-  // NO Requiere Receta -> Alerta roja/rosa suave
   &--libre {
     background-color: #ffe4e6; 
     color: #e11d48;            
   }
 
-  // Estado Activo
   &--activo {
     background-color: #ecfdf5; 
     color: #059669;            
   }
 
-  // Estado Inactivo
   &--inactivo {
     background-color: #f1f5f9; 
     color: #64748b;            
   }
 }
 
-// SEPARACIÓN SIMÉTRICA PARA LOS BOTONES DE ACCIÓN (EDITAR / ELIMINAR)
 .acciones-td {
   display: flex;
   gap: 0.8rem; 
@@ -273,21 +251,41 @@ h3.bloque__titulo {
   justify-content: flex-start;
 
   .btn-icon {
+    align-items: center;
     background: transparent;
     border: none;
-    font-size: 1.1rem;
+    color: #334155;
     cursor: pointer;
+    display: inline-flex;
+    height: 32px;
+    justify-content: center;
+    padding: 0;
     transition: transform 0.2s;
-    
+    width: 32px;
+
+    svg {
+      fill: none;
+      height: 18px;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+      width: 18px;
+    }
+
     &:hover {
       transform: scale(1.15);
     }
   }
-}
 
-// ==========================================================================
-// CAPA MODAL (CREAR / EDITAR)
-// ==========================================================================
+  .btn-icon--danger {
+    color: #b42318;
+  }
+
+  .btn-icon--success {
+    color: #047857;
+  }
+}
 
 .modal-overlay {
   position: fixed;
@@ -336,7 +334,6 @@ h3.bloque__titulo {
   }
 }
 
-// RESPONSIVE DESIGN
 @media (max-width: 868px) {
   .filtros-superior {
     flex-direction: column;

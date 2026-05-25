@@ -1,7 +1,3 @@
-// ============================================================
-// farmacia.models.ts
-// Modelos tipados del módulo Farmacia
-// ============================================================
 
 export interface MedicamentoResponse {
   id: number;

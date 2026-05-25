@@ -4,10 +4,9 @@
   <section>
     <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
 
-    <!-- Alertas -->
     @if (errorMensaje()) {
       <div class="alerta alerta--error">
-        <span>⚠</span><p>{{ errorMensaje() }}</p>
+        <span>Alerta</span><p>{{ errorMensaje() }}</p>
         <button (click)="errorMensaje.set('')">✕</button>
       </div>
     }
@@ -18,7 +17,6 @@
       </div>
     }
 
-    <!-- ── Búsqueda de órdenes ── -->
     <div class="bloque">
       <h3 class="bloque__titulo">Buscar Orden de Entrega</h3>
       <div class="barra-busqueda">
@@ -38,7 +36,6 @@
       </div>
     </div>
 
-    <!-- ── Tabla de órdenes pendientes ── -->
     <div class="bloque">
       <h3 class="bloque__titulo">Órdenes Pendientes de Despacho</h3>
       <div class="tabla-responsive">
@@ -84,7 +81,7 @@
                       Registrar Entrega
                     </button>
                     <button class="btn btn--sm btn--ghost" (click)="imprimirOrden(orden)">
-                      🖨️ Imprimir
+                      Imprimir
                     </button>
                   </div>
                 </td>
@@ -108,7 +105,6 @@
   </section>
 </main>
 
-<!-- ══ MODAL CONFIRMAR ENTREGA ════════════════════════════════ -->
 <div class="modal-overlay" *ngIf="ordenSeleccionada" (click)="ordenSeleccionada = null">
   <div class="modal-contenedor" (click)="$event.stopPropagation()">
     <div class="modal-header">
@@ -151,7 +147,7 @@
       <div class="modal-footer">
         <button class="btn btn--ghost" (click)="ordenSeleccionada = null">Cancelar</button>
         <button class="btn btn--primario" [disabled]="confirmando()" (click)="confirmarEntrega()">
-          @if (confirmando()) { <span class="spinner"></span> } ✅ Confirmar Entrega
+          @if (confirmando()) { <span class="spinner"></span> } Confirmar Entrega
         </button>
       </div>
     </div>

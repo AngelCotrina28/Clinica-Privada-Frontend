@@ -20,11 +20,9 @@ import { AbrirHistoriaRequest, CitaRequest, CitaResponse, HistoriaClinicaRespons
 export class AdmisionConsultaComponent implements OnInit {
   private readonly API = 'http://localhost:8080/api';
 
-  // --- VARIABLES DEL STEPPER ---
   pasoActual = signal<number>(1);
   totalPasos = 4;
 
-  // --- MODELO DE DATOS Y ESTADOS ---
   cita: CitaRequest = { historiaClinicaId: null, especialidadId: null, fechaHora: '' };
   medicoSeleccionado: Trabajador | null = null;
   fechaSeleccionada = '';
@@ -38,21 +36,18 @@ export class AdmisionConsultaComponent implements OnInit {
   cargandoHorarios = false;
   guardandoCita = false;
 
-  // --- VARIABLES DE HISTORIA CLÍNICA ---
   dniBusqueda = '';
   mostrarFormNueva = false;
   historiaSeleccionada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
   cargandoHistoria = signal(false);
 
-  // --- VARIABLES DE ESPECIALIDAD ---
   terminoBusquedaEspecialidad = '';
   mostrarDropdownEspecialidad = false;
   especialidadesDB: Especialidad[] = [];
   especialidadesFiltradas: Especialidad[] = [];
   medicosDisponibles: Trabajador[] = [];
 
-  // --- VARIABLES DEL CALENDARIO MENSUAL ---
   mesActual: number = new Date().getMonth();
   anioActual: number = new Date().getFullYear();
   mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -89,13 +84,11 @@ export class AdmisionConsultaComponent implements OnInit {
     });
   }
 
-  // --- NAVEGACIÓN DEL STEPPER ---
   siguientePaso(): void {
     if (this.pasoActual() === 1 && this.cita.especialidadId) {
       this.cargarMedicosPorEspecialidad();
     }
     
-    // Disparamos tu calendario cuando se selecciona el médico en el paso 2
     if (this.pasoActual() === 2 && this.medicoSeleccionado) {
       this.generarCalendario();
     }
@@ -111,7 +104,6 @@ export class AdmisionConsultaComponent implements OnInit {
     }
   }
 
-  // --- LÓGICA DE HISTORIA CLÍNICA ---
   buscarHistoria(): void {
     if (!this.dniBusqueda.trim()) return;
     this.limpiarMensajes();
@@ -163,7 +155,6 @@ export class AdmisionConsultaComponent implements OnInit {
     this.limpiarMensajes();
   }
 
-  // --- LÓGICA DE ESPECIALIDADES ---
   filtrarEspecialidades(): void {
     const termino = this.terminoBusquedaEspecialidad.toLowerCase().trim();
     if (!termino) {
@@ -195,7 +186,6 @@ export class AdmisionConsultaComponent implements OnInit {
     }, 200);
   }
 
-  // --- LÓGICA DE MÉDICOS ---
   cargarMedicosPorEspecialidad(): void {
     if (!this.cita.especialidadId) return;
     this.cargandoMedicos = true;
@@ -221,7 +211,6 @@ export class AdmisionConsultaComponent implements OnInit {
     this.cita.medicoId = medico.id;
   }
 
-  // --- LÓGICA DEL CALENDARIO MENSUAL ---
   cambiarMes(incremento: number): void {
     this.mesActual += incremento;
     if (this.mesActual > 11) {
@@ -301,7 +290,6 @@ export class AdmisionConsultaComponent implements OnInit {
     this.cerrarModalHorarios();
   }
 
-  // --- LÓGICA DE PROGRAMACIÓN FINAL ---
   programarCita(): void {
     if (!this.cita.historiaClinicaId || !this.cita.especialidadId || !this.medicoSeleccionado || !this.cita.fechaHora) {
       this.errorMensaje.set('Complete todos los datos necesarios.');
@@ -325,7 +313,7 @@ export class AdmisionConsultaComponent implements OnInit {
         this.citaProgramada.set(cita);
         this.exitoMensaje.set(`Cita ${cita.numeroCita} programada correctamente.`);
         this.guardandoCita = false;
-        this.pasoActual.set(4); // Avanzamos a la pantalla de éxito
+        this.pasoActual.set(4);
       },
       error: (e: HttpErrorResponse) => {
         this.errorMensaje.set(e.error?.mensaje ?? 'Error al programar la cita.');
@@ -334,7 +322,6 @@ export class AdmisionConsultaComponent implements OnInit {
     });
   }
 
-  // --- UTILIDADES ---
   limpiarHistoriaSeleccionada(): void {
     this.historiaSeleccionada.set(null);
     this.cita.historiaClinicaId = null;

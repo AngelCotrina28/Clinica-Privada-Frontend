@@ -18,11 +18,11 @@
                 <span *ngIf="verificandoCita" style="color: blue;">Consultando base de datos...</span>
                 
                 <ng-container *ngIf="!verificandoCita && numeroCita">
-                    <span *ngIf="estadoCita === 'NO_EXISTE'" style="color: red;">❌ El ID de la cita u orden no existe.</span>
-                    <span *ngIf="estadoCita === 'OTRA_FECHA'" style="color: orange;">⚠️ La cita/orden no corresponde al día de hoy.</span>
-                    <span *ngIf="estadoCita === 'ATENDIDA'" style="color: #d97706;">⚠️ Esta cita u orden ya fue registrada o finalizada.</span>
-                    <span *ngIf="estadoCita === 'VALIDA'" style="color: green;">✅ Código válido y listo para atención.</span>
-                    <span *ngIf="estadoCita === 'ERROR'" style="color: red;">❌ Error al conectar con el servidor.</span>
+                    <span *ngIf="estadoCita === 'NO_EXISTE'" style="color: red;">Error: El ID de la cita u orden no existe.</span>
+                    <span *ngIf="estadoCita === 'OTRA_FECHA'" style="color: orange;">Aviso: La cita/orden no corresponde al día de hoy.</span>
+                    <span *ngIf="estadoCita === 'ATENDIDA'" style="color: #d97706;">Aviso: Esta cita u orden ya fue registrada o finalizada.</span>
+                    <span *ngIf="estadoCita === 'VALIDA'" style="color: green;">Validado: Código válido y listo para atención.</span>
+                    <span *ngIf="estadoCita === 'ERROR'" style="color: red;">Error: No se pudo conectar con el servidor.</span>
                 </ng-container>
             </div>
 

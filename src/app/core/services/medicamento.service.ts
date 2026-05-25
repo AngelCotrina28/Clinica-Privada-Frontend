@@ -1,8 +1,3 @@
-// ============================================================
-// medicamento.service.ts
-// Servicio HTTP para el catálogo de medicamentos
-// Ubicación: src/app/core/services/medicamento.service.ts
-// ============================================================
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -21,8 +16,6 @@ export class MedicamentoService {
   private readonly API = 'http://localhost:8080/api';
 
   constructor(private http: HttpClient) {}
-
-  // ── Consulta ────────────────────────────────────────────────
 
   buscar(params: {
     nombre?: string;
@@ -71,8 +64,6 @@ export class MedicamentoService {
       .set('tamano', tamano.toString());
     return this.http.get(`${this.API}/medicamentos/${id}/historial`, { params });
   }
-
-  // ── Gestión (solo ADMIN) ─────────────────────────────────────
 
   registrar(dto: MedicamentoRequest): Observable<MedicamentoResponse> {
     return this.http.post<MedicamentoResponse>(`${this.API}/medicamentos`, dto);

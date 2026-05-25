@@ -23,7 +23,6 @@ export class RecetaMedicaComponent implements OnInit {
 
   pacienteActivo: HistoriaClinicaResponse | null = null;
 
-  // Datos extraídos de tu componente original
   receta: ItemReceta[] = [
     {
       medicamento: 'Paracetamol 500mg',

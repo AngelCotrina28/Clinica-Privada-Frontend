@@ -1,8 +1,5 @@
 @use 'sass:color';
 
-/* ==============================================
-   BARRA DE HERRAMIENTAS Y TABLA
-   ============================================== */
 .caja-filtros {
   display: flex;
   flex-wrap: wrap;
@@ -173,9 +170,6 @@ td strong {
   color: var(--color-texto-titulo, #1A3B5D);
 }
 
-/* ==============================================
-   ESTILOS DEL MODAL (HORIZONTAL)
-   ============================================== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -200,9 +194,9 @@ td strong {
   animation: slideDown 0.3s ease-out;
 
   &.horizontal {
-    max-width: 850px; /* Ancho para dos columnas */
+    max-width: 850px;
     width: 90%;
-    max-height: 90vh; /* Para que no se salga de la pantalla */
+    max-height: 90vh;
     overflow-y: auto;
   }
 }
@@ -238,7 +232,7 @@ td strong {
 
 .formulario-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  grid-template-columns: 1fr 1fr;
   gap: 1.2rem;
   padding: 0.5rem;
 }
@@ -296,7 +290,6 @@ td strong {
   border-radius: 0 0 12px 12px;
 }
 
-/* Animaciones */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -307,7 +300,6 @@ td strong {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Responsive: si la pantalla es pequeña, se vuelve vertical de nuevo */
 @media (max-width: 600px) {
   .formulario-grid {
     grid-template-columns: 1fr;
@@ -326,7 +318,7 @@ td strong {
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   max-height: 200px;
-  overflow-y: auto; // Por si tienes las 40 especialidades
+  overflow-y: auto;
 }
 
 .checkbox-item {

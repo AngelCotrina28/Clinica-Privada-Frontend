@@ -59,7 +59,6 @@ export class AdmisionEmergenciaComponent implements OnInit {
   }
 
   cargarOrdenesHoy(): void {
-    // Nota: Asegúrate de que este endpoint exista en tu backend Spring Boot
     this.http.get<OrdenEmergenciaResponse[]>(`${this.API}/admision/emergencia/ordenes/hoy`).subscribe({
       next: (ordenes) => {
         this.ordenesHoy.set(ordenes);
@@ -74,7 +73,6 @@ export class AdmisionEmergenciaComponent implements OnInit {
     this.exitoMensaje.set(mensaje);
     
     setTimeout(() => {
-      // Solo limpiamos si el mensaje actual es el mismo (evita que un nuevo toast se borre prematuramente)
       if (this.exitoMensaje() === mensaje) {
         this.exitoMensaje.set('');
       }

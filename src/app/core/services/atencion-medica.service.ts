@@ -12,7 +12,6 @@
         private http = inject(HttpClient);
         private apiUrl = 'http://localhost:8080/api/atenciones';
 
-        // --- GESTIÓN DE ESTADO  ---
         private pacienteActivoSource = new BehaviorSubject<HistoriaClinicaResponse | null>(null);
         pacienteActivo$ = this.pacienteActivoSource.asObservable();
 

@@ -17,7 +17,6 @@ export class AtencionMedicaComponent implements OnInit, OnDestroy {
   private atencionService = inject(AtencionMedicaService);
   private router = inject(Router);
   
-  // Variable para almacenar y gestionar la suscripción
   private pacienteSubscription!: Subscription;
 
   pacienteActivo: HistoriaClinicaResponse | null = null;
@@ -30,7 +29,6 @@ export class AtencionMedicaComponent implements OnInit, OnDestroy {
 
   finalizarAtencion() {
     if (confirm('¿Desea cerrar la sesión del paciente actual?')) {
-      // Limpia la memoria del paciente activo
       this.atencionService.setPacienteActivo(null);
 
       this.router.navigate(['/atencion-medica/buscar']);
@@ -38,7 +36,6 @@ export class AtencionMedicaComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Se cancela la suscripción al destruir el componente para liberar memoria
     if (this.pacienteSubscription) {
       this.pacienteSubscription.unsubscribe();
     }

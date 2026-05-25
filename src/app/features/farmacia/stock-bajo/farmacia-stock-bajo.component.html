@@ -1,20 +1,15 @@
-<!-- ============================================================
-  farmacia-stock-bajo.component.html
-  Sub-sección: Alertas de Stock Bajo
-  ============================================================ -->
-
 <app-header titulo="Farmacia - Alertas de Stock" />
 
 <main class="contenedor">
   <section class="seccion">
 
     <div class="seccion__cabecera">
-      <h2 class="subtitulo-seccion">⚠️ Alertas de Stock Bajo</h2>
+      <h2 class="subtitulo-seccion">Alertas de Stock Bajo</h2>
     </div>
 
     @if (errorMensaje()) {
       <div class="alerta alerta--error">
-        <span>⚠</span><p>{{ errorMensaje() }}</p>
+        <span>Alerta</span><p>{{ errorMensaje() }}</p>
         <button (click)="errorMensaje.set('')">✕</button>
       </div>
     }
@@ -22,7 +17,7 @@
     <div class="bloque">
       <div class="encabezado-flexible">
         <h3 class="bloque__titulo">Medicamentos por debajo del stock mínimo</h3>
-        <button class="btn btn--ghost btn--sm" (click)="cargar()">🔄 Actualizar</button>
+        <button class="btn btn--ghost btn--sm" (click)="cargar()">Actualizar</button>
       </div>
 
       <div class="tabla-responsive">
@@ -63,7 +58,7 @@
                     <span class="cargando-inline"><span class="spinner spinner--azul"></span> Cargando alertas...</span>
                   } @else {
                     <div class="sin-datos-exito">
-                      <span>✅</span>
+                      <span>OK</span>
                       <p>¡Todos los medicamentos tienen stock suficiente!</p>
                     </div>
                   }

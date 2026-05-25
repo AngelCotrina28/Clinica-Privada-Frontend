@@ -1,8 +1,3 @@
-// ============================================================
-// farmacia-inventario.component.ts
-// Sub-sección: Control de Inventario y Medicamentos
-// Ubicación: src/app/features/farmacia/inventario/farmacia-inventario.component.ts
-// ============================================================
 
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
@@ -34,7 +29,6 @@ import {
 })
 export class FarmaciaInventarioComponent implements OnInit {
 
-  // ── Estado ─────────────────────────────────────────────────
   medicamentos: MedicamentoResponse[] = [];
   categorias:   CategoriaResponse[]   = [];
   cargando      = signal(false);
@@ -42,15 +36,12 @@ export class FarmaciaInventarioComponent implements OnInit {
   errorMensaje  = signal('');
   exitoMensaje  = signal('');
 
-  // Paginación
   paginaActual   = 0;
   totalPaginas   = 0;
   totalElementos = 0;
 
-  // Filtros
   filtros = { nombre: '', categoriaId: undefined as number | undefined, soloActivos: true };
 
-  // Modales
   isModalOpen  = false;
   isEditMode   = false;
   medDetalle:  MedicamentoResponse | null = null;
@@ -58,10 +49,8 @@ export class FarmaciaInventarioComponent implements OnInit {
   historialItems:  HistorialMedicamento[] = [];
   private medEditandoId: number | null = null;
 
-  // Formulario
   medForm!: FormGroup;
 
-  // Auth
   usuarioNombre = '';
   esAdmin = false;
 
@@ -72,7 +61,6 @@ export class FarmaciaInventarioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Leer usuario/rol del token en sessionStorage
     const token = sessionStorage.getItem('token') ?? localStorage.getItem('token') ?? '';
     if (token) {
       try {
@@ -88,7 +76,6 @@ export class FarmaciaInventarioComponent implements OnInit {
     this.buscar();
   }
 
-  // ── Formulario ──────────────────────────────────────────────
   private initForm(med?: MedicamentoResponse): void {
     this.medForm = this.fb.group({
       codigo:         [med?.codigo ?? '',    [Validators.required, Validators.maxLength(30)]],
@@ -105,11 +92,10 @@ export class FarmaciaInventarioComponent implements OnInit {
     });
   }
 
-  // ── Carga de datos ──────────────────────────────────────────
   cargarCategorias(): void {
     this.medService.listarCategorias().subscribe({
       next: cats => this.categorias = cats,
-      error: () => {} // no crítico
+      error: () => {}
     });
   }
 
@@ -146,7 +132,6 @@ export class FarmaciaInventarioComponent implements OnInit {
     this.buscar();
   }
 
-  // ── Acciones de tabla ───────────────────────────────────────
   verDetalle(med: MedicamentoResponse): void {
     this.medDetalle = med;
   }
@@ -172,7 +157,6 @@ export class FarmaciaInventarioComponent implements OnInit {
 
     peticionHttp.subscribe({
       next: (response) => {
-        // Find index del elemento mutado
         const idx = this.medicamentos.findIndex(m => m.id === med.id);
         
         if (idx !== -1) {
@@ -183,14 +167,12 @@ export class FarmaciaInventarioComponent implements OnInit {
         }
         
         this.exitoMensaje.set(`Medicamento "${med.nombre}" ${estadoOriginal ? 'inactivado' : 'activado'} correctamente en la base de datos.`);
-        this.errorMensaje.set(''); // Limpiamos cualquier error previo
+        this.errorMensaje.set('');
         this.cargando.set(false);
       },
       error: (err) => {
-        // Si entra aquí, significa que la base de datos RECHAZÓ el cambio (ej: Error 403, 500, etc.)
         console.error('Error detallado desde Spring Boot:', err);
         
-        // Aseguramos que la interfaz se quede en su estado real en la BD
         const idx = this.medicamentos.findIndex(m => m.id === med.id);
         if (idx !== -1) {
           this.medicamentos[idx].activo = estadoOriginal;
@@ -203,7 +185,6 @@ export class FarmaciaInventarioComponent implements OnInit {
     });
   }
 
-  // ── Modal Crear ─────────────────────────────────────────────
   abrirModalCrear(): void {
     this.isEditMode = false;
     this.medEditandoId = null;

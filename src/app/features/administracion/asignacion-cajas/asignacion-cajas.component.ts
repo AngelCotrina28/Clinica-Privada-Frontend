@@ -5,7 +5,7 @@ import { HeaderComponent } from '../../../shared/header/header.component';
 @Component({
   selector: 'app-asignacion-cajas',
   standalone: true,
-  imports: [CommonModule, HeaderComponent], // Ya no necesitamos RouterLink aquí
+  imports: [CommonModule, HeaderComponent],
   templateUrl: './asignacion-cajas.component.html',
   styleUrl: './asignacion-cajas.component.scss'
 })

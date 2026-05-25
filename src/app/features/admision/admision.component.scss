@@ -1,10 +1,4 @@
-// ============================================================
-// admision.component.scss
-// Compartido por: admision-emergencia y admision-consulta
-// Paleta: azul marino #0d2a4e · azul institucional #2f6fae · fondo #f4f6f9
-// ============================================================
 
-// ══ HOST ══════════════════════════════════════════════════════
 :host {
   display: flex;
   flex-direction: column;
@@ -12,7 +6,6 @@
   overflow: hidden;
 }
 
-// ══ CONTENEDOR PRINCIPAL ══════════════════════════════════════
 .contenedor {
   flex: 1;
   overflow-y: auto;
@@ -24,27 +17,25 @@
   }
 }
 
-// ══ SECCIÓN ═══════════════════════════════════════════════════
 .seccion {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 
   &__cabecera {
-    border-bottom: 3px solid #2f6fae;
-    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dbe4ef;
+    padding-bottom: 0.35rem;
     margin-bottom: 0.25rem;
   }
 }
 
 .subtitulo-seccion {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 650;
   color: #0d2a4e;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1rem;
 }
 
-// ══ BLOQUE (card interna) ══════════════════════════════════════
 .bloque {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -70,7 +61,6 @@
   }
 }
 
-// ══ GRUPO DE ACCIONES (campo + botones en línea) ══════════════
 .grupo-acciones {
   display: flex;
   flex-direction: column;
@@ -89,7 +79,6 @@
   }
 }
 
-// ══ CAMPOS ════════════════════════════════════════════════════
 .campo {
   margin-bottom: 1.1rem;
 
@@ -144,7 +133,6 @@
   color: #e53e3e;
 }
 
-// Grid 2 columnas para formularios extendidos
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -159,7 +147,6 @@
   }
 }
 
-// ══ BOTONES ═══════════════════════════════════════════════════
 .btn {
   display: inline-flex;
   align-items: center;
@@ -215,7 +202,6 @@
   }
 }
 
-// ══ SPINNER ═══════════════════════════════════════════════════
 .spinner {
   display: inline-block;
   width: 13px;
@@ -236,7 +222,6 @@
   to { transform: rotate(360deg); }
 }
 
-// ══ ALERTAS ═══════════════════════════════════════════════════
 .alerta {
   display: flex;
   align-items: flex-start;
@@ -282,7 +267,6 @@
   }
 }
 
-// ══ RESULTADOS ════════════════════════════════════════════════
 .resultado {
   border-radius: 8px;
   border: 1px solid #e2e8f0;
@@ -347,7 +331,6 @@
     flex-wrap: wrap;
   }
 
-  // Variantes por tipo
   &--encontrado { border-top: 3px solid #4299e1; }
   &--creado     { border-top: 3px solid #2f6fae; }
   &--orden      { border-top: 3px solid #ed8936; }
@@ -358,7 +341,6 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// ══ ETIQUETAS DE ESTADO ═══════════════════════════════════════
 .etiqueta {
   font-size: 0.72rem;
   font-weight: 700;
@@ -377,7 +359,6 @@
   font-weight: 600;
 }
 
-// ══ TABLA ═════════════════════════════════════════════════════
 .tabla-responsive {
   overflow-x: auto;
 }
@@ -426,7 +407,6 @@
   }
 }
 
-// ══ MISCELÁNEOS ═══════════════════════════════════════════════
 .redirect-aviso {
   display: flex;
   align-items: center;
@@ -463,8 +443,6 @@
   margin: 0;
 }
 
-// ══ STEPPER (consulta-externa) ════════════════════════════════
-// Usado en admision-consulta para los 4 pasos de la cita
 .stepper-container {
   display: flex;
   justify-content: center;
@@ -509,11 +487,10 @@
   width: 50px;
   height: 2px;
   background: #2f6fae;
-  margin-top: 16px;   // centra respecto al círculo de 32px
+  margin-top: 16px;
   flex-shrink: 0;
 }
 
-// ══ AUTOCOMPLETADO (búsqueda especialidad) ════════════════════
 .autocompletado-container {
   position: relative;
 }
@@ -527,8 +504,14 @@
     position: absolute;
     left: 12px;
     color: #a0aec0;
-    font-size: 1.1rem;
+    fill: none;
+    height: 18px;
     pointer-events: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    width: 18px;
   }
 
   .input-con-icono {
@@ -593,7 +576,6 @@
   font-style: italic;
 }
 
-// ══ TARJETAS DE MÉDICO (paso 2 - selección) ═══════════════════
 .medico-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -659,7 +641,6 @@
   }
 }
 
-// ══ GRILLA DE BLOQUES HORARIOS (paso 3) ═══════════════════════
 .horarios-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
@@ -719,7 +700,7 @@
 
 .toast-flotante {
   position: fixed;
-  top: 80px; /* Ajusta según el tamaño de tu header */
+  top: 80px;
   right: 24px;
   z-index: 9999;
   min-width: 320px;
@@ -753,19 +734,15 @@
   }
 }
 
-
-// ══ TICKET TÉRMICO (Impresión) ════════════════════════════════
 .ticket-impresion {
-  display: none; // Oculto en la interfaz web normal
+  display: none;
 }
 
 @media print {
-  // 1. Romper el encapsulamiento de Angular para ocultar TODO el layout global
   ::ng-deep body * {
     visibility: hidden !important;
   }
 
-  // 2. Ajustar la página a las dimensiones de una ticketera estándar
   @page {
     margin: 0;
     size: 80mm auto;
@@ -777,12 +754,10 @@
     padding: 0 !important;
   }
 
-  // 3. Hacer visible ÚNICAMENTE el ticket y su contenido
   ::ng-deep .ticket-impresion, ::ng-deep .ticket-impresion * {
     visibility: visible !important;
   }
 
-  // 4. Posicionar el ticket exactamente en la esquina superior izquierda
   ::ng-deep .ticket-impresion {
     position: absolute !important;
     left: 0;
