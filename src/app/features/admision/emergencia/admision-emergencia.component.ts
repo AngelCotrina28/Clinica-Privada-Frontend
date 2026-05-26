@@ -11,6 +11,7 @@ import {
   MedicoDisponible,
   OrdenEmergenciaResponse
 } from '../admision.models';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-admision-emergencia',
@@ -20,7 +21,7 @@ import {
   styleUrl: '../admision.component.scss'
 })
 export class AdmisionEmergenciaComponent implements OnInit {
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = environment.apiUrl;
 
   medicos = signal<MedicoDisponible[]>([]);
   ordenesHoy = signal<OrdenEmergenciaResponse[]>([]);

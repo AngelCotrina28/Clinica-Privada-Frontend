@@ -4,6 +4,7 @@ import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
 import { OrdenEmergenciaResponse, PageResponse } from '../admision.models';
+import { environment } from '../../../../environments/environment';
 
 interface FiltrosAuditoriaOrdenes {
   desde: string;
@@ -19,7 +20,7 @@ interface FiltrosAuditoriaOrdenes {
   styleUrls: ['../admision.component.scss', './admision-auditoria-ordenes.component.scss']
 })
 export class AdmisionAuditoriaOrdenesComponent implements OnInit {
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = environment.apiUrl;
   private readonly TAMANO_PAGINA = 10;
 
   filtros: FiltrosAuditoriaOrdenes = {

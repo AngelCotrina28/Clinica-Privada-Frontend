@@ -3,6 +3,7 @@
     import { Observable, BehaviorSubject } from 'rxjs';
     import { AtencionMedicaHistorial, AtencionMedicaRequest } from '../model/atencion-medica.model';
     import { HistoriaClinicaResponse } from '../model/historia-clinica.model';
+    import { environment } from '../../../environments/environment';
 
     @Injectable({
         providedIn: 'root'
@@ -10,7 +11,7 @@
     export class AtencionMedicaService {
 
         private http = inject(HttpClient);
-        private apiUrl = 'http://localhost:8080/api/atenciones';
+        private apiUrl = `${environment.apiUrl}/atenciones`;
 
         private pacienteActivoSource = new BehaviorSubject<HistoriaClinicaResponse | null>(null);
         pacienteActivo$ = this.pacienteActivoSource.asObservable();

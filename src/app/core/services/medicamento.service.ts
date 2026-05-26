@@ -9,11 +9,12 @@ import {
   PageResponse,
   HistorialMedicamento
 } from '../../features/farmacia/farmacia.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MedicamentoService {
 
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

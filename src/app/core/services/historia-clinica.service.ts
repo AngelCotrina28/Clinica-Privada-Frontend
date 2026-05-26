@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HistoriaClinicaResponse } from '../model/historia-clinica.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,7 @@ export class HistoriaClinicaService {
 
     private http = inject(HttpClient);
 
-    private apiUrl = 'http://localhost:8080/api/admision';
+    private apiUrl = `${environment.apiUrl}/admision`;
 
     buscarPorDni(dni: string): Observable<HistoriaClinicaResponse> {
         const params = new HttpParams().set('dni', dni);

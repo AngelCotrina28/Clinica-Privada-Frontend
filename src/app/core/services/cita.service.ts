@@ -3,12 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Trabajador } from '../model/trabajador.model';
 import { CitaRequest, CitaResponse, HorarioBloque } from '../../features/admision/admision.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CitaService {
-  private readonly apiUrl = 'http://localhost:8080/api/citas';
+  private readonly apiUrl = `${environment.apiUrl}/citas`;
 
   constructor(private http: HttpClient) { }
 
