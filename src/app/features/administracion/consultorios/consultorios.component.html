@@ -1,0 +1,143 @@
+<app-header titulo="Modulo de Administracion" />
+
+<main class="contenedor">
+  <h2 class="subtitulo-seccion">Gestion de Consultorios</h2>
+
+  @if (mensaje) { <div class="alerta exito">{{ mensaje }}</div> }
+  @if (error) { <div class="alerta error">{{ error }}</div> }
+
+  <div class="caja-filtros">
+    <div class="grupo-busqueda-filtros">
+      <div class="campo-filtro campo-filtro--busqueda">
+        <label for="buscar-consultorio">Buscar consultorio</label>
+        <input
+          id="buscar-consultorio"
+          type="text"
+          class="input-busqueda"
+          placeholder="Nombre, numero o piso"
+          [(ngModel)]="busqueda">
+      </div>
+
+      <div class="campo-filtro campo-filtro--especialidad">
+        <label for="filtrar-especialidad">Especialidad</label>
+        <select id="filtrar-especialidad" class="select-filtro" [(ngModel)]="especialidadFiltro">
+          <option value="">Todas</option>
+          @for (e of especialidades; track e.id) {
+            <option [value]="e.id">{{ e.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <label class="check-filtro">
+        <input type="checkbox" [(ngModel)]="mostrarInactivos">
+        <span>Mostrar inactivos</span>
+      </label>
+    </div>
+
+    <div class="grupo-acciones">
+      <button type="button" class="btn-accion btn-primary" (click)="abrirModalCrear()">
+        + Nuevo Consultorio
+      </button>
+    </div>
+  </div>
+
+  <div class="tabla-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Consultorio</th>
+          <th>Numero</th>
+          <th>Piso</th>
+          <th>Especialidad</th>
+          <th>Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (cargando) {
+          <tr>
+            <td colspan="6" class="text-center">Cargando consultorios...</td>
+          </tr>
+        } @else {
+          @for (c of consultoriosFiltrados; track c.id) {
+            <tr>
+              <td><strong>{{ c.nombre }}</strong></td>
+              <td>{{ c.numero || '-' }}</td>
+              <td>{{ c.piso || '-' }}</td>
+              <td>{{ c.especialidad }}</td>
+              <td>
+                <span class="badge" [ngClass]="c.activo ? 'badge-activo' : 'badge-inactivo'">
+                  {{ c.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="td-acciones">
+                <button type="button" class="btn-tabla btn-editar" (click)="prepararEdicion(c)">
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  class="btn-tabla"
+                  [ngClass]="c.activo ? 'btn-desactivar' : 'btn-activar'"
+                  (click)="cambiarEstado(c)">
+                  {{ c.activo ? 'Desactivar' : 'Reactivar' }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center">No hay consultorios para mostrar.</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal-contenedor">
+    <div class="modal-header">
+      <h3 class="modal-titulo">{{ isEditMode ? 'Editar Consultorio' : 'Registrar Consultorio' }}</h3>
+      <button type="button" class="btn-cerrar-modal" (click)="cerrarModal()">x</button>
+    </div>
+
+    <form class="modal-body formulario-grid" [formGroup]="consultorioForm" (ngSubmit)="guardar()">
+      <div class="form-grupo form-grupo--full">
+        <label>Nombre <span class="requerido">*</span></label>
+        <input type="text" formControlName="nombre" maxlength="100" placeholder="Consultorio Oftalmologia">
+      </div>
+
+      <div class="form-grupo">
+        <label>Numero</label>
+        <input type="text" formControlName="numero" maxlength="10" placeholder="305">
+      </div>
+
+      <div class="form-grupo">
+        <label>Piso</label>
+        <input type="text" formControlName="piso" maxlength="20" placeholder="Piso 3">
+      </div>
+
+      <div class="form-grupo form-grupo--full">
+        <label>Especialidad</label>
+        <select formControlName="especialidadId">
+          <option value="">General / sin especialidad</option>
+          @for (e of especialidades; track e.id) {
+            <option [value]="e.id">{{ e.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <label class="check-form form-grupo--full">
+        <input type="checkbox" formControlName="activo">
+        <span>Activo</span>
+      </label>
+
+      <div class="modal-footer form-grupo--full">
+        <button type="button" class="btn-accion btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-accion btn-primary" [disabled]="consultorioForm.invalid">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

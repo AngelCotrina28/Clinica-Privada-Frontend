@@ -112,6 +112,7 @@ export class SidebarComponent implements OnInit {
       children: [
         { label: 'Trabajadores', icon: 'users', route: '/administracion/trabajadores', rolesPermitidos: ['ADMINISTRADOR'] },
         { label: 'Horarios Medicos', icon: 'schedule', route: '/administracion/horarios-medicos', rolesPermitidos: ['ADMINISTRADOR'] },
+        { label: 'Consultorios', icon: 'medical', route: '/administracion/consultorios', rolesPermitidos: ['ADMINISTRADOR'] },
         { label: 'Series de Comprobantes', icon: 'receipt', route: '/administracion/series', rolesPermitidos: ['ADMINISTRADOR'] },
         { label: 'Asignacion de Cajas', icon: 'cash', route: '/administracion/cajas', rolesPermitidos: ['ADMINISTRADOR'] }
       ]

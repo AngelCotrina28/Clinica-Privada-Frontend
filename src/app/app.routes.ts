@@ -170,6 +170,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'consultorios',
+        loadComponent: () =>
+          import('./features/administracion/consultorios/consultorios.component').then(
+            m => m.ConsultoriosComponent
+          )
+      },
+      {
         path: 'series',
         loadComponent: () =>
           import('./features/administracion/series-comprobantes/series-comprobantes.component').then(

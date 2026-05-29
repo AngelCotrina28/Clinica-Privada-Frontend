@@ -38,7 +38,7 @@ export class HorariosMedicosComponent implements OnInit {
   medicoId: number | null = null;
   mes = new Date().toISOString().slice(0, 7);
   horaInicio = '08:00';
-  horaFin = '16:00';
+  horaFin = '17:00';
 
   editEspecialidadId: number | null = null;
   editMedicoId: number | null = null;
@@ -112,7 +112,7 @@ export class HorariosMedicosComponent implements OnInit {
         this.cargandoMaestro.set(false);
       },
       error: e => {
-        this.error.set(e.error?.mensaje ?? 'No se pudo cargar el calendario maestro.');
+        this.error.set(e.error?.mensaje ?? 'No se pudo cargar el calendario general.');
         this.cargandoMaestro.set(false);
       }
     });
@@ -247,7 +247,7 @@ export class HorariosMedicosComponent implements OnInit {
       horaFin: this.editHoraFin
     }).subscribe({
       next: () => {
-        this.mensaje.set('Turno actualizado con las reglas de disponibilidad.');
+        this.mensaje.set('Turno actualizado segun disponibilidad.');
         this.cancelarEdicion();
         this.cargarTurnos();
       },
@@ -263,6 +263,7 @@ export class HorariosMedicosComponent implements OnInit {
     let pendientes = fechas.length;
     let creados = 0;
     let fallidos = 0;
+    let ultimoError = '';
 
     fechas.forEach(fecha => {
       this.turnoService.crear({
@@ -272,8 +273,12 @@ export class HorariosMedicosComponent implements OnInit {
         horaInicio: this.horaInicio,
         horaFin: this.horaFin
       }).subscribe({
-        next: () => { creados++; this.finalizarCargaMasiva(--pendientes, creados, fallidos); },
-        error: () => { fallidos++; this.finalizarCargaMasiva(--pendientes, creados, fallidos); }
+        next: () => { creados++; this.finalizarCargaMasiva(--pendientes, creados, fallidos, ultimoError); },
+        error: e => {
+          fallidos++;
+          ultimoError = this.obtenerMensajeError(e);
+          this.finalizarCargaMasiva(--pendientes, creados, fallidos, ultimoError);
+        }
       });
     });
   }
@@ -309,9 +314,12 @@ export class HorariosMedicosComponent implements OnInit {
     });
   }
 
-  private finalizarCargaMasiva(pendientes: number, creados: number, fallidos: number): void {
+  private finalizarCargaMasiva(pendientes: number, creados: number, fallidos: number, ultimoError = ''): void {
     if (pendientes === 0) {
-      this.mensaje.set(`Carga masiva terminada. Creados: ${creados}. Omitidos por reglas: ${fallidos}.`);
+      this.mensaje.set(`Creacion de turnos terminada | Creados: ${creados} - Errores: ${fallidos}.`);
+      if (fallidos > 0) {
+        this.error.set(ultimoError || 'Uno o mas turnos no pudieron crearse por reglas de disponibilidad.');
+      }
       this.fechasSeleccionadas.set([]);
       this.cargarTurnos();
     }
@@ -380,5 +388,11 @@ export class HorariosMedicosComponent implements OnInit {
   private limpiarMensajes(): void {
     this.mensaje.set('');
     this.error.set('');
+  }
+
+  private obtenerMensajeError(error: any): string {
+    return error?.error?.mensaje
+      ?? error?.message
+      ?? 'No se pudo crear el turno.';
   }
 }
