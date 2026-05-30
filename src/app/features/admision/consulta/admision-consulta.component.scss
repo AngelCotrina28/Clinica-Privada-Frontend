@@ -1,0 +1,605 @@
+.contenedor--consulta {
+  padding-top: 1.5rem;
+}
+
+.consulta-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__cabecera {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+}
+
+.consulta-layout {
+  align-items: start;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+}
+
+.consulta-columna-paciente {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .bloque {
+    margin-bottom: 0;
+  }
+}
+
+.bloque--compacto {
+  gap: 1rem;
+  padding: 1.1rem;
+}
+
+.grupo-botones--compacto {
+  margin-top: 0;
+}
+
+.form-grid--compacto {
+  gap: 0 0.9rem;
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.paciente-resumen,
+.programacion-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.paciente-resumen {
+  overflow: hidden;
+
+  &__cabecera {
+    align-items: center;
+    background: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+  }
+
+  &__datos {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0.25rem 0;
+
+    div {
+      border-bottom: 1px solid #f0f4f8;
+      padding: 0.65rem 1rem;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    dt {
+      color: #718096;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+    }
+
+    dd {
+      color: #1a202c;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__horario {
+    background: #f0fdfb;
+
+    dd {
+      color: #008f76;
+    }
+  }
+}
+
+.programacion-panel {
+  min-height: 560px;
+  padding: 1.25rem;
+
+  &__cabecera {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    h3 {
+      color: #0d2a4e;
+      font-size: 1.15rem;
+      margin: 0.15rem 0 0;
+    }
+  }
+
+  &__eyebrow {
+    color: #718096;
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+}
+
+.horario-chip,
+.horario-seleccionado {
+  align-items: center;
+  background: #f0fdfb;
+  border: 1px solid #b9ebe2;
+  border-radius: 6px;
+  color: #007a66;
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 700;
+  gap: 0.35rem;
+  padding: 0.45rem 0.65rem;
+}
+
+.horario-chip {
+  max-width: 320px;
+}
+
+.asistente-panel {
+  border-top: 1px solid #edf2f7;
+  padding-top: 1rem;
+}
+
+.asistente-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  &__cabecera {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    h4 {
+      color: #0d2a4e;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    p {
+      color: #718096;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+  }
+}
+
+.consulta-autocomplete {
+  max-width: 460px;
+}
+
+.asistente-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-end;
+}
+
+.estado-carga {
+  align-items: center;
+  color: #718096;
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  min-height: 120px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.calendario {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &__cabecera {
+    align-items: center;
+    background: #0d2a4e;
+    color: #ffffff;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.7rem 0.85rem;
+
+    h5 {
+      font-size: 0.92rem;
+      margin: 0;
+      text-transform: capitalize;
+    }
+
+    .btn {
+      border-color: rgba(255, 255, 255, 0.55);
+      color: #ffffff;
+
+      &:not(:disabled):hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+    }
+  }
+
+  &__semana,
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  &__semana {
+    background: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+
+    span {
+      color: #4a5568;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.42rem 0.2rem;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.calendario-dia {
+  align-items: flex-start;
+  aspect-ratio: 1 / 0.72;
+  background: #ffffff;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  color: #2d3748;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  justify-content: space-between;
+  min-height: 76px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.42rem;
+  text-align: left;
+  transition: background 0.15s, box-shadow 0.15s;
+
+  &:not(:disabled):hover {
+    background: #f0fdfb;
+    box-shadow: inset 0 0 0 2px #2f6fae;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &--vacio {
+    background: #fbfdfe;
+  }
+
+  &--pasado,
+  &--sin-cupos {
+    background: #edf2f7;
+    color: #a0aec0;
+  }
+
+  &__numero {
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  &__turnos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 100%;
+
+    span {
+      background: #2f6fae;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      line-height: 1;
+      overflow: hidden;
+      padding: 0.18rem 0.25rem;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__sin-cupos {
+    color: #a0aec0;
+    font-size: 0.6rem;
+    font-weight: 700;
+  }
+}
+
+.horario-seleccionado {
+  align-self: flex-start;
+
+  &--modal {
+    margin-top: 1rem;
+  }
+}
+
+.resumen-cita {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin: 0;
+  overflow: hidden;
+
+  div {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 180px minmax(0, 1fr);
+    padding: 0.8rem 1rem;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #edf2f7;
+    }
+  }
+
+  dt {
+    color: #718096;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    color: #1a202c;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+.texto-secundario {
+  color: #718096;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.programacion-vacia {
+  align-items: center;
+  color: #718096;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 500px;
+  padding: 2rem;
+  text-align: center;
+
+  &__icono {
+    align-items: center;
+    background: #edf2f7;
+    border-radius: 50%;
+    color: #0d2a4e;
+    display: inline-flex;
+    font-weight: 800;
+    height: 58px;
+    justify-content: center;
+    margin-bottom: 1rem;
+    width: 58px;
+  }
+
+  h3 {
+    color: #0d2a4e;
+    font-size: 1.05rem;
+    margin: 0 0 0.35rem;
+  }
+
+  p {
+    margin: 0;
+    max-width: 440px;
+  }
+}
+
+.modal-overlay {
+  align-items: center;
+  background: rgba(13, 42, 78, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 1050;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(13, 42, 78, 0.24);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.modal-horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 760px;
+  padding: 1.25rem;
+  width: min(760px, 100%);
+
+  &__cabecera,
+  &__pie {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  &__cabecera {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.85rem;
+
+    h4 {
+      color: #0d2a4e;
+      font-size: 1.05rem;
+      margin: 0.15rem 0 0;
+    }
+  }
+
+  &__pie {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+  }
+}
+
+.btn-cerrar {
+  align-items: center;
+  background: #edf2f7;
+  border: 0;
+  border-radius: 6px;
+  color: #4a5568;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1rem;
+  font-weight: 800;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+
+  &:hover {
+    background: #e2e8f0;
+  }
+}
+
+.turnos-horario {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.turno-horario {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.9rem;
+
+  &__cabecera {
+    align-items: baseline;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+
+    h5 {
+      color: #0d2a4e;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    span {
+      color: #718096;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.horarios-grid--modal {
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  margin-top: 0;
+}
+
+.leyenda-horarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  span {
+    align-items: center;
+    color: #4a5568;
+    display: inline-flex;
+    font-size: 0.78rem;
+    font-weight: 700;
+    gap: 0.35rem;
+  }
+
+  i {
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+  }
+
+  &__disponible { background: #ffffff; border: 2px solid #2f6fae; }
+  &__seleccionado { background: #008f76; }
+  &__ocupado { background: #fed7d7; }
+}
+
+.stepper-container--consulta {
+  justify-content: flex-start;
+  margin: 0 0 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .consulta-layout,
+  .documento-grid,
+  .form-grid--compacto {
+    grid-template-columns: 1fr;
+  }
+
+  .programacion-panel {
+    min-height: auto;
+    padding: 1rem;
+
+    &__cabecera {
+      flex-direction: column;
+    }
+  }
+
+  .calendario-dia {
+    aspect-ratio: auto;
+    min-height: 58px;
+    padding: 0.32rem;
+  }
+
+  .calendario-dia__turnos span {
+    font-size: 0.55rem;
+  }
+
+  .resumen-cita div {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-horarios {
+    padding: 1rem;
+
+    &__cabecera,
+    &__pie {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  .turno-horario__cabecera {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

@@ -36,7 +36,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'historias',
+        redirectTo: 'consulta',
         pathMatch: 'full'
       },
       {

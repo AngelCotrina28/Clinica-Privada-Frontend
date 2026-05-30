@@ -443,6 +443,12 @@
   margin: 0;
 }
 
+.documento-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 96px minmax(0, 1fr);
+}
+
 .stepper-container {
   display: flex;
   justify-content: center;
@@ -593,6 +599,9 @@
   cursor: pointer;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   background-color: #ffffff;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
 
   &:hover {
     border-color: #cbd5e0;
@@ -681,9 +690,14 @@
   }
 
   &--activo {
-    border-color: #2f6fae;
-    background: #f0fdfb;
-    box-shadow: 0 0 0 3px rgba(47, 111, 174, 0.14);
+    border-color: #008f76;
+    background: #008f76;
+    color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 143, 118, 0.18);
+
+    small {
+      color: #d9fff8;
+    }
   }
 
   &--ocupado,
@@ -723,6 +737,10 @@
 @media (max-width: 768px) {
   .modulo-layout {
     flex-direction: column;
+  }
+
+  .documento-grid {
+    grid-template-columns: 1fr;
   }
 
   .stepper-linea {

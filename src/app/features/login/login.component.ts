@@ -58,6 +58,8 @@ export class LoginComponent {
                 this.router.navigate(['/caja-facturacion']);
                 break;
             case 'RECEPCIONISTA':
+                this.router.navigate(['/admision/consulta']);
+                break;
             case 'ENFERMERO':
             case 'JEFE_ENFERMERIA':
                 this.router.navigate(['/admision/historias']);

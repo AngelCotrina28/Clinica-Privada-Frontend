@@ -23,29 +23,53 @@
     <div class="bloque">
       <h3 class="bloque__titulo">Verificar Historia Clinica</h3>
       <div class="grupo-acciones">
-        <label class="campo__etiqueta" for="dni_paciente_emergencia">DNI / CE del Paciente:</label>
-        <input
-          id="dni_paciente_emergencia"
-          type="text"
-          class="campo__input"
-          [(ngModel)]="dniBusqueda"
-          placeholder="Ej: 12345678"
-          maxlength="12"
-          (keydown.enter)="buscarHistoria()"
-          autocomplete="off"
-        />
+        <div class="documento-grid">
+          <div class="campo">
+            <label class="campo__etiqueta" for="tipo_documento_emergencia">Tipo</label>
+            <select
+              id="tipo_documento_emergencia"
+              class="campo__input campo__select"
+              [ngModel]="tipoDocumentoBusqueda"
+              (ngModelChange)="cambiarTipoDocumentoBusqueda($event)">
+              <option value="DNI">DNI</option>
+              <option value="CE">CE</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label class="campo__etiqueta" for="dni_paciente_emergencia">{{ tipoDocumentoBusqueda }} del Paciente</label>
+            <input
+              id="dni_paciente_emergencia"
+              type="text"
+              class="campo__input"
+              [class.campo__input--error]="documentoBusquedaTocado && !!documentoBusquedaError()"
+              [ngModel]="dniBusqueda"
+              (ngModelChange)="actualizarDocumentoBusqueda($event)"
+              [attr.maxlength]="maxDocumento(tipoDocumentoBusqueda)"
+              [attr.pattern]="patronDocumento(tipoDocumentoBusqueda)"
+              (blur)="documentoBusquedaTocado = true"
+              (keydown.enter)="buscarHistoria()"
+              [placeholder]="tipoDocumentoBusqueda === 'DNI' ? 'Ej: 12345678' : 'Ej: CE1234567'"
+              autocomplete="off"
+            />
+            @if (documentoBusquedaTocado && documentoBusquedaError()) {
+              <span class="campo__error">{{ documentoBusquedaError() }}</span>
+            }
+          </div>
+        </div>
         <div class="grupo-botones">
           <button
             class="btn btn--primario"
             (click)="buscarHistoria()"
-            [disabled]="cargandoHistoria() || !dniBusqueda.trim()"
+            [disabled]="cargandoHistoria() || !documentoBusquedaValido()"
           >
             @if (cargandoHistoria()) { <span class="spinner"></span> }
             Buscar Historia
           </button>
           <button
             class="btn btn--contorno"
-            (click)="mostrarFormNueva = true; nuevaHistoria.dniPaciente = dniBusqueda.trim(); limpiarHistoriaSeleccionada()"
+            (click)="prepararNuevaHistoria()"
+            [disabled]="!puedeAbrirFormularioHistoria()"
           >
             Abrir Nueva Historia
           </button>
@@ -84,20 +108,35 @@
         <form #historiaForm="ngForm" (ngSubmit)="abrirNuevaHistoria(historiaForm)" novalidate>
           <div class="form-grid">
             <div class="campo">
-              <label class="campo__etiqueta">DNI / CE <span class="requerido">*</span></label>
+              <label class="campo__etiqueta">Tipo <span class="requerido">*</span></label>
+              <select
+                class="campo__input campo__select"
+                name="tipoDocumentoNueva"
+                [ngModel]="tipoDocumentoNueva"
+                (ngModelChange)="cambiarTipoDocumentoNueva($event)">
+                <option value="DNI">DNI</option>
+                <option value="CE">CE</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label class="campo__etiqueta">{{ tipoDocumentoNueva }} <span class="requerido">*</span></label>
               <input
                 type="text"
                 class="campo__input"
                 name="dniPaciente"
-                [(ngModel)]="nuevaHistoria.dniPaciente"
                 required
-                minlength="8"
-                maxlength="12"
+                [minlength]="tipoDocumentoNueva === 'DNI' ? 8 : 1"
+                [maxlength]="maxDocumento(tipoDocumentoNueva)"
+                [pattern]="patronDocumento(tipoDocumentoNueva)"
+                [ngModel]="nuevaHistoria.dniPaciente"
+                (ngModelChange)="actualizarDocumentoNueva($event)"
+                (blur)="documentoNuevaTocado = true"
                 #dniF="ngModel"
-                [class.campo__input--error]="dniF.invalid && dniF.touched"
+                [class.campo__input--error]="(dniF.invalid && dniF.touched) || (documentoNuevaTocado && !!documentoNuevaError())"
               />
-              @if (dniF.invalid && dniF.touched) {
-                <span class="campo__error">DNI obligatorio (min. 8 caracteres)</span>
+              @if ((dniF.invalid && dniF.touched) || (documentoNuevaTocado && documentoNuevaError())) {
+                <span class="campo__error">{{ documentoNuevaError() || 'Documento obligatorio' }}</span>
               }
             </div>
 
@@ -181,7 +220,7 @@
             <button
               type="submit"
               class="btn btn--primario"
-              [disabled]="historiaForm.invalid || cargandoHistoria()"
+              [disabled]="historiaForm.invalid || !!documentoNuevaError() || cargandoHistoria()"
             >
               @if (cargandoHistoria()) { <span class="spinner"></span> }
               Registrar y Continuar Emergencia
