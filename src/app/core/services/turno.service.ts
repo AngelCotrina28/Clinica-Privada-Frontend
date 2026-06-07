@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TurnoRequest, TurnoResponse } from '../../features/admision/admision.models';
+import { TurnoRequest, TurnoResponse } from '../model/admision.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

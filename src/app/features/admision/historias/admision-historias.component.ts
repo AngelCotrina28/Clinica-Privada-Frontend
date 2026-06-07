@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../admision.models';
+import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../../../core/model/admision.models';
 import {
   limpiarDocumentoPaciente,
   maxDocumentoPaciente,

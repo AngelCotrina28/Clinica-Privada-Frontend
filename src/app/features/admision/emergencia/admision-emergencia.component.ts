@@ -1,24 +1,18 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { HeaderComponent } from '../../../shared/header/header.component';
+// Inyectamos el nuevo servicio de Angular que creamos
+import { AdmisionService } from '../../../core/services/admision.service';
 import {
   AbrirHistoriaRequest,
   GenerarOrdenRequest,
   HistoriaClinicaResponse,
   MedicoDisponible,
   OrdenEmergenciaResponse
-} from '../admision.models';
-import { environment } from '../../../../environments/environment';
-import {
-  limpiarDocumentoPaciente,
-  maxDocumentoPaciente,
-  mensajeDocumentoPaciente,
-  patronDocumentoPaciente,
-  TipoDocumentoPaciente
-} from '../documento-paciente.util';
+} from '../../../core/model/admision.models';
 
 @Component({
   selector: 'app-admision-emergencia',
@@ -28,7 +22,8 @@ import {
   styleUrl: '../admision.component.scss'
 })
 export class AdmisionEmergenciaComponent implements OnInit {
-  private readonly API = environment.apiUrl;
+  private admisionService = inject(AdmisionService);
+  private route = inject(ActivatedRoute);
 
   medicos = signal<MedicoDisponible[]>([]);
   ordenesHoy = signal<OrdenEmergenciaResponse[]>([]);
@@ -36,10 +31,6 @@ export class AdmisionEmergenciaComponent implements OnInit {
   orden: GenerarOrdenRequest = { historiaClinicaId: null, medicoId: null, motivo: '' };
   fechaImpresion: Date = new Date();
   dniBusqueda = '';
-  tipoDocumentoBusqueda: TipoDocumentoPaciente = 'DNI';
-  tipoDocumentoNueva: TipoDocumentoPaciente = 'DNI';
-  documentoBusquedaTocado = false;
-  documentoNuevaTocado = false;
   mostrarFormNueva = false;
   historiaSeleccionada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
@@ -50,11 +41,10 @@ export class AdmisionEmergenciaComponent implements OnInit {
   errorMensaje = signal('');
   exitoMensaje = signal('');
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
-
   ngOnInit(): void {
     this.cargarMedicos();
     this.cargarOrdenesHoy();
+
     this.route.queryParams.subscribe(p => {
       if (p['historiaId']) {
         this.seleccionarHistoria({
@@ -70,8 +60,9 @@ export class AdmisionEmergenciaComponent implements OnInit {
     });
   }
 
+  // CARGAR ÓRDENES DE HOY (Delegado al servicio)
   cargarOrdenesHoy(): void {
-    this.http.get<OrdenEmergenciaResponse[]>(`${this.API}/admision/emergencia/ordenes/hoy`).subscribe({
+    this.admisionService.cargarOrdenesHoy().subscribe({
       next: (ordenes) => {
         this.ordenesHoy.set(ordenes);
       },
@@ -81,41 +72,22 @@ export class AdmisionEmergenciaComponent implements OnInit {
     });
   }
 
-  mostrarToastExito(mensaje: string): void {
-    this.exitoMensaje.set(mensaje);
-    
-    setTimeout(() => {
-      if (this.exitoMensaje() === mensaje) {
-        this.exitoMensaje.set('');
-      }
-    }, 4500);
-  }
-
+  // BUSCAR HISTORIA CLÍNICA (Delegado al servicio)
   buscarHistoria(): void {
-    this.documentoBusquedaTocado = true;
-    this.dniBusqueda = limpiarDocumentoPaciente(this.tipoDocumentoBusqueda, this.dniBusqueda);
-    const errorDocumento = this.documentoBusquedaError();
-    if (errorDocumento) {
-      this.errorMensaje.set(errorDocumento);
-      return;
-    }
-
+    if (!this.dniBusqueda.trim()) return;
     this.limpiarMensajes();
     this.limpiarHistoriaSeleccionada();
     this.cargandoHistoria.set(true);
-    this.http.get<HistoriaClinicaResponse>(
-      `${this.API}/admision/historia?dni=${encodeURIComponent(this.dniBusqueda.trim())}`
-    ).subscribe({
+
+    this.admisionService.buscarHistoria(this.dniBusqueda.trim()).subscribe({
       next: h => {
         this.seleccionarHistoria(h);
         this.cargandoHistoria.set(false);
       },
       error: (e: HttpErrorResponse) => {
         if (e.status === 404) {
-          this.tipoDocumentoNueva = this.tipoDocumentoBusqueda;
           this.mostrarFormNueva = true;
-          this.documentoNuevaTocado = false;
-          this.nuevaHistoria = { ...this.initHistoria(), dniPaciente: this.dniBusqueda.trim() };
+          this.nuevaHistoria.dniPaciente = this.dniBusqueda.trim();
         } else {
           this.errorMensaje.set(e.error?.mensaje ?? 'Error al buscar la historia.');
         }
@@ -124,26 +96,20 @@ export class AdmisionEmergenciaComponent implements OnInit {
     });
   }
 
+  // REGISTRAR NUEVA HISTORIA (Delegado al servicio)
   abrirNuevaHistoria(form: NgForm): void {
-    this.documentoNuevaTocado = true;
-    this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
-    const errorDocumento = this.documentoNuevaError();
-    if (form.invalid || errorDocumento) {
-      if (errorDocumento) this.errorMensaje.set(errorDocumento);
-      return;
-    }
-
+    if (form.invalid) return;
     this.limpiarMensajes();
     this.cargandoHistoria.set(true);
     this.nuevaHistoria.desdeAdmision = true;
-    this.http.post<HistoriaClinicaResponse>(`${this.API}/admision/historia`, this.nuevaHistoria).subscribe({
+
+    this.admisionService.abrirNuevaHistoria(this.nuevaHistoria).subscribe({
       next: resp => {
         this.seleccionarHistoria(resp);
         this.dniBusqueda = resp.dniPaciente;
         this.mostrarFormNueva = false;
         this.nuevaHistoria = this.initHistoria();
-        this.documentoNuevaTocado = false;
-        this.mostrarToastExito(`Historia ${resp.numeroHistoria} creada. Continue con la orden de emergencia.`);
+        this.mostrarToastExito(`Historia ${resp.numeroHistoria} creada. Continúe con la orden de emergencia.`);
         this.cargandoHistoria.set(false);
       },
       error: (e: HttpErrorResponse) => {
@@ -153,93 +119,31 @@ export class AdmisionEmergenciaComponent implements OnInit {
     });
   }
 
-  cancelarNueva(): void {
-    this.mostrarFormNueva = false;
-    this.nuevaHistoria = this.initHistoria();
-    this.documentoNuevaTocado = false;
-    this.limpiarMensajes();
-  }
-
-  prepararNuevaHistoria(): void {
-    this.limpiarMensajes();
-
-    if (this.dniBusqueda.trim()) {
-      this.documentoBusquedaTocado = true;
-      this.dniBusqueda = limpiarDocumentoPaciente(this.tipoDocumentoBusqueda, this.dniBusqueda);
-      const errorDocumento = this.documentoBusquedaError();
-      if (errorDocumento) {
-        this.errorMensaje.set(errorDocumento);
-        return;
-      }
-    }
-
-    this.tipoDocumentoNueva = this.tipoDocumentoBusqueda;
-    this.nuevaHistoria = { ...this.initHistoria(), dniPaciente: this.dniBusqueda.trim() };
-    this.documentoNuevaTocado = false;
-    this.mostrarFormNueva = true;
-    this.limpiarHistoriaSeleccionada();
-  }
-
-  actualizarDocumentoBusqueda(valor: string): void {
-    this.dniBusqueda = limpiarDocumentoPaciente(this.tipoDocumentoBusqueda, valor);
-  }
-
-  cambiarTipoDocumentoBusqueda(tipo: TipoDocumentoPaciente): void {
-    this.tipoDocumentoBusqueda = tipo;
-    this.dniBusqueda = limpiarDocumentoPaciente(tipo, this.dniBusqueda);
-    this.documentoBusquedaTocado = !!this.dniBusqueda;
-  }
-
-  actualizarDocumentoNueva(valor: string): void {
-    this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, valor);
-  }
-
-  cambiarTipoDocumentoNueva(tipo: TipoDocumentoPaciente): void {
-    this.tipoDocumentoNueva = tipo;
-    this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(tipo, this.nuevaHistoria.dniPaciente);
-    this.documentoNuevaTocado = !!this.nuevaHistoria.dniPaciente;
-  }
-
-  documentoBusquedaError(): string {
-    return mensajeDocumentoPaciente(this.tipoDocumentoBusqueda, this.dniBusqueda);
-  }
-
-  documentoNuevaError(): string {
-    return mensajeDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
-  }
-
-  documentoBusquedaValido(): boolean {
-    return !this.documentoBusquedaError();
-  }
-
-  puedeAbrirFormularioHistoria(): boolean {
-    return !this.cargandoHistoria() && (!this.dniBusqueda.trim() || this.documentoBusquedaValido());
-  }
-
-  maxDocumento(tipo: TipoDocumentoPaciente): number {
-    return maxDocumentoPaciente(tipo);
-  }
-
-  patronDocumento(tipo: TipoDocumentoPaciente): string {
-    return patronDocumentoPaciente(tipo);
-  }
-
+  // CARGAR MÉDICOS ACTIVOS (Delegado al servicio)
   cargarMedicos(): void {
     this.cargandoMedicos.set(true);
-    this.http.get<MedicoDisponible[]>(`${this.API}/trabajadores/medicos/activos`).subscribe({
-      next: list => { this.medicos.set(list); this.cargandoMedicos.set(false); },
-      error: () => { this.errorMensaje.set('No se pudieron cargar los medicos.'); this.cargandoMedicos.set(false); }
+    this.admisionService.cargarMedicos().subscribe({
+      next: list => { 
+        this.medicos.set(list); 
+        this.cargandoMedicos.set(false); 
+      },
+      error: () => { 
+        this.errorMensaje.set('No se pudieron cargar los médicos.'); 
+        this.cargandoMedicos.set(false); 
+      }
     });
   }
 
+  // GENERAR ORDEN DE ATENCIÓN DE EMERGENCIA (Delegado al servicio)
   generarOrden(form: NgForm): void {
     if (form.invalid || !this.orden.medicoId || !this.orden.historiaClinicaId) return;
     this.limpiarMensajes();
     this.cargando.set(true);
-    this.http.post<OrdenEmergenciaResponse>(`${this.API}/admision/emergencia/orden`, this.orden).subscribe({
+
+    this.admisionService.generarOrden(this.orden).subscribe({
       next: o => {
         this.ordenGenerada.set(o);
-        this.ordenesHoy.update(l => [o, ...l]);
+        this.ordenesHoy.update(l => [o, ...l]); // Agrega la nueva orden al inicio de la tabla reactivamente
         this.mostrarToastExito(`Orden ${o.numeroOrden} asignada a ${o.nombreMedico}.`);
         this.cargando.set(false);
         this.orden = { historiaClinicaId: this.historiaSeleccionada()?.id ?? null, medicoId: null, motivo: '' };
@@ -248,12 +152,19 @@ export class AdmisionEmergenciaComponent implements OnInit {
       error: (e: HttpErrorResponse) => {
         this.errorMensaje.set(
           e.status === 403
-            ? 'Sin permiso. Se requiere ENFERMERO, JEFE_ENFERMERIA o ADMINISTRADOR.'
+            ? 'Sin permiso. Se requiere JEFE_ENFERMERIA o ADMINISTRADOR.'
             : (e.error?.mensaje ?? 'Error al generar la orden.')
         );
         this.cargando.set(false);
       }
     });
+  }
+
+  // MÉTODOS DE CONTROL VISUAL INTERNO (Permanecen aquí porque controlan la interfaz)
+  cancelarNueva(): void {
+    this.mostrarFormNueva = false;
+    this.nuevaHistoria = this.initHistoria();
+    this.limpiarMensajes();
   }
 
   limpiarHistoriaSeleccionada(): void {
@@ -284,6 +195,16 @@ export class AdmisionEmergenciaComponent implements OnInit {
     this.errorMensaje.set('');
     this.exitoMensaje.set('');
   }
+
+  mostrarToastExito(mensaje: string): void {
+    this.exitoMensaje.set(mensaje);
+    setTimeout(() => {
+      if (this.exitoMensaje() === mensaje) {
+        this.exitoMensaje.set('');
+      }
+    }, 4500);
+  }
+
   imprimirOrden(): void {
     this.fechaImpresion = new Date();
     setTimeout(() => {

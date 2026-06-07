@@ -8,7 +8,7 @@ import { Trabajador } from '../../../core/model/trabajador.model';
 import { CitaService } from '../../../core/services/cita.service';
 import { EspecialidadService } from '../../../core/services/especialidad.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { AbrirHistoriaRequest, CitaRequest, CitaResponse, HistoriaClinicaResponse, HorarioBloque } from '../admision.models';
+import { AbrirHistoriaRequest, CitaRequest, CitaResponse, HistoriaClinicaResponse, HorarioBloque } from '../../../core/model/admision.models';
 import {
   limpiarDocumentoPaciente,
   maxDocumentoPaciente,

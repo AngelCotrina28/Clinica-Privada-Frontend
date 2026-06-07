@@ -7,7 +7,7 @@ import { EspecialidadService } from '../../../core/services/especialidad.service
 import { TrabajadorService } from '../../../core/services/trabajador.service';
 import { TurnoService } from '../../../core/services/turno.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { TurnoResponse } from '../../admision/admision.models';
+import { TurnoResponse } from '../../../core/model/admision.models';
 
 interface DiaCalendario {
   fecha: string;

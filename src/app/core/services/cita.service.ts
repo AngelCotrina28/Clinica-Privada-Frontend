@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Trabajador } from '../model/trabajador.model';
-import { CitaRequest, CitaResponse, HorarioBloque } from '../../features/admision/admision.models';
+import { CitaRequest, CitaResponse, HorarioBloque } from '../model/admision.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

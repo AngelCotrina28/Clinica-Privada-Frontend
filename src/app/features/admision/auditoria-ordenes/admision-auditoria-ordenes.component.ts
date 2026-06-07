@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { OrdenEmergenciaResponse, PageResponse } from '../admision.models';
+import { OrdenEmergenciaResponse, PageResponse } from '../../../core/model/admision.models';
 import { environment } from '../../../../environments/environment';
 
 interface FiltrosAuditoriaOrdenes {
