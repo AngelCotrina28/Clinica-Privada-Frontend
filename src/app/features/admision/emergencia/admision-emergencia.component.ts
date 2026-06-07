@@ -4,7 +4,6 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HeaderComponent } from '../../../shared/header/header.component';
-// Inyectamos el nuevo servicio de Angular que creamos
 import { AdmisionService } from '../../../core/services/admision.service';
 import {
   AbrirHistoriaRequest,
@@ -31,6 +30,14 @@ export class AdmisionEmergenciaComponent implements OnInit {
   orden: GenerarOrdenRequest = { historiaClinicaId: null, medicoId: null, motivo: '' };
   fechaImpresion: Date = new Date();
   dniBusqueda = '';
+  tipoDocumentoBusqueda = 'DNI';
+  documentoBusquedaTocado = false;
+  documentoBusquedaError = signal('');
+  documentoBusquedaValido = signal(false);
+  tipoDocumentoNueva = 'DNI';
+  documentoNuevaTocado = false;
+  documentoNuevaError = signal('');
+
   mostrarFormNueva = false;
   historiaSeleccionada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
@@ -211,4 +218,77 @@ export class AdmisionEmergenciaComponent implements OnInit {
       window.print();
     }, 50);
   }
+
+// Cambiar dinámicamente el tipo de documento en la búsqueda
+  cambiarTipoDocumentoBusqueda(tipo: string): void {
+    this.tipoDocumentoBusqueda = tipo;
+    this.actualizarDocumentoBusqueda(this.dniBusqueda);
+  }
+
+  // Validar en tiempo real el documento digitado en la búsqueda
+  actualizarDocumentoBusqueda(valor: string): void {
+    this.dniBusqueda = valor;
+    const patron = this.patronDocumento(this.tipoDocumentoBusqueda);
+    const regex = new RegExp(patron);
+
+    if (!valor.trim()) {
+      this.documentoBusquedaError.set('El documento es requerido.');
+      this.documentoBusquedaValido.set(false);
+    } else if (!regex.test(valor)) {
+      this.documentoBusquedaError.set(`Formato de ${this.tipoDocumentoBusqueda} inválido.`);
+      this.documentoBusquedaValido.set(false);
+    } else {
+      this.documentoBusquedaError.set('');
+      this.documentoBusquedaValido.set(true);
+    }
+  }
+
+  // Cambiar dinámicamente el tipo de documento en el formulario nuevo
+  cambiarTipoDocumentoNueva(tipo: string): void {
+    this.tipoDocumentoNueva = tipo;
+    this.actualizarDocumentoNueva(this.nuevaHistoria.dniPaciente);
+  }
+
+  // Validar en tiempo real el documento digitado en el formulario nuevo
+  actualizarDocumentoNueva(valor: string): void {
+    this.nuevaHistoria.dniPaciente = valor;
+    const patron = this.patronDocumento(this.tipoDocumentoNueva);
+    const regex = new RegExp(patron);
+
+    if (!valor.trim()) {
+      this.documentoNuevaError.set('El documento es obligatorio.');
+    } else if (!regex.test(valor)) {
+      this.documentoNuevaError.set(`Formato de ${this.tipoDocumentoNueva} inválido.`);
+    } else {
+      this.documentoNuevaError.set('');
+    }
+  }
+
+  // Devuelve la longitud máxima según el tipo de documento de Perú
+  maxDocumento(tipo: string): string {
+    return tipo === 'DNI' ? '8' : '9';
+  }
+
+  // Devuelve la expresión regular correspondiente (DNI: 8 números / CE: 9 alfanuméricos)
+  patronDocumento(tipo: string): string {
+    return tipo === 'DNI' ? '^[0-9]{8}$' : '^[A-Z0-9]{1,9}$';
+  }
+
+  // Activa el botón de abrir formulario si el documento digitado es válido
+  puedeAbrirFormularioHistoria(): boolean {
+    return this.dniBusqueda.trim().length > 0 && !this.documentoBusquedaError();
+  }
+
+  // Inicializa los estados para redactar una nueva historia clínica
+  prepararNuevaHistoria(): void {
+    this.limpiarMensajes();
+    this.limpiarHistoriaSeleccionada();
+    this.mostrarFormNueva = true;
+    this.nuevaHistoria = this.initHistoria();
+    this.nuevaHistoria.dniPaciente = this.dniBusqueda.trim();
+    this.tipoDocumentoNueva = this.tipoDocumentoBusqueda;
+    this.documentoNuevaTocado = false;
+    this.documentoNuevaError.set('');
+  }
+
 }
