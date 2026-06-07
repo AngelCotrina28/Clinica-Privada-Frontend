@@ -5,32 +5,98 @@
         <fieldset>
             <legend>Receta Digital</legend>
 
+            <!-- Medicamento con autocomplete (activos e inactivos) -->
             <label for="medicamento">Medicamento:</label>
-            <input type="text" id="medicamento" list="medicamentos_list" class="campo__input">
-            <datalist id="medicamentos_list">
-                @for (med of medicamentosDisponibles; track med) {
-                <option [value]="med"></option>
-                }
-            </datalist>
+            <input
+                type="text"
+                id="medicamento"
+                name="medicamento"
+                [(ngModel)]="medicamentoInput"
+                (ngModelChange)="filtrarMedicamentos($event)"
+                (focus)="mostrarSugerencias = true"
+                (blur)="ocultarSugerenciasConDelay()"
+                placeholder="Buscar medicamento..."
+                autocomplete="off"
+                class="campo__input">
 
-            <label for="dosis">Dosis e Indicaciones:</label>
-            <input type="text" id="dosis" class="campo__input">
+            <div class="autocomplete-lista" *ngIf="mostrarSugerencias && medicamentosFiltrados.length > 0">
+                <div
+                    class="autocomplete-item"
+                    *ngFor="let med of medicamentosFiltrados"
+                    (mousedown)="seleccionarMedicamento(med)">
+                    <span class="med-nombre">{{ med.nombre }}</span>
+                    <span class="med-badge" [class.med-badge--inactivo]="!med.activo">
+                        {{ med.activo ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </div>
+            </div>
 
-            <button type="button" class="btn btn--contorno" style="margin-top: 10px;">Añadir a la Receta</button>
+            <!-- Campos Dias / Cantidad / Indicaciones -->
+            <div class="receta-campos-fila">
+                <div class="campo-grupo">
+                    <label for="dias">Días:</label>
+                    <input
+                        type="number"
+                        id="dias"
+                        name="dias"
+                        [(ngModel)]="diasInput"
+                        min="1"
+                        (keypress)="soloNumeros($event)"
+                        placeholder="Ej. 7"
+                        class="campo__input campo__input--corto">
+                </div>
 
-            <div class="tabla-responsive" style="margin-top: 20px;">
+                <div class="campo-grupo">
+                    <label for="cantidad">Cantidad:</label>
+                    <input
+                        type="number"
+                        id="cantidad"
+                        name="cantidad"
+                        [(ngModel)]="cantidadInput"
+                        min="1"
+                        (keypress)="soloNumeros($event)"
+                        placeholder="Ej. 21"
+                        class="campo__input campo__input--corto">
+                </div>
+
+                <div class="campo-grupo campo-grupo--wide">
+                    <label for="indicaciones">Indicaciones: <span class="campo-label-ejemplo">Ej: 1 TAB DIARIA 8PM</span></label>
+                    <input
+                        type="text"
+                        id="indicaciones"
+                        name="indicaciones"
+                        [(ngModel)]="indicacionesInput"
+                        placeholder="Ej: 1 TAB DIARIA 8PM"
+                        class="campo__input">
+                </div>
+            </div>
+
+            <button type="button" class="btn btn--contorno" style="margin-top: 10px;" (click)="agregarMedicamento()">
+                Añadir a la Receta
+            </button>
+
+            <!-- Tabla de ítems en receta -->
+            <div class="tabla-responsive" style="margin-top: 20px;" *ngIf="receta.length > 0">
                 <table>
                     <thead>
                         <tr>
                             <th>Medicamento</th>
+                            <th>Días</th>
+                            <th>Cantidad</th>
                             <th>Indicaciones</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @for (item of receta; track item.medicamento) {
                         <tr>
                             <td>{{ item.medicamento }}</td>
+                            <td>{{ item.dias }}</td>
+                            <td>{{ item.cantidad }}</td>
                             <td>{{ item.indicaciones }}</td>
+                            <td>
+                                <button type="button" class="btn-quitar" (click)="quitarMedicamento(item)">✕</button>
+                            </td>
                         </tr>
                         }
                     </tbody>
@@ -38,8 +104,96 @@
             </div>
 
             <div style="margin-top: 20px;">
-                <button type="submit" class="btn btn--primario">Emitir Receta Digital</button>
+                <button
+                    type="button"
+                    class="btn btn--primario"
+                    [disabled]="receta.length === 0"
+                    (click)="emitirReceta()">
+                    Emitir Receta Digital
+                </button>
             </div>
         </fieldset>
     </form>
 </section>
+
+
+<!-- =============================================
+     PLANTILLA DE IMPRESIÓN – Receta Médica
+     Oculta en pantalla, visible solo al imprimir
+     ============================================= -->
+<div class="receta-impresion" id="receta-print-area" *ngIf="recetaEmitida">
+
+    <div class="receta-print__header">
+        <div class="receta-print__logo-bloque">
+            <img src="/brand/logo-luz-del-tunel.png" alt="Logo Clínica" class="receta-print__logo">
+            <div>
+                <div class="receta-print__clinica-nombre">CLÍNICA LUZ DEL TÚNEL</div>
+                <div class="receta-print__clinica-sub">Sistema de Gestión Médica</div>
+            </div>
+        </div>
+        <div class="receta-print__titulo-bloque">
+            <h1 class="receta-print__titulo">RECETA MÉDICA</h1>
+            <div class="receta-print__numero">N° {{ recetaEmitida.numeroReceta }}</div>
+        </div>
+    </div>
+
+    <div class="receta-print__divider"></div>
+
+    <div class="receta-print__meta">
+        <div class="receta-print__meta-col">
+            <div class="receta-print__meta-item">
+                <span class="receta-print__meta-label">MÉDICO</span>
+                <span class="receta-print__meta-valor">{{ recetaEmitida.nombreMedico }}</span>
+            </div>
+            <div class="receta-print__meta-item">
+                <span class="receta-print__meta-label">PACIENTE</span>
+                <span class="receta-print__meta-valor">{{ recetaEmitida.nombrePaciente }}</span>
+            </div>
+        </div>
+        <div class="receta-print__meta-col">
+            <div class="receta-print__meta-item">
+                <span class="receta-print__meta-label">FECHA DE EMISIÓN</span>
+                <span class="receta-print__meta-valor">{{ recetaEmitida.fechaEmision | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="receta-print__meta-item">
+                <span class="receta-print__meta-label">FECHA DE VENCIMIENTO</span>
+                <span class="receta-print__meta-valor">{{ recetaEmitida.fechaVencimiento | date:'dd/MM/yyyy' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="receta-print__divider"></div>
+
+    <!-- Tabla de medicamentos -->
+    <table class="receta-print__tabla">
+        <thead>
+            <tr>
+                <th class="col-medicamento">MEDICAMENTO / INDICACIONES</th>
+                <th class="col-dias">DÍAS</th>
+                <th class="col-cantidad">CANTIDAD</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of recetaEmitida.items; track item.medicamento) {
+            <tr>
+                <td class="col-medicamento">
+                    <div class="receta-med-nombre">{{ item.medicamento }}</div>
+                    <div class="receta-med-indicacion">{{ item.indicaciones }}</div>
+                </td>
+                <td class="col-dias">{{ item.dias }}</td>
+                <td class="col-cantidad">{{ item.cantidad }}</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="receta-print__divider"></div>
+
+    <div class="receta-print__footer">
+        <div class="receta-print__firma-bloque">
+            <div class="receta-print__firma-linea"></div>
+            <div class="receta-print__firma-label">Firma del Médico</div>
+            <div class="receta-print__firma-nombre">{{ recetaEmitida.nombreMedico }}</div>
+        </div>
+    </div>
+</div>

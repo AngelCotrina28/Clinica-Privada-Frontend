@@ -1,4 +1,3 @@
-
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,7 +10,7 @@ import {
   MedicamentoRequest,
   CategoriaResponse,
   HistorialMedicamento
-} from '../farmacia.models';
+} from '../../../core/model/farmacia.models';
 
 @Component({
   selector: 'app-farmacia-inventario',

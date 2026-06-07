@@ -82,9 +82,7 @@ export class SidebarComponent implements OnInit {
       group: 'atencion',
       rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'],
       children: [
-        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
-        { label: 'Registrar Resultados', icon: 'medical', route: '/atencion-medica/registro-resultados', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
-        { label: 'Receta Medica', icon: 'receipt', route: '/atencion-medica/receta-medica', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
+        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
       ]
     },
     {

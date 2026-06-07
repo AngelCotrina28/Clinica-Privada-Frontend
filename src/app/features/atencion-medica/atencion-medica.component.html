@@ -16,15 +16,15 @@
         </div>
       </div>
 
-      <button type="button" (click)="finalizarAtencion()" class="btn-finalizar">
+      <button class="btn-finalizar" (click)="finalizarAtencion()">
         Finalizar atencion
       </button>
+
     </section>
 
     <nav class="tabs-clinicas" aria-label="Opciones de atencion medica">
       <a routerLink="historial-clinico" routerLinkActive="active">Consultar historial</a>
       <a routerLink="registro-resultados" routerLinkActive="active">Registrar resultados</a>
-      <a routerLink="receta-medica" routerLinkActive="active">Emitir receta</a>
     </nav>
   }
 
