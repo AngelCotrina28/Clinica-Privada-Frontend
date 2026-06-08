@@ -8,6 +8,7 @@ import { AtencionMedicaService, CitaOpcion } from '../../../core/services/atenci
 import { MedicamentoService, MedicamentoOpcion } from '../../../core/services/medicamento.service';
 import { AtencionMedicaRequest, ItemReceta } from '../../../core/model/atencion-medica.model';
 import { HistoriaClinicaResponse } from '../../../core/model/historia-clinica.model';
+
 @Component({
   selector: 'app-registro-resultados',
   standalone: true,
@@ -50,6 +51,7 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     this.atencionService.pacienteActivo$
       .pipe(takeUntil(this.destroy$))
       .subscribe(paciente => {
+        console.log('Paciente activo recibido:', paciente);
         this.pacienteActivo = paciente;
         this.numeroCita = '';
         this.citasDisponibles = [];

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ReplaySubject } from 'rxjs';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { AtencionMedicaHistorial, AtencionMedicaRequest } from '../model/atencion-medica.model';
 import { HistoriaClinicaResponse } from '../model/historia-clinica.model';
@@ -19,7 +20,7 @@ export interface CitaOpcion {
         private http = inject(HttpClient);
         private apiUrl = `${environment.apiUrl}/atenciones`;
 
-        private pacienteActivoSource = new BehaviorSubject<HistoriaClinicaResponse | null>(null);
+        private pacienteActivoSource = new ReplaySubject<HistoriaClinicaResponse | null>(1);
         pacienteActivo$ = this.pacienteActivoSource.asObservable();
 
         private _medicoNombre: string | null = null;
