@@ -13,6 +13,13 @@ import {
   MedicoDisponible,
   OrdenEmergenciaResponse
 } from '../../../core/model/admision.models';
+import {
+  limpiarDocumentoPaciente,
+  maxDocumentoPaciente,
+  mensajeDocumentoPaciente,
+  patronDocumentoPaciente,
+  TipoDocumentoPaciente
+} from '../documento-paciente.util';
 
 @Component({
   selector: 'app-admision-emergencia',
@@ -31,6 +38,10 @@ export class AdmisionEmergenciaComponent implements OnInit {
   orden: GenerarOrdenRequest = { historiaClinicaId: null, medicoId: null, motivo: '' };
   fechaImpresion: Date = new Date();
   dniBusqueda = '';
+  tipoDocumentoBusqueda: TipoDocumentoPaciente = 'DNI';
+  tipoDocumentoNueva: TipoDocumentoPaciente = 'DNI';
+  documentoBusquedaTocado = false;
+  documentoNuevaTocado = false;
   mostrarFormNueva = false;
   historiaSeleccionada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
@@ -74,7 +85,14 @@ export class AdmisionEmergenciaComponent implements OnInit {
 
   // BUSCAR HISTORIA CLÍNICA (Delegado al servicio)
   buscarHistoria(): void {
-    if (!this.dniBusqueda.trim()) return;
+    this.documentoBusquedaTocado = true;
+    this.dniBusqueda = limpiarDocumentoPaciente(this.tipoDocumentoBusqueda, this.dniBusqueda);
+    const errorDocumento = this.documentoBusquedaError();
+    if (errorDocumento) {
+      this.errorMensaje.set(errorDocumento);
+      return;
+    }
+
     this.limpiarMensajes();
     this.limpiarHistoriaSeleccionada();
     this.cargandoHistoria.set(true);
@@ -86,8 +104,10 @@ export class AdmisionEmergenciaComponent implements OnInit {
       },
       error: (e: HttpErrorResponse) => {
         if (e.status === 404) {
+          this.tipoDocumentoNueva = this.tipoDocumentoBusqueda;
           this.mostrarFormNueva = true;
-          this.nuevaHistoria.dniPaciente = this.dniBusqueda.trim();
+          this.documentoNuevaTocado = false;
+          this.nuevaHistoria = { ...this.initHistoria(), dniPaciente: this.dniBusqueda.trim() };
         } else {
           this.errorMensaje.set(e.error?.mensaje ?? 'Error al buscar la historia.');
         }
@@ -98,7 +118,14 @@ export class AdmisionEmergenciaComponent implements OnInit {
 
   // REGISTRAR NUEVA HISTORIA (Delegado al servicio)
   abrirNuevaHistoria(form: NgForm): void {
-    if (form.invalid) return;
+    this.documentoNuevaTocado = true;
+    this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
+    const errorDocumento = this.documentoNuevaError();
+    if (form.invalid || errorDocumento) {
+      if (errorDocumento) this.errorMensaje.set(errorDocumento);
+      return;
+    }
+
     this.limpiarMensajes();
     this.cargandoHistoria.set(true);
     this.nuevaHistoria.desdeAdmision = true;
@@ -109,6 +136,7 @@ export class AdmisionEmergenciaComponent implements OnInit {
         this.dniBusqueda = resp.dniPaciente;
         this.mostrarFormNueva = false;
         this.nuevaHistoria = this.initHistoria();
+        this.documentoNuevaTocado = false;
         this.mostrarToastExito(`Historia ${resp.numeroHistoria} creada. Continúe con la orden de emergencia.`);
         this.cargandoHistoria.set(false);
       },
@@ -161,9 +189,74 @@ export class AdmisionEmergenciaComponent implements OnInit {
   }
 
   // MÉTODOS DE CONTROL VISUAL INTERNO (Permanecen aquí porque controlan la interfaz)
+  actualizarDocumentoBusqueda(valor: string): void {
+    this.dniBusqueda = limpiarDocumentoPaciente(this.tipoDocumentoBusqueda, valor);
+  }
+
+  cambiarTipoDocumentoBusqueda(tipo: TipoDocumentoPaciente): void {
+    this.tipoDocumentoBusqueda = tipo;
+    this.dniBusqueda = limpiarDocumentoPaciente(tipo, this.dniBusqueda);
+    this.documentoBusquedaTocado = !!this.dniBusqueda;
+  }
+
+  actualizarDocumentoNueva(valor: string): void {
+    this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, valor);
+  }
+
+  cambiarTipoDocumentoNueva(tipo: TipoDocumentoPaciente): void {
+    this.tipoDocumentoNueva = tipo;
+    this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(tipo, this.nuevaHistoria.dniPaciente);
+    this.documentoNuevaTocado = !!this.nuevaHistoria.dniPaciente;
+  }
+
+  documentoBusquedaError(): string {
+    return mensajeDocumentoPaciente(this.tipoDocumentoBusqueda, this.dniBusqueda);
+  }
+
+  documentoNuevaError(): string {
+    return mensajeDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
+  }
+
+  documentoBusquedaValido(): boolean {
+    return !this.documentoBusquedaError();
+  }
+
+  puedeAbrirFormularioHistoria(): boolean {
+    return !this.cargandoHistoria() && (!this.dniBusqueda.trim() || this.documentoBusquedaValido());
+  }
+
+  maxDocumento(tipo: TipoDocumentoPaciente): number {
+    return maxDocumentoPaciente(tipo);
+  }
+
+  patronDocumento(tipo: TipoDocumentoPaciente): string {
+    return patronDocumentoPaciente(tipo);
+  }
+
+  prepararNuevaHistoria(): void {
+    this.limpiarMensajes();
+
+    if (this.dniBusqueda.trim()) {
+      this.documentoBusquedaTocado = true;
+      this.dniBusqueda = limpiarDocumentoPaciente(this.tipoDocumentoBusqueda, this.dniBusqueda);
+      const errorDocumento = this.documentoBusquedaError();
+      if (errorDocumento) {
+        this.errorMensaje.set(errorDocumento);
+        return;
+      }
+    }
+
+    this.tipoDocumentoNueva = this.tipoDocumentoBusqueda;
+    this.nuevaHistoria = { ...this.initHistoria(), dniPaciente: this.dniBusqueda.trim() };
+    this.documentoNuevaTocado = false;
+    this.mostrarFormNueva = true;
+    this.limpiarHistoriaSeleccionada();
+  }
+
   cancelarNueva(): void {
     this.mostrarFormNueva = false;
     this.nuevaHistoria = this.initHistoria();
+    this.documentoNuevaTocado = false;
     this.limpiarMensajes();
   }
 
@@ -176,6 +269,7 @@ export class AdmisionEmergenciaComponent implements OnInit {
     this.historiaSeleccionada.set(historia);
     this.orden.historiaClinicaId = historia.id;
     this.mostrarFormNueva = false;
+    this.documentoNuevaTocado = false;
   }
 
   private initHistoria(): AbrirHistoriaRequest {

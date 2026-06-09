@@ -16,7 +16,7 @@ const ROLES_ADMISION = ['ADMINISTRADOR', 'JEFE_ENFERMERIA', 'ENFERMERO', 'RECEPC
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent),
     pathMatch: 'full'
   },
   {
@@ -119,21 +119,21 @@ export const routes: Routes = [
     canActivate: [roleGuard],
     data: { roles: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
     children: [
-        {
-          path: 'despacho',
-          loadComponent: () =>
-            import('./features/farmacia/despacho/farmacia-despacho.component').then(m => m.FarmaciaDespachoComponent)
-        },
-        {
-          path: 'inventario',
-          loadComponent: () =>
-            import('./features/farmacia/inventario/farmacia-inventario.component').then(m => m.FarmaciaInventarioComponent)
-        },
-        {
-          path: 'stock-bajo',
-          loadComponent: () =>
-            import('./features/farmacia/stock-bajo/farmacia-stock-bajo.component').then(m => m.FarmaciaStockBajoComponent)
-        }
+      {
+        path: 'despacho',
+        loadComponent: () =>
+          import('./features/farmacia/despacho/farmacia-despacho.component').then(m => m.FarmaciaDespachoComponent)
+      },
+      {
+        path: 'inventario',
+        loadComponent: () =>
+          import('./features/farmacia/inventario/farmacia-inventario.component').then(m => m.FarmaciaInventarioComponent)
+      },
+      {
+        path: 'stock-bajo',
+        loadComponent: () =>
+          import('./features/farmacia/stock-bajo/farmacia-stock-bajo.component').then(m => m.FarmaciaStockBajoComponent)
+      }
     ]
   },
   {

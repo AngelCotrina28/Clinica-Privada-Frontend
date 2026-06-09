@@ -119,6 +119,11 @@
   input {
     width: 100%;
     padding-right: 2.75rem;
+
+    &::-ms-reveal,
+    &::-ms-clear {
+      display: none;
+    }
   }
 
   .toggle-password {
