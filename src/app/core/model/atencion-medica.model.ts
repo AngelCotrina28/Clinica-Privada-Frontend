@@ -10,10 +10,18 @@ export interface AtencionMedicaHistorial {
     tratamiento: string;
 }
 
+export interface ItemReceta {
+    medicamento: string;
+    dias: number;
+    cantidad: number;
+    indicaciones: string;
+}
+
 export interface AtencionMedicaRequest {
     historiaClinicaId: number;
     numeroCita?: string;
     diagnosticoPrincipal: string;
     notasEvolucion?: string;
     medicoId: number;
+    itemsReceta?:         ItemReceta[];
 }

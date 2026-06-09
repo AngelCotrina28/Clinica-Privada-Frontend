@@ -28,11 +28,8 @@ export class AtencionMedicaComponent implements OnInit, OnDestroy {
   }
 
   finalizarAtencion() {
-    if (confirm('¿Desea cerrar la sesión del paciente actual?')) {
-      this.atencionService.setPacienteActivo(null);
-
-      this.router.navigate(['/atencion-medica/buscar']);
-    }
+    this.atencionService.setPacienteActivo(null);
+    this.router.navigate(['/atencion-medica/consultar-historial']);
   }
 
   ngOnDestroy() {

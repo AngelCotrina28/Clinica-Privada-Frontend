@@ -1,5 +1,4 @@
-
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
@@ -8,15 +7,19 @@ import {
   CategoriaResponse,
   PageResponse,
   HistorialMedicamento
-} from '../../features/farmacia/farmacia.models';
+} from '../../core/model/farmacia.models';
 import { environment } from '../../../environments/environment';
+
+export interface MedicamentoOpcion {
+  id: number;
+  nombre: string;
+  activo: boolean;
+}
 
 @Injectable({ providedIn: 'root' })
 export class MedicamentoService {
-
+  private readonly http = inject(HttpClient);
   private readonly API = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
 
   buscar(params: {
     nombre?: string;
@@ -29,13 +32,17 @@ export class MedicamentoService {
     ordenarPor?: string;
   }): Observable<PageResponse<MedicamentoResponse>> {
     let httpParams = new HttpParams();
-    if (params.nombre)      httpParams = httpParams.set('nombre', params.nombre);
-    if (params.codigo)      httpParams = httpParams.set('codigo', params.codigo);
-    if (params.categoriaId) httpParams = httpParams.set('categoriaId', params.categoriaId.toString());
+    
+    if (params.nombre)         httpParams = httpParams.set('nombre', params.nombre);
+    if (params.codigo)         httpParams = httpParams.set('codigo', params.codigo);
+    if (params.categoriaId)    httpParams = httpParams.set('categoriaId', params.categoriaId.toString());
+    if (params.soloStockBajo)  httpParams = httpParams.set('soloStockBajo', params.soloStockBajo.toString());
+    
     httpParams = httpParams.set('soloActivos', (params.soloActivos ?? true).toString());
-    httpParams = httpParams.set('pagina',     (params.pagina ?? 0).toString());
-    httpParams = httpParams.set('tamano',     (params.tamano ?? 20).toString());
-    if (params.ordenarPor)  httpParams = httpParams.set('ordenarPor', params.ordenarPor);
+    httpParams = httpParams.set('pagina',      (params.pagina ?? 0).toString());
+    httpParams = httpParams.set('tamano',      (params.tamano ?? 20).toString());
+    
+    if (params.ordenarPor)     httpParams = httpParams.set('ordenarPor', params.ordenarPor);
 
     return this.http.get<PageResponse<MedicamentoResponse>>(
       `${this.API}/medicamentos`, { params: httpParams }
@@ -59,11 +66,11 @@ export class MedicamentoService {
     return this.http.get<CategoriaResponse[]>(`${this.API}/categorias`);
   }
 
-  historial(id: number, pagina = 0, tamano = 20): Observable<any> {
+  historial(id: number, pagina = 0, tamano = 20): Observable<PageResponse<HistorialMedicamento>> {
     const params = new HttpParams()
       .set('pagina', pagina.toString())
       .set('tamano', tamano.toString());
-    return this.http.get(`${this.API}/medicamentos/${id}/historial`, { params });
+    return this.http.get<PageResponse<HistorialMedicamento>>(`${this.API}/medicamentos/${id}/historial`, { params });
   }
 
   registrar(dto: MedicamentoRequest): Observable<MedicamentoResponse> {
@@ -80,5 +87,9 @@ export class MedicamentoService {
 
   activar(id: number): Observable<MedicamentoResponse> {
     return this.http.patch<MedicamentoResponse>(`${this.API}/medicamentos/${id}/activar`, {});
+  }
+
+  obtenerTodosParaReceta(): Observable<MedicamentoOpcion[]> {
+    return this.http.get<MedicamentoOpcion[]>(`${this.API}/medicamentos/todos`);
   }
 }

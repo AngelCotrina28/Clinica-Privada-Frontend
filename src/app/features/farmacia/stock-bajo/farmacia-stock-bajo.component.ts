@@ -1,9 +1,8 @@
-
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { MedicamentoService } from '../../../core/services/medicamento.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { MedicamentoResponse } from '../farmacia.models';
+import { MedicamentoResponse } from '../../../core/model/farmacia.models';
 
 @Component({
   selector: 'app-farmacia-stock-bajo',

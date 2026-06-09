@@ -120,3 +120,291 @@
     width: 100%;
   }
 }
+
+/* ── Autocomplete ─────────────────────────────────────── */
+.autocomplete-lista {
+  background: #ffffff;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: 0 0 var(--borde-redondeado) var(--borde-redondeado);
+  box-shadow: var(--sombra-suave);
+  max-height: 240px;
+  overflow-y: auto;
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+}
+
+.autocomplete-item {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.6rem;
+  justify-content: space-between;
+  padding: 0.55rem 0.9rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #eef4f8;
+  }
+}
+
+.med-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.med-badge {
+  border-radius: 20px;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  background: var(--color-acento);
+  white-space: nowrap;
+
+  &--inactivo {
+    background: #9ca3af;
+  }
+}
+
+/* ── Fila de campos Dias / Cantidad / Indicaciones ────── */
+.receta-campos-fila {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+
+  &--wide {
+    flex: 1 1 200px;
+  }
+}
+
+.campo__input--corto {
+  width: 90px;
+}
+
+.campo-label-ejemplo {
+  color: var(--color-texto-suave);
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-left: 0.4rem;
+}
+
+/* Botón quitar fila de receta */
+.btn-quitar {
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 5px;
+  color: var(--color-peligro);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #fee2e2;
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   PLANTILLA DE IMPRESIÓN – solo visible al imprimir
+   ══════════════════════════════════════════════════════════ */
+
+/* Ocultar en pantalla */
+.receta-impresion {
+  display: none;
+}
+
+@media print {
+  /* Ocultar TODO excepto la receta */
+  body > * {
+    display: none !important;
+  }
+
+  .receta-impresion {
+    display: block !important;
+    font-family: 'Arial', sans-serif;
+    font-size: 11pt;
+    color: #000;
+    margin: 0;
+    padding: 20mm 18mm;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  .receta-print__header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8mm;
+  }
+
+  .receta-print__logo-bloque {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+  }
+
+  .receta-print__logo {
+    height: 52px;
+    object-fit: contain;
+  }
+
+  .receta-print__clinica-nombre {
+    font-size: 13pt;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .receta-print__clinica-sub {
+    color: #555;
+    font-size: 8pt;
+    margin-top: 2px;
+  }
+
+  .receta-print__titulo-bloque {
+    text-align: right;
+  }
+
+  .receta-print__titulo {
+    font-size: 16pt;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .receta-print__numero {
+    color: #444;
+    font-size: 9pt;
+    margin-top: 3px;
+  }
+
+  /* Divisor */
+  .receta-print__divider {
+    border: none;
+    border-top: 1.5px solid #000;
+    margin: 5mm 0;
+  }
+
+  /* Meta datos */
+  .receta-print__meta {
+    display: flex;
+    gap: 10mm;
+    margin-bottom: 5mm;
+  }
+
+  .receta-print__meta-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+  }
+
+  .receta-print__meta-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .receta-print__meta-label {
+    color: #666;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .receta-print__meta-valor {
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+
+  /* Tabla de medicamentos */
+  .receta-print__tabla {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .receta-print__tabla thead tr {
+    background: #000;
+    color: #fff;
+  }
+
+  .receta-print__tabla th {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 4px 8px;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .receta-print__tabla td {
+    border-bottom: 1px solid #ddd;
+    font-size: 10pt;
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+
+  .col-medicamento { width: auto; }
+  .col-dias        { width: 18mm; text-align: center; }
+  .col-cantidad    { width: 22mm; text-align: center; }
+
+  .receta-print__tabla thead .col-dias,
+  .receta-print__tabla thead .col-cantidad {
+    text-align: center;
+  }
+
+  .receta-med-nombre {
+    font-weight: 700;
+  }
+
+  .receta-med-indicacion {
+    color: #444;
+    font-size: 9pt;
+    margin-top: 2px;
+  }
+
+  /* Firma */
+  .receta-print__footer {
+    margin-top: 18mm;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .receta-print__firma-bloque {
+    text-align: center;
+    width: 60mm;
+  }
+
+  .receta-print__firma-linea {
+    border-top: 1.5px solid #000;
+    margin-bottom: 4px;
+    width: 100%;
+  }
+
+  .receta-print__firma-label {
+    font-size: 8pt;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .receta-print__firma-nombre {
+    font-size: 9pt;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+}
