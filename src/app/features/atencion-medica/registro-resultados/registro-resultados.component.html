@@ -1,3 +1,4 @@
+<!-- registro-resultados.component.html -->
 <section>
     <h2 class="subtitulo-seccion">Registro de Resultados de Atención</h2>
 
@@ -5,37 +6,163 @@
         <fieldset [disabled]="cargando">
             <legend>Historia Clínica del Paciente Actual</legend>
 
+            <!-- ── N° Cita / Orden: DROPDOWN ─────────────────────── -->
             <label for="nro_cita">N° Cita / Orden:</label>
-            <input 
-                type="text" 
-                id="nro_cita" 
+            <div *ngIf="cargandoCitas" style="font-size:0.85em; color:#3b82f6; margin-bottom:8px;">
+                Cargando citas disponibles...
+            </div>
+            <select
+                id="nro_cita"
                 name="nro_cita"
                 [(ngModel)]="numeroCita"
-                (ngModelChange)="onCitaChange($event)"
+                [disabled]="cargandoCitas || citasDisponibles.length === 0"
                 required>
-            
-            <div style="font-size: 0.85em; margin-bottom: 10px; height: 20px;">
-                <span *ngIf="verificandoCita" style="color: blue;">Consultando base de datos...</span>
-                
-                <ng-container *ngIf="!verificandoCita && numeroCita">
-                    <span *ngIf="estadoCita === 'NO_EXISTE'" style="color: red;">Error: El ID de la cita u orden no existe.</span>
-                    <span *ngIf="estadoCita === 'OTRA_FECHA'" style="color: orange;">Aviso: La cita/orden no corresponde al día de hoy.</span>
-                    <span *ngIf="estadoCita === 'ATENDIDA'" style="color: #d97706;">Aviso: Esta cita u orden ya fue registrada o finalizada.</span>
-                    <span *ngIf="estadoCita === 'VALIDA'" style="color: green;">Validado: Código válido y listo para atención.</span>
-                    <span *ngIf="estadoCita === 'ERROR'" style="color: red;">Error: No se pudo conectar con el servidor.</span>
-                </ng-container>
+                <option value="">-- Seleccione una cita u orden --</option>
+                <option *ngFor="let item of citasDisponibles" [value]="item.codigo">
+                    {{ item.codigo }} — {{ item.tipo === 'CITA' ? 'Cita' : 'Emergencia' }}
+                    · {{ item.fecha | date:'dd/MM/yyyy HH:mm' }}
+                </option>
+            </select>
+            <div *ngIf="!cargandoCitas && citasDisponibles.length === 0 && pacienteActivo"
+                 style="font-size:0.84em; color:#b45309; margin-bottom:10px;">
+                No hay citas confirmadas ni órdenes de emergencia pendientes para este paciente.
             </div>
 
             <label for="diagnostico">Diagnóstico:</label>
-            <input type="text" id="diagnostico" name="diagnostico" [(ngModel)]="diagnosticoCie10" required>
+            <input type="text" id="diagnostico" name="diagnostico"
+                   [(ngModel)]="diagnosticoCie10" required>
 
             <label for="notas_evolucion">Notas de Evolución:</label>
-            <textarea id="notas_evolucion" name="notas_evolucion" rows="5" [(ngModel)]="notasEvolucion"></textarea>
+            <textarea id="notas_evolucion" name="notas_evolucion" rows="5"
+                      [(ngModel)]="notasEvolucion"></textarea>
 
-            <button 
-                type="submit" 
-                class="btn btn--primario"
-                [disabled]="estadoCita !== 'VALIDA' || verificandoCita">
+            <!-- ── ¿Adjuntar receta? ──────────────────────────────── -->
+            <div class="receta-pregunta-bloque">
+                <p class="receta-pregunta-label">¿Desea adjuntar una receta médica a esta atención?</p>
+                <div class="receta-opciones">
+                    <label class="opcion-radio" [class.opcion-radio--activa]="adjuntarReceta === true">
+                        <input type="radio" name="adjuntarReceta" [value]="true"
+                               [(ngModel)]="adjuntarReceta">
+                        <span>Sí</span>
+                    </label>
+                    <label class="opcion-radio" [class.opcion-radio--activa]="adjuntarReceta === false">
+                        <input type="radio" name="adjuntarReceta" [value]="false"
+                               [(ngModel)]="adjuntarReceta">
+                        <span>No</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ── Sección de receta (solo si eligió Sí) ────────── -->
+            <div *ngIf="adjuntarReceta === true" class="receta-embebida-bloque">
+                <h3 class="receta-embebida-titulo">Receta Digital</h3>
+
+                <!-- Autocomplete medicamento -->
+                <label for="medicamento">Medicamento:</label>
+                <div style="position:relative;">
+                    <input
+                        type="text"
+                        id="medicamento"
+                        name="medicamento"
+                        [(ngModel)]="medicamentoInput"
+                        (ngModelChange)="filtrarMedicamentos($event)"
+                        (focus)="mostrarSugerencias = true"
+                        (blur)="ocultarSugerenciasConDelay()"
+                        placeholder="Buscar medicamento..."
+                        autocomplete="off"
+                        class="campo__input">
+                    <div class="autocomplete-lista"
+                         *ngIf="mostrarSugerencias && medicamentosFiltrados.length > 0">
+                        <div class="autocomplete-item"
+                             *ngFor="let med of medicamentosFiltrados"
+                             (mousedown)="seleccionarMedicamento(med)">
+                            <span class="med-nombre">{{ med.nombre }}</span>
+                            <span class="med-badge"
+                                  [class.med-badge--inactivo]="!med.activo">
+                                {{ med.activo ? 'Activo' : 'Inactivo' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Días / Cantidad / Indicaciones -->
+                <div class="receta-campos-fila">
+                    <div class="campo-grupo">
+                        <label for="dias">Días:</label>
+                        <input type="number" id="dias" name="dias"
+                               [(ngModel)]="diasInput" min="1"
+                               (keypress)="soloNumeros($event)"
+                               placeholder="Ej. 7"
+                               class="campo__input campo__input--corto">
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="cantidad">Cantidad:</label>
+                        <input type="number" id="cantidad" name="cantidad"
+                               [(ngModel)]="cantidadInput" min="1"
+                               (keypress)="soloNumeros($event)"
+                               placeholder="Ej. 21"
+                               class="campo__input campo__input--corto">
+                    </div>
+                    <div class="campo-grupo campo-grupo--wide">
+                        <label for="indicaciones">
+                            Indicaciones:
+                            <span class="campo-label-ejemplo">Ej: 1 TAB DIARIA 8PM</span>
+                        </label>
+                        <input type="text" id="indicaciones" name="indicaciones"
+                               [(ngModel)]="indicacionesInput"
+                               placeholder="Ej: 1 TAB DIARIA 8PM"
+                               class="campo__input">
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn--contorno"
+                        style="margin-top:10px;" (click)="agregarMedicamento()">
+                    Añadir a la Receta
+                </button>
+
+                <!-- Tabla de ítems -->
+                <div class="tabla-responsive" style="margin-top:20px;"
+                     *ngIf="receta.length > 0">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Medicamento</th>
+                                <th>Días</th>
+                                <th>Cantidad</th>
+                                <th>Indicaciones</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of receta; track item.medicamento) {
+                            <tr>
+                                <td>{{ item.medicamento }}</td>
+                                <td>{{ item.dias }}</td>
+                                <td>{{ item.cantidad }}</td>
+                                <td>{{ item.indicaciones }}</td>
+                                <td>
+                                    <button type="button" class="btn-quitar"
+                                            (click)="quitarMedicamento(item)">✕</button>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div *ngIf="adjuntarReceta === true && receta.length === 0"
+                     style="font-size:0.84em; color:#b45309; margin-top:8px;">
+                    Debe añadir al menos un medicamento para poder guardar con receta.
+                </div>
+            </div>
+
+            <div *ngIf="adjuntarReceta === null"
+                 style="font-size:0.84em; color:#b45309; margin-bottom:10px;">
+                Debe seleccionar si desea adjuntar una receta médica para poder guardar.
+            </div>
+
+            <button type="submit" class="btn btn--primario"
+                    [disabled]="!puedeGuardar()">
                 {{ cargando ? 'Guardando en BD...' : 'Guardar en Historia Clínica' }}
             </button>
         </fieldset>

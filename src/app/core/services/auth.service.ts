@@ -1,32 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
- import { environment } from '../../../environments/environment';
-
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  username: string;
-  nombreCompleto: string;
-  rol: string;
-}
-
-export interface UsuarioSesion {
-  username: string;
-  nombreCompleto: string;
-  rol: string;
-}
+import { environment } from '../../../environments/environment';
+import { LoginRequest, LoginResponse, UsuarioSesion } from '../model/auth.model';
+export type { LoginRequest, LoginResponse, UsuarioSesion } from '../model/auth.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth/login`;
-  private readonly http = inject(HttpClient);
+  private readonly http = inject(HttpClient)
 
   private readonly rolActual = new BehaviorSubject<string>(localStorage.getItem('rol') || '');
   readonly rolActual$ = this.rolActual.asObservable();

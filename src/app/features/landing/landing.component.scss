@@ -1,0 +1,216 @@
+// Paleta de colores expandida
+$color-brand-blue: #12385b;
+$color-bg-white: #ffffff;
+$color-bg-wrapper: #f4f7f9; // Gris azulado ultra claro para el fondo del banner
+$color-accent: #f59e0b; // Naranja vibrante para el botón de cita (estilo Montefiori)
+$color-accent-hover: #d97706;
+$color-text-dark: #0f172a; // Aún más oscuro para contraste pesado
+$color-text-muted: #475569;
+
+.landing-container {
+    min-height: 100vh;
+    background-color: $color-bg-white;
+    color: $color-text-dark;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5rem;
+    background-color: $color-brand-blue;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    &__brand {
+        font-size: 1.8rem; // Más grande
+        font-weight: 800;
+        color: $color-bg-white;
+    }
+
+    &__menu {
+        display: flex;
+        gap: 3.5rem; // Mucho más espacio entre opciones
+
+        a {
+            color: rgba($color-bg-white, 0.9);
+            text-decoration: none;
+            font-weight: 600; // Letra más gruesa
+            font-size: 1.1rem; // Letra más grande
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: $color-bg-white;
+            }
+        }
+    }
+
+    &__actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+}
+
+/* --- BOTONES REESTRUCTURADOS --- */
+.btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px; // Bordes un poco más suaves
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 1rem;
+
+    // Botón secundario discreto (Login)
+    &--outline-light {
+        background-color: transparent;
+        border: 1px solid rgba($color-bg-white, 0.4);
+        color: $color-bg-white;
+
+        &:hover {
+            background-color: rgba($color-bg-white, 0.1);
+        }
+    }
+
+    // Nuevo Botón de Acción Principal (Citas)
+    &--accent {
+        background-color: $color-accent;
+        color: $color-bg-white;
+        box-shadow: 0 4px 15px rgba($color-accent, 0.4);
+
+        &:hover {
+            background-color: $color-accent-hover;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba($color-accent, 0.5);
+        }
+    }
+
+    // Tamaño Gigante para el Hero
+    &--large {
+        font-size: 1.25rem;
+        padding: 1.2rem 3.5rem;
+        border-radius: 12px;
+    }
+}
+
+/* --- HERO SECTION (El Efecto Banner) --- */
+.hero {
+    flex: 1;
+    padding: 3rem 5rem; // Espacio alrededor del banner
+
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(to right, $color-bg-wrapper, $color-bg-white);
+        border-radius: 40px; // El redondeo masivo estilo Montefiori
+        padding: 4rem 5rem;
+        gap: 4rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+    }
+
+    &__content {
+        flex: 1;
+        max-width: 680px;
+    }
+
+    &__subtitle {
+        color: $color-accent; // El naranja sutilmente conecta con el botón
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    &__title {
+        font-size: 4.2rem; // Título imponente
+        line-height: 1.1;
+        color: $color-brand-blue;
+        margin-bottom: 1.5rem;
+        font-weight: 800;
+    }
+
+    &__description {
+        font-size: 1.25rem; // Lectura super cómoda
+        color: $color-text-muted;
+        line-height: 1.7;
+        margin-bottom: 3rem;
+    }
+
+    &__visual {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end; // Empuja la imagen a la derecha
+    }
+}
+
+/* --- IMAGEN ESCALADA --- */
+.hero__image-container {
+    width: 100%;
+    max-width: 700px; // Creció 200px más
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba($color-brand-blue, 0.2);
+
+    .hero__image {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+    }
+}
+
+/* --- DISEÑO RESPONSIVO --- */
+@media (max-width: 1200px) {
+    .hero__wrapper {
+        flex-direction: column;
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .hero__content {
+        max-width: 100%;
+    }
+
+    .hero__title {
+        font-size: 3.2rem;
+    }
+
+    .hero__visual {
+        justify-content: center;
+        margin-top: 2rem;
+    }
+}
+
+/* --- FOOTER ACADÉMICO --- */
+.footer {
+    background-color: $color-brand-blue;
+    color: rgba($color-bg-white, 0.7);
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border-top: 1px solid rgba($color-bg-white, 0.05);
+
+    margin-top: auto;
+    width: 100%;
+
+    p {
+        margin: 0;
+        letter-spacing: 0.3px;
+    }
+}
+
+/* --- REFINAMIENTO RESPONSIVO DEL FOOTER --- */
+@media (max-width: 992px) {
+    .footer {
+        padding: 1.2rem;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+}

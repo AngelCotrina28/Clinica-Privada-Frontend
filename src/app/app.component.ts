@@ -17,11 +17,12 @@ export class AppComponent {
   private router = inject(Router);
 
   constructor() {
-    this.mostrarMenu = this.router.url !== '/login';
+    const rutasSinMenu = ['/login', '/'];
+    this.mostrarMenu = !rutasSinMenu.includes(this.router.url);
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      this.mostrarMenu = event.urlAfterRedirects !== '/login';
+      this.mostrarMenu = !rutasSinMenu.includes(event.urlAfterRedirects);
     });
   }
 }

@@ -4,6 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
+const RUTAS_INICIO_POR_ROL: Record<string, string> = {
+    'MEDICO': '/atencion-medica',
+    'TECNICO_FARMACIA': '/farmacia',
+    'CAJERO': '/caja-facturacion',
+    'RECEPCIONISTA': '/admision/consulta',
+    'ENFERMERO': '/admision/historias',
+    'JEFE_ENFERMERIA': '/admision/historias',
+    'ADMINISTRADOR': '/dashboard'
+};
+
 @Component({
     selector: 'app-login',
     standalone: true,
@@ -32,7 +42,8 @@ export class LoginComponent {
 
         this.authService.login(this.credentials).subscribe({
             next: (response) => {
-                this.redirigirSegunRol(response.rol);
+                const rutaDestino = RUTAS_INICIO_POR_ROL[response.rol] || '/dashboard';
+                this.router.navigate([rutaDestino]);
             },
             error: (err) => {
                 if (err.error && err.error.detalle) {
@@ -44,30 +55,5 @@ export class LoginComponent {
                 }
             }
         });
-    }
-
-    private redirigirSegunRol(rol: string): void {
-        switch (rol) {
-            case 'MEDICO':
-                this.router.navigate(['/atencion-medica']);
-                break;
-            case 'TECNICO_FARMACIA':
-                this.router.navigate(['/farmacia']);
-                break;
-            case 'CAJERO':
-                this.router.navigate(['/caja-facturacion']);
-                break;
-            case 'RECEPCIONISTA':
-                this.router.navigate(['/admision/consulta']);
-                break;
-            case 'ENFERMERO':
-            case 'JEFE_ENFERMERIA':
-                this.router.navigate(['/admision/historias']);
-                break;
-            case 'ADMINISTRADOR':
-            default:
-                this.router.navigate(['/dashboard']);
-                break;
-        }
     }
 }

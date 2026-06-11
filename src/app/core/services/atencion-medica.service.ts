@@ -1,20 +1,37 @@
-    import { Injectable, inject } from '@angular/core';
-    import { HttpClient } from '@angular/common/http';
-    import { Observable, BehaviorSubject } from 'rxjs';
-    import { AtencionMedicaHistorial, AtencionMedicaRequest } from '../model/atencion-medica.model';
-    import { HistoriaClinicaResponse } from '../model/historia-clinica.model';
-    import { environment } from '../../../environments/environment';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { AtencionMedicaHistorial, AtencionMedicaRequest } from '../model/atencion-medica.model';
+import { HistoriaClinicaResponse } from '../model/historia-clinica.model';
+import { environment } from '../../../environments/environment';
+export interface CitaOpcion {
+  codigo: string;
+  tipo:   'CITA' | 'EMERGENCIA';
+  fecha:  string;
+}
 
-    @Injectable({
-        providedIn: 'root'
-    })
+@Injectable({
+  providedIn: 'root'
+})
+
     export class AtencionMedicaService {
 
         private http = inject(HttpClient);
         private apiUrl = `${environment.apiUrl}/atenciones`;
 
-        private pacienteActivoSource = new BehaviorSubject<HistoriaClinicaResponse | null>(null);
+        private pacienteActivoSource = new ReplaySubject<HistoriaClinicaResponse | null>(1);
         pacienteActivo$ = this.pacienteActivoSource.asObservable();
+
+        private _medicoNombre: string | null = null;
+
+        getMedicoNombre(): string | null {
+            return this._medicoNombre;
+        }
+        
+        setMedicoNombre(nombre: string): void {
+            this._medicoNombre = nombre;
+        }
 
         setPacienteActivo(paciente: HistoriaClinicaResponse | null) {
             this.pacienteActivoSource.next(paciente);
@@ -28,8 +45,8 @@
             return this.http.post<number>(`${this.apiUrl}/registro`, datos);
         }
 
-        verificarExistenciaCita(codigo: string): Observable<{estado: string}> {
-            const url = `${this.apiUrl}/verificar-cita/${codigo}`;
-            return this.http.get<{estado: string}>(url);
+
+        obtenerCitasDisponibles(historiaId: number): Observable<CitaOpcion[]> {
+            return this.http.get<CitaOpcion[]>(`${this.apiUrl}/citas-disponibles/${historiaId}`);
         }
     }
