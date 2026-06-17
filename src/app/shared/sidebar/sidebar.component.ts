@@ -44,6 +44,7 @@ const ROLES_TODOS = [
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
+
 export class SidebarComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -82,7 +83,9 @@ export class SidebarComponent implements OnInit {
       group: 'atencion',
       rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'],
       children: [
-        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
+        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
+        { label: 'Registrar Resultados', icon: 'medical', route: '/atencion-medica/registro-resultados', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
+        { label: 'Receta Medica', icon: 'receipt', route: '/atencion-medica/receta-medica', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
       ]
     },
     {
@@ -91,9 +94,9 @@ export class SidebarComponent implements OnInit {
       group: 'farmacia',
       rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'],
       children: [
-        { label: 'Despacho de Medicamentos', icon: 'pharmacy', route: '/farmacia/despacho', rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
-        { label: 'Inventario', icon: 'pharmacy', route: '/farmacia/inventario', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Alertas de Stock', icon: 'pharmacy', route: '/farmacia/stock-bajo', rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
+        { label: 'Despacho de Medicamentos',icon: 'pharmacy', route: '/farmacia/despacho',   rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
+        { label: 'Inventario',icon: 'pharmacy', route: '/farmacia/inventario',  rolesPermitidos: ['ADMINISTRADOR'] },
+        { label: 'Alertas de Stock',icon: 'pharmacy', route: '/farmacia/stock-bajo',  rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
       ]
     },
     {
@@ -182,9 +185,8 @@ export class SidebarComponent implements OnInit {
     return rol
       .toLowerCase()
       .split('_')
-      .map((palabra: string) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+      .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
       .join(' ');
-
   }
 
 }
