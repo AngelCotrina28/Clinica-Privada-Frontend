@@ -1,51 +1,187 @@
-<div class="landing-container">
+<div class="landing-page">
+  <header class="site-header">
+    <a class="site-header__brand" href="#inicio" aria-label="Luz del Tunel">
+      <img src="/brand/logo-luz-del-tunel.png" alt="Luz del Tunel Clinica Privada" />
+    </a>
 
-    <header class="navbar">
-        <div class="navbar__brand">
-            <span class="navbar__title">Luz del Túnel</span>
-        </div>
+    <nav class="site-header__nav" aria-label="Navegacion principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#especialidades">Especialidades</a>
+      <a href="#experiencia">Experiencia</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
 
-        <nav class="navbar__menu">
-            <a href="#inicio">Inicio</a>
-            <a href="#nosotros">Nosotros</a>
-            <a href="#especialidades">Especialidades</a>
-            <a href="#contacto">Contáctanos</a>
-        </nav>
+    <a class="site-header__login" routerLink="/login">Iniciar sesi&oacute;n</a>
+  </header>
 
-        <div class="navbar__actions">
-            <button class="btn btn--outline-light" routerLink="/login">Iniciar Sesión</button>
-            <button class="btn btn--accent">Agendar Cita</button>
-        </div>
-    </header>
+  <main>
+    <section id="inicio" class="hero" aria-labelledby="hero-title">
+      <div class="hero__content">
+        <span class="section-kicker">Cl&iacute;nica privada Luz del T&uacute;nel</span>
+        <h1 id="hero-title">Salud cercana para ti y tu familia.</h1>
+        <p>
+          Brindamos atenci&oacute;n m&eacute;dica privada con trato humano, ambientes ordenados y servicios
+          integrados para acompa&ntilde;arte desde la consulta hasta tu recuperaci&oacute;n.
+        </p>
 
-    <main class="hero">
-        <div class="hero__wrapper">
+        <ul class="hero__signals" aria-label="Servicios destacados">
+          <li>
+            <strong>Consultas programadas</strong>
+            <span>Orientaci&oacute;n en admisi&oacute;n y seguimiento por especialidad.</span>
+          </li>
+          <li>
+            <strong>Atenci&oacute;n integral</strong>
+            <span>Evaluaci&oacute;n, diagn&oacute;stico, receta y control en un mismo entorno.</span>
+          </li>
+          <li>
+            <strong>Apoyo al paciente</strong>
+            <span>Farmacia, caja y documentaci&oacute;n cl&iacute;nica con procesos claros.</span>
+          </li>
+        </ul>
+      </div>
 
-            <div class="hero__content">
-                <p class="hero__subtitle">Clínica Privada</p>
-                <h1 class="hero__title">Gestión asistencial y financiera en un solo entorno.</h1>
-                <p class="hero__description">
-                    Sistema integral diseñado para optimizar el control de pacientes, historias clínicas, inventario de
-                    farmacia y facturación con los más altos estándares de seguridad.
-                </p>
+      <figure class="hero__media">
+        <img src="/hero-clinica.jpg" alt="Equipo medico de la Clinica Luz del Tunel" />
+        <figcaption>Un equipo preparado para atenderte con cercan&iacute;a, respeto y confianza.</figcaption>
+      </figure>
+    </section>
 
-                <div class="hero__buttons">
-                    <button class="btn btn--accent btn--large">Agendar Cita</button>
-                </div>
-            </div>
+    <section class="service-strip" aria-label="Atenciones principales">
+      <article>
+        <span>01</span>
+        <h2>Consulta externa</h2>
+        <p>Atenci&oacute;n ambulatoria para evaluaci&oacute;n, control y seguimiento de pacientes.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h2>Emergencias</h2>
+        <p>Recepci&oacute;n y triaje para casos que requieren orientaci&oacute;n cl&iacute;nica inmediata.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h2>Farmacia interna</h2>
+        <p>Despacho de medicamentos y soporte a tratamientos indicados por el equipo m&eacute;dico.</p>
+      </article>
+    </section>
 
-            <div class="hero__visual">
-                <div class="hero__image-container">
-                    <img src="/hero-clinica.jpg" alt="Atención Médica Luz del Túnel" class="hero__image">
-                </div>
-            </div>
+    <section id="servicios" class="section services-section">
+      <div class="section__heading">
+        <span class="section-kicker">Servicios</span>
+        <h2>Todo lo necesario para una atenci&oacute;n ordenada.</h2>
+      </div>
 
-        </div>
-    </main>
+      <div class="services-grid">
+        <article>
+          <h3>Admisi&oacute;n de pacientes</h3>
+          <p>Registro, orientaci&oacute;n y organizaci&oacute;n de citas para una llegada m&aacute;s simple.</p>
+        </article>
+        <article>
+          <h3>Historia cl&iacute;nica</h3>
+          <p>Informaci&oacute;n m&eacute;dica cuidada para que el equipo pueda dar continuidad a tu atenci&oacute;n.</p>
+        </article>
+        <article>
+          <h3>Resultados y recetas</h3>
+          <p>Soporte para indicaciones m&eacute;dicas, tratamientos y seguimiento posterior a consulta.</p>
+        </article>
+        <article>
+          <h3>Pagos y comprobantes</h3>
+          <p>Procesos de caja pensados para cerrar tu atenci&oacute;n con claridad y orden.</p>
+        </article>
+      </div>
+    </section>
 
-    <footer class="footer">
-        <p>© 2026 Clínica Privada Luz del Túnel. Sistema de Gestión Clínica e Institucional.
-            Todos los derechos reservados.</p>
-    </footer>
+    <section id="especialidades" class="section specialties-section">
+      <div class="section__heading">
+        <span class="section-kicker">Especialidades</span>
+        <h2>&Aacute;reas de atenci&oacute;n para cada etapa.</h2>
+      </div>
 
+      <div class="specialties-grid">
+        <article>
+          <span class="specialty-icon">+</span>
+          <h3>Medicina general</h3>
+          <p>Evaluaci&oacute;n inicial, controles preventivos y orientaci&oacute;n cl&iacute;nica.</p>
+        </article>
+        <article>
+          <span class="specialty-icon">ECG</span>
+          <h3>Cardiolog&iacute;a</h3>
+          <p>Seguimiento cardiovascular y control de factores de riesgo.</p>
+        </article>
+        <article>
+          <span class="specialty-icon">PED</span>
+          <h3>Pediatr&iacute;a</h3>
+          <p>Cuidado de ni&ntilde;os, controles peri&oacute;dicos y acompa&ntilde;amiento familiar.</p>
+        </article>
+        <article>
+          <span class="specialty-icon">ENF</span>
+          <h3>Enfermer&iacute;a</h3>
+          <p>Apoyo asistencial, control de signos y acompa&ntilde;amiento en procedimientos.</p>
+        </article>
+        <article>
+          <span class="specialty-icon">LAB</span>
+          <h3>Diagn&oacute;stico</h3>
+          <p>Soporte para resultados y decisiones m&eacute;dicas oportunas.</p>
+        </article>
+        <article>
+          <span class="specialty-icon">RX</span>
+          <h3>Procedimientos</h3>
+          <p>Atenciones complementarias seg&uacute;n indicaci&oacute;n del profesional de salud.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="experiencia" class="section experience-section">
+      <div>
+        <span class="section-kicker">Experiencia del paciente</span>
+        <h2>Una visita m&aacute;s simple, acompa&ntilde;ada y confiable.</h2>
+      </div>
+
+      <div class="experience-list">
+        <article>
+          <strong>1. Llegas y te orientamos</strong>
+          <span>El equipo de admisi&oacute;n te ayuda a ubicar el servicio adecuado.</span>
+        </article>
+        <article>
+          <strong>2. Recibes atenci&oacute;n m&eacute;dica</strong>
+          <span>Tu consulta queda organizada para facilitar controles y seguimiento.</span>
+        </article>
+        <article>
+          <strong>3. Contin&uacute;as tu tratamiento</strong>
+          <span>Farmacia, indicaciones y comprobantes se integran al cierre de la atenci&oacute;n.</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="contacto" class="section contact-section">
+      <div>
+        <span class="section-kicker">Contacto</span>
+        <h2>Estamos para orientarte.</h2>
+        <p>
+          Si necesitas atenci&oacute;n, ac&eacute;rcate al &aacute;rea de admisi&oacute;n de la cl&iacute;nica para recibir
+          informaci&oacute;n sobre disponibilidad, especialidades y pasos de atenci&oacute;n.
+        </p>
+      </div>
+
+      <div class="contact-list" aria-label="Informacion para pacientes">
+        <article>
+          <strong>Pacientes nuevos</strong>
+          <span>Orientaci&oacute;n para registro, citas y primera evaluaci&oacute;n.</span>
+        </article>
+        <article>
+          <strong>Pacientes en control</strong>
+          <span>Seguimiento de consultas, recetas y resultados indicados.</span>
+        </article>
+        <article>
+          <strong>Familiares</strong>
+          <span>Informaci&oacute;n general para acompa&ntilde;ar mejor el proceso de atenci&oacute;n.</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <span>&copy; 2026 Cl&iacute;nica Privada Luz del T&uacute;nel.</span>
+    <span>Atenci&oacute;n privada para pacientes y familias.</span>
+  </footer>
 </div>

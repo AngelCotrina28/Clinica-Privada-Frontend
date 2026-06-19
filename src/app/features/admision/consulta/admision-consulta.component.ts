@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Especialidad } from '../../../core/model/especialidad.model';
 import { Trabajador } from '../../../core/model/trabajador.model';
+import { AdmisionService } from '../../../core/services/admision.service';
 import { CitaService } from '../../../core/services/cita.service';
 import { EspecialidadService } from '../../../core/services/especialidad.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
@@ -33,8 +34,6 @@ interface TurnoHorarioVista {
   styleUrls: ['../admision.component.scss', './admision-consulta.component.scss']
 })
 export class AdmisionConsultaComponent implements OnInit {
-  private readonly API = 'http://localhost:8080/api';
-
   pasoActual = signal<number>(1);
   totalPasos = 4;
   readonly turnosHorario: TurnoHorarioVista[] = [
@@ -81,7 +80,7 @@ export class AdmisionConsultaComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
+    private admisionService: AdmisionService,
     private especialidadService: EspecialidadService,
     private citaService: CitaService
   ) { }
@@ -145,7 +144,7 @@ export class AdmisionConsultaComponent implements OnInit {
     this.limpiarHistoriaSeleccionada();
     this.cargandoHistoria.set(true);
 
-    this.http.get<HistoriaClinicaResponse>(`${this.API}/admision/historia?dni=${encodeURIComponent(this.dniBusqueda.trim())}`).subscribe({
+    this.admisionService.buscarHistoria(this.dniBusqueda.trim()).subscribe({
       next: h => {
         this.seleccionarHistoria(h);
         this.cargandoHistoria.set(false);
@@ -177,7 +176,7 @@ export class AdmisionConsultaComponent implements OnInit {
     this.cargandoHistoria.set(true);
     this.nuevaHistoria.desdeAdmision = true;
 
-    this.http.post<HistoriaClinicaResponse>(`${this.API}/admision/historia`, this.nuevaHistoria).subscribe({
+    this.admisionService.abrirNuevaHistoria(this.nuevaHistoria).subscribe({
       next: resp => {
         this.seleccionarHistoria(resp);
         this.dniBusqueda = resp.dniPaciente;

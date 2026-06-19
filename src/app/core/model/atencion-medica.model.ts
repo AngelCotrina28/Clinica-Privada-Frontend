@@ -22,6 +22,6 @@ export interface AtencionMedicaRequest {
     numeroCita?: string;
     diagnosticoPrincipal: string;
     notasEvolucion?: string;
-    medicoId: number;
+    medicoId?: number;
     itemsReceta?:         ItemReceta[];
 }

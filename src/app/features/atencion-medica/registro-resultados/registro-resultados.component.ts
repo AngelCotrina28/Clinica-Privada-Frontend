@@ -51,7 +51,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     this.atencionService.pacienteActivo$
       .pipe(takeUntil(this.destroy$))
       .subscribe(paciente => {
-        console.log('Paciente activo recibido:', paciente);
         this.pacienteActivo = paciente;
         this.numeroCita = '';
         this.citasDisponibles = [];
@@ -99,7 +98,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
       numeroCita:           this.numeroCita,
       diagnosticoPrincipal: this.diagnosticoCie10,
       notasEvolucion:       this.notasEvolucion,
-      medicoId:             6,
       itemsReceta:          this.adjuntarReceta ? this.receta : undefined
     };
 

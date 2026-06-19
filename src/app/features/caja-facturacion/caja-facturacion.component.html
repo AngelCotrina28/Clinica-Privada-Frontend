@@ -18,7 +18,7 @@
           }
         </select>
 
-        <button type="submit">Buscar Deudas</button>
+        <button type="button">Buscar Deudas</button>
       </fieldset>
     </form>
 
@@ -38,8 +38,15 @@
               <td>{{ deuda.concepto }}</td>
               <td>{{ deuda.monto | number:'1.2-2' }}</td>
               <td class="col-centrada">
-                <input type="checkbox" [(ngModel)]="deuda.checked">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="deuda.checked"
+                  [ngModelOptions]="{ standalone: true }">
               </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="col-centrada">No hay deudas cargadas.</td>
             </tr>
           }
         </tbody>
@@ -70,7 +77,7 @@
           }
         </select>
 
-        <button type="submit">Emitir Comprobante</button>
+        <button type="button">Emitir Comprobante</button>
       </fieldset>
     </form>
   </section>
@@ -80,7 +87,7 @@
     <form>
       <fieldset class="grupo-acciones fieldset-operaciones">
         <legend>Operaciones de Turno</legend>
-        <button type="submit">Apertura de Caja</button>
+        <button type="button">Apertura de Caja</button>
         <button type="button">Cuadre de Caja</button>
         <button type="button">Cierre de Caja</button>
       </fieldset>

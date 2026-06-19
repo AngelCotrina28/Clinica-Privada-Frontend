@@ -12,20 +12,20 @@ export class DashboardComponent {
   resumen = [
     {
       titulo: 'Pacientes en Emergencia',
-      descripcion: 'Actualmente hay',
-      valor: '12',
-      sufijo: 'pacientes registrados en triaje.'
+      descripcion: 'Indicador pendiente de conectar.',
+      valor: '-',
+      sufijo: ''
     },
     {
       titulo: 'Citas del Dia',
-      descripcion: 'Hay',
-      valor: '45',
-      sufijo: 'citas programadas para hoy en Consulta Externa.'
+      descripcion: 'Indicador pendiente de conectar.',
+      valor: '-',
+      sufijo: ''
     },
     {
       titulo: 'Estado de Caja',
-      descripcion: 'Caja Principal:',
-      valor: 'Abierta',
+      descripcion: 'Indicador pendiente de conectar.',
+      valor: '-',
       sufijo: ''
     }
   ];

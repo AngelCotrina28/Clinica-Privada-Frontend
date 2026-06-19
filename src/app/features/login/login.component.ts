@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ROLE } from '../../core/constants/roles';
 
 const RUTAS_INICIO_POR_ROL: Record<string, string> = {
-    'MEDICO': '/atencion-medica',
-    'TECNICO_FARMACIA': '/farmacia',
-    'CAJERO': '/caja-facturacion',
-    'RECEPCIONISTA': '/admision/consulta',
-    'ENFERMERO': '/admision/historias',
-    'JEFE_ENFERMERIA': '/admision/historias',
-    'ADMINISTRADOR': '/dashboard'
+    [ROLE.MEDICO]: '/atencion-medica',
+    [ROLE.TECNICO_FARMACIA]: '/farmacia/despacho',
+    [ROLE.CAJERO]: '/caja-facturacion',
+    [ROLE.RECEPCIONISTA]: '/admision/consulta',
+    [ROLE.ENFERMERO]: '/admision/historias',
+    [ROLE.JEFE_ENFERMERIA]: '/admision/historias',
+    [ROLE.ADMINISTRADOR]: '/dashboard'
 };
 
 @Component({

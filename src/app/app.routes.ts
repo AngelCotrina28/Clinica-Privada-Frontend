@@ -1,17 +1,14 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './core/guards/role.guard';
-
-const ROLES_TODOS = [
-  'ADMINISTRADOR',
-  'JEFE_ENFERMERIA',
-  'ENFERMERO',
-  'RECEPCIONISTA',
-  'MEDICO',
-  'TECNICO_FARMACIA',
-  'CAJERO'
-];
-
-const ROLES_ADMISION = ['ADMINISTRADOR', 'JEFE_ENFERMERIA', 'ENFERMERO', 'RECEPCIONISTA'];
+import {
+  ROLE,
+  ROLES_ADMISION,
+  ROLES_ATENCION_MEDICA,
+  ROLES_CAJA,
+  ROLES_FARMACIA,
+  ROLES_TODOS,
+  SOLO_ADMINISTRADOR
+} from './core/constants/roles';
 
 export const routes: Routes = [
   {
@@ -51,7 +48,7 @@ export const routes: Routes = [
       {
         path: 'emergencia',
         canActivate: [roleGuard],
-        data: { roles: ['ADMINISTRADOR', 'JEFE_ENFERMERIA', 'ENFERMERO'] },
+        data: { roles: [ROLE.ADMINISTRADOR, ROLE.JEFE_ENFERMERIA, ROLE.ENFERMERO] },
         loadComponent: () =>
           import('./features/admision/emergencia/admision-emergencia.component').then(
             m => m.AdmisionEmergenciaComponent
@@ -60,7 +57,7 @@ export const routes: Routes = [
       {
         path: 'auditoria-ordenes',
         canActivate: [roleGuard],
-        data: { roles: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] },
+        data: { roles: [ROLE.ADMINISTRADOR, ROLE.JEFE_ENFERMERIA] },
         loadComponent: () =>
           import('./features/admision/auditoria-ordenes/admision-auditoria-ordenes.component').then(
             m => m.AdmisionAuditoriaOrdenesComponent
@@ -80,7 +77,7 @@ export const routes: Routes = [
   {
     path: 'atencion-medica',
     canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR', 'MEDICO'] },
+    data: { roles: ROLES_ATENCION_MEDICA },
     loadComponent: () =>
       import('./features/atencion-medica/atencion-medica.component').then(
         m => m.AtencionMedicaComponent
@@ -117,20 +114,31 @@ export const routes: Routes = [
   {
     path: 'farmacia',
     canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
+    data: { roles: ROLES_FARMACIA },
     children: [
       {
+        path: '',
+        redirectTo: 'despacho',
+        pathMatch: 'full'
+      },
+      {
         path: 'despacho',
+        canActivate: [roleGuard],
+        data: { roles: ROLES_FARMACIA },
         loadComponent: () =>
           import('./features/farmacia/despacho/farmacia-despacho.component').then(m => m.FarmaciaDespachoComponent)
       },
       {
         path: 'inventario',
+        canActivate: [roleGuard],
+        data: { roles: SOLO_ADMINISTRADOR },
         loadComponent: () =>
           import('./features/farmacia/inventario/farmacia-inventario.component').then(m => m.FarmaciaInventarioComponent)
       },
       {
         path: 'stock-bajo',
+        canActivate: [roleGuard],
+        data: { roles: ROLES_FARMACIA },
         loadComponent: () =>
           import('./features/farmacia/stock-bajo/farmacia-stock-bajo.component').then(m => m.FarmaciaStockBajoComponent)
       }
@@ -139,7 +147,7 @@ export const routes: Routes = [
   {
     path: 'caja-facturacion',
     canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR', 'CAJERO'] },
+    data: { roles: ROLES_CAJA },
     loadComponent: () =>
       import('./features/caja-facturacion/caja-facturacion.component').then(
         m => m.CajaFacturacionComponent
@@ -148,7 +156,7 @@ export const routes: Routes = [
   {
     path: 'administracion',
     canActivate: [roleGuard],
-    data: { roles: ['ADMINISTRADOR'] },
+    data: { roles: SOLO_ADMINISTRADOR },
     children: [
       {
         path: '',
@@ -157,6 +165,8 @@ export const routes: Routes = [
       },
       {
         path: 'trabajadores',
+        canActivate: [roleGuard],
+        data: { roles: SOLO_ADMINISTRADOR },
         loadComponent: () =>
           import('./features/administracion/administracion-trabajadores/administracion-trabajadores.component').then(
             m => m.AdministracionTrabajadoresComponent
@@ -164,6 +174,8 @@ export const routes: Routes = [
       },
       {
         path: 'horarios-medicos',
+        canActivate: [roleGuard],
+        data: { roles: SOLO_ADMINISTRADOR },
         loadComponent: () =>
           import('./features/administracion/horarios-medicos/horarios-medicos.component').then(
             m => m.HorariosMedicosComponent
@@ -171,6 +183,8 @@ export const routes: Routes = [
       },
       {
         path: 'consultorios',
+        canActivate: [roleGuard],
+        data: { roles: SOLO_ADMINISTRADOR },
         loadComponent: () =>
           import('./features/administracion/consultorios/consultorios.component').then(
             m => m.ConsultoriosComponent
@@ -178,6 +192,8 @@ export const routes: Routes = [
       },
       {
         path: 'series',
+        canActivate: [roleGuard],
+        data: { roles: SOLO_ADMINISTRADOR },
         loadComponent: () =>
           import('./features/administracion/series-comprobantes/series-comprobantes.component').then(
             m => m.SeriesComprobantesComponent
@@ -185,6 +201,8 @@ export const routes: Routes = [
       },
       {
         path: 'cajas',
+        canActivate: [roleGuard],
+        data: { roles: SOLO_ADMINISTRADOR },
         loadComponent: () =>
           import('./features/administracion/asignacion-cajas/asignacion-cajas.component').then(
             m => m.AsignacionCajasComponent

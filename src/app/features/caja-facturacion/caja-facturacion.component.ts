@@ -19,10 +19,7 @@ interface ItemDeuda {
 
 export class CajaFacturacionComponent {
 
-  deudas: ItemDeuda[] = [
-    { concepto: 'Gastos de Cita - Cardiología',        monto: 80.00, checked: false },
-    { concepto: 'Gastos de Medicina - Receta REC-9921', monto: 45.50, checked: false }
-  ];
+  deudas: ItemDeuda[] = [];
 
   metodosPago = [
     { value: 'efectivo',   label: 'Efectivo'                          },

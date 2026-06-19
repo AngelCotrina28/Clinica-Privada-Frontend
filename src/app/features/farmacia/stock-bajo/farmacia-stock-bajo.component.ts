@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { MedicamentoService } from '../../../core/services/medicamento.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
 import { MedicamentoResponse } from '../../../core/model/farmacia.models';
 
@@ -20,16 +21,14 @@ export class FarmaciaStockBajoComponent implements OnInit {
   paginaActual  = 0;
   totalPaginas  = 0;
 
-  constructor(private medService: MedicamentoService) {}
+  constructor(
+    private medService: MedicamentoService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    const token = sessionStorage.getItem('token') ?? localStorage.getItem('token') ?? '';
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        this.usuarioNombre = payload.sub ?? 'Farmacia';
-      } catch { this.usuarioNombre = 'Farmacia'; }
-    }
+    const usuario = this.authService.obtenerUsuarioActual();
+    this.usuarioNombre = usuario?.nombreCompleto || usuario?.username || 'Farmacia';
     this.cargar();
   }
 

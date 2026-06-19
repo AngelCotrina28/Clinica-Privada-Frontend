@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
 import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../../../core/model/admision.models';
+import { AdmisionService } from '../../../core/services/admision.service';
 import {
   limpiarDocumentoPaciente,
   maxDocumentoPaciente,
@@ -209,8 +210,6 @@ import {
   styleUrl: '../admision.component.scss'
 })
 export class AdmisionHistoriasComponent {
-  private readonly API = 'http://localhost:8080/api';
-
   dniBusqueda = '';
   tipoDocumentoBusqueda: TipoDocumentoPaciente = 'DNI';
   tipoDocumentoNueva: TipoDocumentoPaciente = 'DNI';
@@ -223,7 +222,7 @@ export class AdmisionHistoriasComponent {
   errorMensaje = signal('');
   exitoMensaje = signal('');
 
-  constructor(private http: HttpClient) { }
+  constructor(private admisionService: AdmisionService) { }
 
   buscarHistoria(): void {
     this.documentoBusquedaTocado = true;
@@ -236,9 +235,7 @@ export class AdmisionHistoriasComponent {
 
     this.limpiar();
     this.cargando.set(true);
-    this.http.get<HistoriaClinicaResponse>(
-      `${this.API}/admision/historia?dni=${encodeURIComponent(this.dniBusqueda.trim())}`
-    ).subscribe({
+    this.admisionService.buscarHistoria(this.dniBusqueda.trim()).subscribe({
       next: h => {
         this.historiaEncontrada.set(h);
         this.cargando.set(false);
@@ -269,7 +266,7 @@ export class AdmisionHistoriasComponent {
     this.limpiar();
     this.cargando.set(true);
     this.nuevaHistoria.desdeAdmision = true;
-    this.http.post<HistoriaClinicaResponse>(`${this.API}/admision/historia`, this.nuevaHistoria).subscribe({
+    this.admisionService.abrirNuevaHistoria(this.nuevaHistoria).subscribe({
       next: resp => {
         this.historiaEncontrada.set(resp);
         this.mostrarFormNueva = false;

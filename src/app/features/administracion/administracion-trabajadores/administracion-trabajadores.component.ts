@@ -64,7 +64,6 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     this.especialidadService.listar().subscribe({
       next: (data) => {
         this.especialidadesDisponibles = data;
-        console.log('Especialidades cargadas:', data);
       },
       error: (err) => {
         console.error('Error al cargar especialidades:', err);
@@ -76,7 +75,6 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     this.trabajadorService.listarTodos().subscribe({
       next: (data) => {
         this.listaTrabajadores = data;
-        console.log('Datos recibidos del backend:', data);
       },
       error: (err) => {
         console.error('Error al conectar con Spring Boot:', err);
@@ -133,7 +131,6 @@ export class AdministracionTrabajadoresComponent implements OnInit {
 
   guardarTrabajador() {
     if (this.trabajadorForm.invalid) return;
-    console.log('Enviando:', this.trabajadorForm.value);
     if (this.isEditMode && this.idSeleccionado) {
       this.trabajadorService.actualizar(this.idSeleccionado, this.trabajadorForm.value).subscribe({
         next: () => {

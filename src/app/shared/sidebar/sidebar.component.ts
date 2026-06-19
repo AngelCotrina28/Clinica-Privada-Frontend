@@ -2,6 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService, UsuarioSesion } from '../../core/services/auth.service';
+import {
+  ROLE,
+  ROLES_ADMISION,
+  ROLES_ATENCION_MEDICA,
+  ROLES_CAJA,
+  ROLES_FARMACIA,
+  ROLES_TODOS,
+  SOLO_ADMINISTRADOR
+} from '../../core/constants/roles';
 
 interface NavItem {
   label: string;
@@ -26,16 +35,6 @@ type IconName =
   | 'schedule'
   | 'receipt'
   | 'cash';
-
-const ROLES_TODOS = [
-  'ADMINISTRADOR',
-  'RECEPCIONISTA',
-  'ENFERMERO',
-  'JEFE_ENFERMERIA',
-  'MEDICO',
-  'TECNICO_FARMACIA',
-  'CAJERO'
-];
 
 @Component({
   selector: 'app-sidebar',
@@ -69,53 +68,53 @@ export class SidebarComponent implements OnInit {
       label: 'Admision y Consultas',
       icon: 'admission',
       group: 'admision',
-      rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'],
+      rolesPermitidos: ROLES_ADMISION,
       children: [
-        { label: 'Historias Clinicas', icon: 'record', route: '/admision/historias', rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
-        { label: 'Emergencia', icon: 'emergency', route: '/admision/emergencia', rolesPermitidos: ['ADMINISTRADOR', 'ENFERMERO', 'JEFE_ENFERMERIA'] },
-        { label: 'Auditoria de Ordenes', icon: 'receipt', route: '/admision/auditoria-ordenes', rolesPermitidos: ['ADMINISTRADOR', 'JEFE_ENFERMERIA'] },
-        { label: 'Consulta Externa', icon: 'calendar', route: '/admision/consulta', rolesPermitidos: ['ADMINISTRADOR', 'RECEPCIONISTA', 'ENFERMERO', 'JEFE_ENFERMERIA'] }
+        { label: 'Historias Clinicas', icon: 'record', route: '/admision/historias', rolesPermitidos: ROLES_ADMISION },
+        { label: 'Emergencia', icon: 'emergency', route: '/admision/emergencia', rolesPermitidos: [ROLE.ADMINISTRADOR, ROLE.ENFERMERO, ROLE.JEFE_ENFERMERIA] },
+        { label: 'Auditoria de Ordenes', icon: 'receipt', route: '/admision/auditoria-ordenes', rolesPermitidos: [ROLE.ADMINISTRADOR, ROLE.JEFE_ENFERMERIA] },
+        { label: 'Consulta Externa', icon: 'calendar', route: '/admision/consulta', rolesPermitidos: ROLES_ADMISION }
       ]
     },
     {
       label: 'Atencion Medica',
       icon: 'medical',
       group: 'atencion',
-      rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'],
+      rolesPermitidos: ROLES_ATENCION_MEDICA,
       children: [
-        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
-        { label: 'Registrar Resultados', icon: 'medical', route: '/atencion-medica/registro-resultados', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] },
-        { label: 'Receta Medica', icon: 'receipt', route: '/atencion-medica/receta-medica', rolesPermitidos: ['ADMINISTRADOR', 'MEDICO'] }
+        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ROLES_ATENCION_MEDICA },
+        { label: 'Registrar Resultados', icon: 'medical', route: '/atencion-medica/registro-resultados', rolesPermitidos: ROLES_ATENCION_MEDICA },
+        { label: 'Receta Medica', icon: 'receipt', route: '/atencion-medica/receta-medica', rolesPermitidos: ROLES_ATENCION_MEDICA }
       ]
     },
     {
       label: 'Farmacia',
       icon: 'pharmacy',
       group: 'farmacia',
-      rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'],
+      rolesPermitidos: ROLES_FARMACIA,
       children: [
-        { label: 'Despacho de Medicamentos',icon: 'pharmacy', route: '/farmacia/despacho',   rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
-        { label: 'Inventario',icon: 'pharmacy', route: '/farmacia/inventario',  rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Alertas de Stock',icon: 'pharmacy', route: '/farmacia/stock-bajo',  rolesPermitidos: ['ADMINISTRADOR', 'TECNICO_FARMACIA'] },
+        { label: 'Despacho de Medicamentos',icon: 'pharmacy', route: '/farmacia/despacho',   rolesPermitidos: ROLES_FARMACIA },
+        { label: 'Inventario',icon: 'pharmacy', route: '/farmacia/inventario',  rolesPermitidos: SOLO_ADMINISTRADOR },
+        { label: 'Alertas de Stock',icon: 'pharmacy', route: '/farmacia/stock-bajo',  rolesPermitidos: ROLES_FARMACIA },
       ]
     },
     {
       label: 'Caja y Facturacion',
       icon: 'billing',
       route: '/caja-facturacion',
-      rolesPermitidos: ['ADMINISTRADOR', 'CAJERO']
+      rolesPermitidos: ROLES_CAJA
     },
     {
       label: 'Administracion',
       icon: 'admin',
       group: 'administracion',
-      rolesPermitidos: ['ADMINISTRADOR'],
+      rolesPermitidos: SOLO_ADMINISTRADOR,
       children: [
-        { label: 'Trabajadores', icon: 'users', route: '/administracion/trabajadores', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Horarios Medicos', icon: 'schedule', route: '/administracion/horarios-medicos', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Consultorios', icon: 'medical', route: '/administracion/consultorios', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Series de Comprobantes', icon: 'receipt', route: '/administracion/series', rolesPermitidos: ['ADMINISTRADOR'] },
-        { label: 'Asignacion de Cajas', icon: 'cash', route: '/administracion/cajas', rolesPermitidos: ['ADMINISTRADOR'] }
+        { label: 'Trabajadores', icon: 'users', route: '/administracion/trabajadores', rolesPermitidos: SOLO_ADMINISTRADOR },
+        { label: 'Horarios Medicos', icon: 'schedule', route: '/administracion/horarios-medicos', rolesPermitidos: SOLO_ADMINISTRADOR },
+        { label: 'Consultorios', icon: 'medical', route: '/administracion/consultorios', rolesPermitidos: SOLO_ADMINISTRADOR },
+        { label: 'Series de Comprobantes', icon: 'receipt', route: '/administracion/series', rolesPermitidos: SOLO_ADMINISTRADOR },
+        { label: 'Asignacion de Cajas', icon: 'cash', route: '/administracion/cajas', rolesPermitidos: SOLO_ADMINISTRADOR }
       ]
     }
   ];

@@ -10,5 +10,4 @@ import { HeaderComponent } from '../../../shared/header/header.component';
   styleUrl: './series-comprobantes.component.scss'
 })
 export class SeriesComprobantesComponent {
-  constructor() {}
 }

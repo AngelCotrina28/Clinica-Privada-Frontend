@@ -10,5 +10,4 @@ import { HeaderComponent } from '../../../shared/header/header.component';
   styleUrl: './asignacion-cajas.component.scss'
 })
 export class AsignacionCajasComponent {
-  constructor() {}
 }

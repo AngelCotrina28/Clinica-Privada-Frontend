@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { MedicamentoService } from '../../../core/services/medicamento.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
@@ -60,15 +59,9 @@ export class FarmaciaInventarioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = sessionStorage.getItem('token') ?? localStorage.getItem('token') ?? '';
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        this.usuarioNombre = payload.sub ?? 'Farmacia';
-        const rol = (payload.rol ?? payload.role ?? '').toUpperCase();
-        this.esAdmin = rol === 'ADMINISTRADOR' || rol === 'ROLE_ADMINISTRADOR';
-      } catch { this.usuarioNombre = 'Farmacia'; }
-    }
+    const usuario = this.authService.obtenerUsuarioActual();
+    this.usuarioNombre = usuario?.nombreCompleto || usuario?.username || 'Farmacia';
+    this.esAdmin = usuario?.rol === 'ADMINISTRADOR';
 
     this.initForm();
     this.cargarCategorias();

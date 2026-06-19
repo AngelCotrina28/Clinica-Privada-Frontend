@@ -29,7 +29,7 @@ export class AtencionMedicaComponent implements OnInit, OnDestroy {
 
   finalizarAtencion() {
     this.atencionService.setPacienteActivo(null);
-    this.router.navigate(['/atencion-medica/consultar-historial']);
+    this.router.navigate(['/atencion-medica/historial-clinico']);
   }
 
   ngOnDestroy() {

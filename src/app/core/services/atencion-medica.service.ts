@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject } from 'rxjs';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AtencionMedicaHistorial, AtencionMedicaRequest } from '../model/atencion-medica.model';
 import { HistoriaClinicaResponse } from '../model/historia-clinica.model';
 import { environment } from '../../../environments/environment';

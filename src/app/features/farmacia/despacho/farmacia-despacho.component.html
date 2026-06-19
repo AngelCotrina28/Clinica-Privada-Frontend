@@ -25,7 +25,7 @@
         <div class="campo-busqueda-inline-wrapper">
           <input id="busqueda_orden" type="text" class="campo__input"
             [(ngModel)]="terminoBusqueda"
-            placeholder="Ej: REC-9921 o DNI del paciente"
+            placeholder="Ej: REC-0001 o DNI del paciente"
             (keydown.enter)="buscarOrden()" />
           <button class="btn-buscar-moderno" (click)="buscarOrden()" [disabled]="cargandoBusqueda()">
             @if (cargandoBusqueda()) { <span class="spinner"></span> } Buscar

@@ -12,7 +12,9 @@ export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth/login`;
   private readonly http = inject(HttpClient)
 
-  private readonly rolActual = new BehaviorSubject<string>(localStorage.getItem('rol') || '');
+  private readonly rolActual = new BehaviorSubject<string>(
+    this.normalizarRol(localStorage.getItem('rol') || '')
+  );
   readonly rolActual$ = this.rolActual.asObservable();
 
   private readonly usuarioActual = new BehaviorSubject<UsuarioSesion | null>(this.cargarUsuarioDesdeStorage());
@@ -42,10 +44,11 @@ export class AuthService {
   }
 
   private guardarSesion(response: LoginResponse): void {
+    const rolNormalizado = this.normalizarRol(response.rol);
     const usuario: UsuarioSesion = {
       username: response.username,
       nombreCompleto: response.nombreCompleto || response.username,
-      rol: response.rol
+      rol: rolNormalizado
     };
 
     localStorage.setItem('token', response.token);
@@ -67,7 +70,7 @@ export class AuthService {
   }
 
   private cargarUsuarioDesdeStorage(): UsuarioSesion | null {
-    const rol = localStorage.getItem('rol') || '';
+    const rol = this.normalizarRol(localStorage.getItem('rol') || '');
     const username = localStorage.getItem('username') || '';
     const nombreCompleto = localStorage.getItem('nombreCompleto') || username;
 
@@ -76,5 +79,9 @@ export class AuthService {
     }
 
     return { username, nombreCompleto, rol };
+  }
+
+  private normalizarRol(rol: string): string {
+    return rol.startsWith('ROLE_') ? rol.slice(5) : rol;
   }
 }
