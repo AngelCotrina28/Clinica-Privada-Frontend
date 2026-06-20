@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ROLE } from '../../core/constants/roles';
@@ -18,30 +18,51 @@ const RUTAS_INICIO_POR_ROL: Record<string, string> = {
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-    credentials = {
-        username: '',
-        password: ''
-    };
+    private authService = inject(AuthService);
+    private router = inject(Router);
 
     errorMessage = '';
     showPassword = false;
+    cargando = false;
 
-    private authService = inject(AuthService);
-    private router = inject(Router);
+    loginForm = new FormGroup({
+        username: new FormControl('', [
+            Validators.required,
+            Validators.minLength(4),
+            Validators.pattern(/^[a-zA-Z0-9_.-]+$/)
+        ]),
+        password: new FormControl('', [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.pattern(/^\S*$/)
+        ])
+    });
 
     togglePasswordVisibility(): void {
         this.showPassword = !this.showPassword;
     }
 
-    onLogin() {
+    onLogin(): void {
+        console.log(this.loginForm);
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+
         this.errorMessage = '';
 
-        this.authService.login(this.credentials).subscribe({
+        const credentials = {
+            username: this.loginForm.value.username!,
+            password: this.loginForm.value.password!
+        };
+
+        this.cargando = true;
+        this.authService.login(credentials).subscribe({
             next: (response) => {
                 const rutaDestino = RUTAS_INICIO_POR_ROL[response.rol] || '/dashboard';
                 this.router.navigate([rutaDestino]);
@@ -54,7 +75,11 @@ export class LoginComponent {
                 } else {
                     this.errorMessage = 'Credenciales incorrectas';
                 }
+            }, complete: () => {
+                this.cargando = false;
             }
         });
+
+
     }
 }
