@@ -101,13 +101,6 @@ export const routes: Routes = [
           import('./features/atencion-medica/registro-resultados/registro-resultados.component').then(
             m => m.RegistroResultadosComponent
           )
-      },
-      {
-        path: 'receta-medica',
-        loadComponent: () =>
-          import('./features/atencion-medica/receta-medica/receta-medica.component').then(
-            m => m.RecetaMedicaComponent
-          )
       }
     ]
   },

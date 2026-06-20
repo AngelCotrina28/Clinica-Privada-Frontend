@@ -215,196 +215,170 @@
   }
 }
 
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
 
-/* ══════════════════════════════════════════════════════════
-   PLANTILLA DE IMPRESIÓN – solo visible al imprimir
-   ══════════════════════════════════════════════════════════ */
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
 
-/* Ocultar en pantalla */
-.receta-impresion {
-  display: none;
+  font-size: 0.90rem;
+  font-weight: 600;
+  border-radius: 8px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+/* Botón principal */
+.btn--primario {
+  background: #002e5d;
+  color: #ffffff;
+  border: 2px solid #002e5d;
+}
+
+.btn--primario:hover {
+  background: #003c78;
+  border-color: #003c78;
+}
+
+/* Botón contorno */
+.btn--contorno {
+  background: #fff;
+  color: #002e5d;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.btn--contorno:hover {
+  background: #f7fafc;
+}
+
+.btn--contorno:active {
+  transform: translateY(1px);
+}
+
+/* ========================================================
+   IMPRESIÓN 1/4 DE HOJA A4 (TAMAÑO A6 = 105mm x 148.5mm)
+   ======================================================== */
+
+/* 1. Ocultar totalmente en la pantalla normal */
+@media screen {
+  ::ng-deep .receta-impresion {
+    display: none !important;
+  }
 }
 
 @media print {
-  /* Ocultar TODO excepto la receta */
-  body > * {
-    display: none !important;
+  /* 2. Ocultar TODO el menú y la app */
+  ::ng-deep body * {
+    visibility: hidden !important;
   }
 
-  .receta-impresion {
-    display: block !important;
+  /* 3. Limpiar márgenes de la página */
+  @page {
+    margin: 0;
+  }
+
+  /* 4. Limpiar márgenes del navegador sin restringir su tamaño */
+  ::ng-deep html, ::ng-deep body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 5. Mostrar SOLO la receta */
+  ::ng-deep .receta-impresion, ::ng-deep .receta-impresion * {
+    visibility: visible !important;
+  }
+
+  /* 6. Contenedor de la receta */
+  ::ng-deep .receta-impresion {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: flex !important;
+    flex-direction: column !important; /* Permite empujar la firma al fondo */
+    width: 105mm !important;
+    min-height: 148.5mm !important; /* IMPORTANTE: min-height permite que crezca si hay muchos items */
+    height: auto !important;
+    padding: 10mm 8mm !important;
     font-family: 'Arial', sans-serif;
-    font-size: 11pt;
     color: #000;
-    margin: 0;
-    padding: 20mm 18mm;
-    width: 100%;
-    box-sizing: border-box;
-  }
+    box-sizing: border-box !important;
+    background-color: #fff !important;
 
-  /* Header */
-  .receta-print__header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8mm;
-  }
+    /* -- HEADER -- */
+    .receta-print__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3mm; }
+    .receta-print__logo-bloque { display: flex; align-items: center; gap: 6px; }
+    .receta-print__logo { height: 32px; object-fit: contain; }
+    
+    .receta-print__clinica-info { display: flex; flex-direction: column; }
+    .receta-print__clinica-nombre { font-size: 10pt; font-weight: 800; letter-spacing: 0.02em; color: #002e5d; }
+    .receta-print__clinica-sub { color: #555; font-size: 7pt; margin-top: 1px; }
+    
+    .receta-print__titulo-bloque { text-align: right; }
+    .receta-print__titulo { font-size: 11pt; font-weight: 800; letter-spacing: 0.03em; margin: 0; text-transform: uppercase; color: #002e5d; }
+    .receta-print__numero { color: #444; font-size: 7.5pt; margin-top: 2px; }
+    
+    .receta-print__divider { border: none; border-top: 1.5px solid #000; margin: 3mm 0; }
+    
+    /* -- META DATOS (Médico, paciente, fechas) -- */
+    .receta-print__meta { display: flex; gap: 4mm; margin-bottom: 3mm; }
+    .receta-print__meta-col { flex: 1; display: flex; flex-direction: column; gap: 2.5mm; }
+    .receta-print__meta-item { display: flex; flex-direction: column; }
+    .receta-print__meta-label { color: #666; font-size: 6.5pt; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+    .receta-print__meta-valor { font-size: 8pt; font-weight: 600; margin-top: 1px; line-height: 1.2; }
+    
+    /* -- TABLA DE MEDICAMENTOS (SIN BORDES NI SOMBRAS) -- */
+    .receta-print__tabla { 
+      border-collapse: collapse; 
+      width: 100%; 
+      margin-top: 2mm;
+      /* Forzamos a quitar cualquier estilo global de la app */
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      border: none !important;
+      background: transparent !important;
+    }
+    
+    .receta-print__tabla th, 
+    .receta-print__tabla td, 
+    .receta-print__tabla tr {
+      border: none !important; /* Eliminamos bordes de celdas */
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+    
+    /* Mantenemos solo una línea oscura en el título de la tabla para separar visualmente */
+    .receta-print__tabla thead tr { border-bottom: 1.5px solid #000 !important; }
 
-  .receta-print__logo-bloque {
-    align-items: center;
-    display: flex;
-    gap: 10px;
-  }
-
-  .receta-print__logo {
-    height: 52px;
-    object-fit: contain;
-  }
-
-  .receta-print__clinica-nombre {
-    font-size: 13pt;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-
-  .receta-print__clinica-sub {
-    color: #555;
-    font-size: 8pt;
-    margin-top: 2px;
-  }
-
-  .receta-print__titulo-bloque {
-    text-align: right;
-  }
-
-  .receta-print__titulo {
-    font-size: 16pt;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    margin: 0;
-    text-transform: uppercase;
-  }
-
-  .receta-print__numero {
-    color: #444;
-    font-size: 9pt;
-    margin-top: 3px;
-  }
-
-  /* Divisor */
-  .receta-print__divider {
-    border: none;
-    border-top: 1.5px solid #000;
-    margin: 5mm 0;
-  }
-
-  /* Meta datos */
-  .receta-print__meta {
-    display: flex;
-    gap: 10mm;
-    margin-bottom: 5mm;
-  }
-
-  .receta-print__meta-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 3mm;
-  }
-
-  .receta-print__meta-item {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .receta-print__meta-label {
-    color: #666;
-    font-size: 7.5pt;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .receta-print__meta-valor {
-    font-size: 10.5pt;
-    font-weight: 600;
-    margin-top: 1px;
-  }
-
-  /* Tabla de medicamentos */
-  .receta-print__tabla {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  .receta-print__tabla thead tr {
-    background: #000;
-    color: #fff;
-  }
-
-  .receta-print__tabla th {
-    font-size: 8.5pt;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    padding: 4px 8px;
-    text-align: left;
-    text-transform: uppercase;
-  }
-
-  .receta-print__tabla td {
-    border-bottom: 1px solid #ddd;
-    font-size: 10pt;
-    padding: 6px 8px;
-    vertical-align: top;
-  }
-
-  .col-medicamento { width: auto; }
-  .col-dias        { width: 18mm; text-align: center; }
-  .col-cantidad    { width: 22mm; text-align: center; }
-
-  .receta-print__tabla thead .col-dias,
-  .receta-print__tabla thead .col-cantidad {
-    text-align: center;
-  }
-
-  .receta-med-nombre {
-    font-weight: 700;
-  }
-
-  .receta-med-indicacion {
-    color: #444;
-    font-size: 9pt;
-    margin-top: 2px;
-  }
-
-  /* Firma */
-  .receta-print__footer {
-    margin-top: 18mm;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .receta-print__firma-bloque {
-    text-align: center;
-    width: 60mm;
-  }
-
-  .receta-print__firma-linea {
-    border-top: 1.5px solid #000;
-    margin-bottom: 4px;
-    width: 100%;
-  }
-
-  .receta-print__firma-label {
-    font-size: 8pt;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .receta-print__firma-nombre {
-    font-size: 9pt;
-    font-weight: 600;
-    margin-top: 2px;
+    .receta-print__tabla th { font-size: 7pt; font-weight: 700; letter-spacing: 0.03em; padding: 4px 2px; text-align: left; text-transform: uppercase; color: #555; }
+    .receta-print__tabla td { font-size: 8.5pt; padding: 6px 2px; vertical-align: top; }
+    
+    .col-medicamento { width: auto; }
+    .col-dias { width: 12mm; text-align: center; }
+    .col-cantidad { width: 12mm; text-align: center; }
+    .receta-print__tabla thead .col-dias, .receta-print__tabla thead .col-cantidad { text-align: center; }
+    
+    .receta-med-nombre { font-weight: 700; color: #000; font-size: 9pt; }
+    .receta-med-indicacion { color: #444; font-size: 7.5pt; margin-top: 3px; line-height: 1.2; }
+    
+    /* -- FIRMA -- */
+    .receta-print__footer { 
+      margin-top: auto; /* Magia de Flexbox: empuja el footer al fondo de la hoja */
+      display: flex; 
+      justify-content: flex-end; 
+      padding-top: 8mm; /* Crea un espacio para que la lista no choque con la firma */
+    }
+    .receta-print__firma-bloque { text-align: center; width: 45mm; }
+    .receta-print__firma-linea { border-top: 1px solid #000; margin-bottom: 3px; width: 100%; }
+    .receta-print__firma-label { font-size: 7pt; color: #555; text-transform: uppercase; letter-spacing: 0.03em; }
   }
 }

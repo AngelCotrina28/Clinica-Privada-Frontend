@@ -9,14 +9,23 @@ import { MedicamentoService, MedicamentoOpcion } from '../../../core/services/me
 import { AtencionMedicaRequest, ItemReceta } from '../../../core/model/atencion-medica.model';
 import { HistoriaClinicaResponse } from '../../../core/model/historia-clinica.model';
 
+// Interfaz para la emisión de la receta (para la plantilla de impresión)
+export interface RecetaEmitida {
+  numeroReceta: string;
+  nombreMedico: string;
+  nombrePaciente: string;
+  fechaEmision: Date;
+  fechaVencimiento: Date;
+  items: ItemReceta[];
+}
+
 @Component({
   selector: 'app-registro-resultados',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './registro-resultados.component.html',
-  styleUrl: './registro-resultados.component.scss'
+  styleUrl: '../atencion-medica.component.scss'
 })
-
 export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
   private atencionService   = inject(AtencionMedicaService);
@@ -45,6 +54,9 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
   cantidadInput:   number | null = null;
   indicacionesInput = '';
   receta: ItemReceta[] = [];
+
+  // ── Datos de la receta ya emitida (para imprimir) ─────
+  recetaEmitida: RecetaEmitida | null = null;
 
   ngOnInit() {
     // Escuchar cambios de paciente activo
@@ -92,7 +104,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     if (!this.diagnosticoCie10.trim()) { alert('El diagnóstico es obligatorio'); return; }
 
     this.cargando = true;
-
     const request: AtencionMedicaRequest = {
       historiaClinicaId:    this.pacienteActivo.id,
       numeroCita:           this.numeroCita,
@@ -156,15 +167,18 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     if (!nombre) { alert('Seleccione o escriba un medicamento.'); return; }
     if (!this.diasInput || this.diasInput < 1) { alert('Ingrese días válido.'); return; }
     if (!this.cantidadInput || this.cantidadInput < 1) { alert('Ingrese cantidad válida.'); return; }
+    
     if (this.receta.some(i => i.medicamento.toLowerCase() === nombre.toLowerCase())) {
       alert('Este medicamento ya fue añadido.'); return;
     }
+    
     this.receta.push({
       medicamento:  nombre,
       dias:         this.diasInput,
       cantidad:     this.cantidadInput,
       indicaciones: this.indicacionesInput.trim()
     });
+    
     this.medicamentoInput  = '';
     this.diasInput         = null;
     this.cantidadInput     = null;
@@ -174,6 +188,34 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
   quitarMedicamento(item: ItemReceta) {
     this.receta = this.receta.filter(r => r !== item);
+  }
+
+  // ── Emitir receta e imprimir ──────────────────────────
+  emitirReceta() {
+    if (this.adjuntarReceta !== true || this.receta.length === 0) return;
+
+    const ahora = new Date();
+    const vencimiento = new Date(ahora);
+    vencimiento.setMonth(vencimiento.getMonth() + 1);
+
+    const pad = (n: number, l = 2) => String(n).padStart(l, '0');
+    const fechaParte = `${ahora.getFullYear()}${pad(ahora.getMonth() + 1)}${pad(ahora.getDate())}`;
+    const aleatorio = Math.floor(10000 + Math.random() * 90000);
+
+    this.recetaEmitida = {
+      numeroReceta: `REC-${fechaParte}-${aleatorio}`,
+      // Hacemos el cast a 'any' por si getMedicoNombre no está definido estrictamente en el tipo base, o aplicamos un valor por defecto
+      nombreMedico: (this.atencionService as any).getMedicoNombre ? (this.atencionService as any).getMedicoNombre() : 'Médico Tratante',
+      nombrePaciente: this.pacienteActivo?.nombreCompleto ?? 'Paciente',
+      fechaEmision: ahora,
+      fechaVencimiento: vencimiento,
+      items: [...this.receta]
+    };
+
+    setTimeout(() => { 
+      window.print(); 
+      this.recetaEmitida = null;
+    }, 300);
   }
 
   ngOnDestroy() {
