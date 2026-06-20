@@ -1,18 +1,10 @@
-
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { RecetaService } from '../../../core/services/Receta.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
-
-export interface OrdenDespacho {
-  nroReceta:   string;
-  paciente:    string;
-  dni:         string;
-  origen:      string;
-  medicamentos: string[];
-  estadoPago:  string;
-}
+import { RecetaResponse } from '../../../core/model/Receta.model';
 
 @Component({
   selector: 'app-farmacia-despacho',
@@ -23,19 +15,23 @@ export interface OrdenDespacho {
 })
 export class FarmaciaDespachoComponent implements OnInit {
 
-  usuarioNombre     = '';
-  terminoBusqueda   = '';
-  cargandoBusqueda  = signal(false);
-  errorMensaje      = signal('');
-  exitoMensaje      = signal('');
-  confirmando       = signal(false);
-  ordenSeleccionada: OrdenDespacho | null = null;
+  usuarioNombre    = '';
+  terminoBusqueda  = '';
+  cargandoBusqueda = signal(false);
+  errorMensaje     = signal('');
+  exitoMensaje     = signal('');
+  confirmando      = signal(false);
 
-  ordenesPendientes: OrdenDespacho[] = [];
+  /** Resultados de la búsqueda dual (N° de receta o DNI). */
+  recetasEncontradas: RecetaResponse[] = [];
 
-  private readonly todasLasOrdenes: OrdenDespacho[] = [...this.ordenesPendientes];
+  /** Receta abierta en el modal de confirmación de despacho. */
+  recetaSeleccionada: RecetaResponse | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private recetaService: RecetaService
+  ) {}
 
   ngOnInit(): void {
     const usuario = this.authService.obtenerUsuarioActual();
@@ -43,32 +39,71 @@ export class FarmaciaDespachoComponent implements OnInit {
   }
 
   buscarOrden(): void {
-    const termino = this.terminoBusqueda.trim().toLowerCase();
+    const termino = this.terminoBusqueda.trim();
+    this.errorMensaje.set('');
+
     if (!termino) {
-      this.ordenesPendientes = [...this.todasLasOrdenes];
+      this.recetasEncontradas = [];
       return;
     }
+
     this.cargandoBusqueda.set(true);
-    this.ordenesPendientes = this.todasLasOrdenes.filter(o =>
-      o.nroReceta.toLowerCase().includes(termino) ||
-      o.dni.includes(termino) ||
-      o.paciente.toLowerCase().includes(termino)
-    );
-    this.cargandoBusqueda.set(false);
+
+    this.recetaService.buscar(termino).subscribe({
+      next: (recetas) => {
+        this.recetasEncontradas = recetas;
+        this.cargandoBusqueda.set(false);
+      },
+      error: (err) => {
+        this.recetasEncontradas = [];
+        this.errorMensaje.set(err.error?.mensaje || 'No se encontró ninguna receta con ese criterio.');
+        this.cargandoBusqueda.set(false);
+      }
+    });
   }
 
-  registrarEntrega(orden: OrdenDespacho): void {
-    if (orden.estadoPago !== 'Pagado') return;
-    this.ordenSeleccionada = orden;
+  /** El técnico de farmacia solo visualiza el detalle; no puede editarlo. */
+  verDetalleReceta(receta: RecetaResponse): void {
+    this.recetaSeleccionada = receta;
+  }
+
+  /** True si la receta seleccionada ya fue despachada anteriormente. */
+  get recetaYaDespachada(): boolean {
+    return this.recetaSeleccionada?.estado === 'DESPACHADA';
   }
 
   confirmarEntrega(): void {
-    if (!this.ordenSeleccionada) return;
-    this.errorMensaje.set('El registro de entrega aun no esta conectado al backend.');
-    this.ordenSeleccionada = null;
+    if (!this.recetaSeleccionada || this.recetaYaDespachada) {
+      return;
+    }
+
+    const receta = this.recetaSeleccionada;
+    this.confirmando.set(true);
+
+    this.recetaService.despachar(receta.id).subscribe({
+      next: (recetaActualizada) => {
+        // Refleja el nuevo estado tanto en la lista como en el modal.
+        const idx = this.recetasEncontradas.findIndex(r => r.id === recetaActualizada.id);
+        if (idx !== -1) {
+          this.recetasEncontradas[idx] = recetaActualizada;
+        }
+
+        this.exitoMensaje.set(`Receta ${recetaActualizada.numeroReceta} despachada correctamente.`);
+        this.confirmando.set(false);
+        this.recetaSeleccionada = null;
+      },
+      error: (err) => {
+        this.errorMensaje.set(err.error?.mensaje || 'No se pudo confirmar el despacho de la receta.');
+        this.confirmando.set(false);
+      }
+    });
   }
 
-  imprimirOrden(orden: OrdenDespacho): void {
+  cerrarModal(): void {
+    this.recetaSeleccionada = null;
+  }
+
+  imprimirOrden(receta: RecetaResponse): void {
     window.print();
   }
 }
