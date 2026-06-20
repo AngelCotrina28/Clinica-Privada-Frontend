@@ -108,7 +108,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn--contorno"
+                <button type="button" class="btn--contorno"
                         style="margin-top:10px;" (click)="agregarMedicamento()">
                     Añadir a la Receta
                 </button>
@@ -154,23 +154,19 @@
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 20px; align-items: center;">
-                <button type="submit" class="btn btn--primario"
-                        [disabled]="!puedeGuardar()">
-                    {{ cargando ? 'Guardando en BD...' : 'Guardar en Historia Clínica' }}
-                </button>
-
-                <button *ngIf="adjuntarReceta === true && receta.length > 0" 
-                        type="button" 
-                        class="btn btn--contorno" 
-                        (click)="emitirReceta()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
-                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                        <rect x="6" y="14" width="12" height="8"></rect>
-                    </svg>
-                    Emitir Receta Digital
-                </button>
-            </div>
+            <button type="submit" class="btn btn--primario" [disabled]="!puedeGuardar()">
+                {{ cargando ? 'Guardando...' : 'Guardar en Historia Clínica' }}
+            </button>
+            
+            <button type="button" class="btn btn--contorno" (click)="emitirReceta()" [disabled]="adjuntarReceta !== true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Emitir Receta Digital
+            </button>
+        </div>
         </fieldset>
     </form>
 </section>

@@ -23,7 +23,8 @@ export interface RecetaEmitida {
   selector: 'app-registro-resultados',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './registro-resultados.component.html'
+  templateUrl: './registro-resultados.component.html',
+  styleUrl: '../atencion-medica.component.scss'
 })
 export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
@@ -191,7 +192,7 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
   // ── Emitir receta e imprimir ──────────────────────────
   emitirReceta() {
-    if (this.receta.length === 0) return;
+    if (this.adjuntarReceta !== true || this.receta.length === 0) return;
 
     const ahora = new Date();
     const vencimiento = new Date(ahora);

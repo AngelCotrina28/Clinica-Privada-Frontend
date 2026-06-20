@@ -215,6 +215,55 @@
   }
 }
 
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+
+  font-size: 0.90rem;
+  font-weight: 600;
+  border-radius: 8px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+/* Botón principal */
+.btn--primario {
+  background: #002e5d;
+  color: #ffffff;
+  border: 2px solid #002e5d;
+}
+
+.btn--primario:hover {
+  background: #003c78;
+  border-color: #003c78;
+}
+
+/* Botón contorno */
+.btn--contorno {
+  background: #fff;
+  color: #002e5d;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.btn--contorno:hover {
+  background: #f7fafc;
+}
+
+.btn--contorno:active {
+  transform: translateY(1px);
+}
+
 /* ========================================================
    IMPRESIÓN 1/4 DE HOJA A4 (TAMAÑO A6 = 105mm x 148.5mm)
    ======================================================== */
