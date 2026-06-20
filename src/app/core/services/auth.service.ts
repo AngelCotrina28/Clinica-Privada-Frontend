@@ -46,12 +46,14 @@ export class AuthService {
   private guardarSesion(response: LoginResponse): void {
     const rolNormalizado = this.normalizarRol(response.rol);
     const usuario: UsuarioSesion = {
+      id: response.id, // Se captura el ID que ahora envía Spring Boot
       username: response.username,
       nombreCompleto: response.nombreCompleto || response.username,
       rol: rolNormalizado
     };
 
     localStorage.setItem('token', response.token);
+    localStorage.setItem('id', usuario.id.toString()); // Se guarda en memoria persistente
     localStorage.setItem('rol', usuario.rol);
     localStorage.setItem('username', usuario.username);
     localStorage.setItem('nombreCompleto', usuario.nombreCompleto);
@@ -62,6 +64,7 @@ export class AuthService {
 
   private limpiarSesion(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('id'); // Se limpia el ID al cerrar sesión
     localStorage.removeItem('rol');
     localStorage.removeItem('username');
     localStorage.removeItem('nombreCompleto');
@@ -70,15 +73,22 @@ export class AuthService {
   }
 
   private cargarUsuarioDesdeStorage(): UsuarioSesion | null {
+    const idStr = localStorage.getItem('id');
     const rol = this.normalizarRol(localStorage.getItem('rol') || '');
     const username = localStorage.getItem('username') || '';
     const nombreCompleto = localStorage.getItem('nombreCompleto') || username;
 
-    if (!rol || !username) {
+    // Validación estricta: Si falta el ID, la sesión no está completa
+    if (!rol || !username || !idStr) {
       return null;
     }
 
-    return { username, nombreCompleto, rol };
+    return { 
+      id: parseInt(idStr, 10), // Se convierte nuevamente a numérico
+      username, 
+      nombreCompleto, 
+      rol 
+    };
   }
 
   private normalizarRol(rol: string): string {
