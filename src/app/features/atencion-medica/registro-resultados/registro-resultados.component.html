@@ -181,7 +181,7 @@
       <div class="receta-print__header">
           <div class="receta-print__logo-bloque">
               <img src="/brand/logo-luz-del-tunel.png" alt="Logo Clínica" class="receta-print__logo">
-              <div>
+              <div class="receta-print__clinica-info">
                   <div class="receta-print__clinica-nombre">CLÍNICA LUZ DEL TÚNEL</div>
                   <div class="receta-print__clinica-sub">Sistema de Gestión Médica</div>
               </div>
@@ -200,7 +200,7 @@
                   <span class="receta-print__meta-label">MÉDICO</span>
                   <span class="receta-print__meta-valor">{{ recetaEmitida.nombreMedico }}</span>
               </div>
-              <div class="receta-print__meta-item">
+              <div class="receta-print__meta-item" style="margin-top: 3mm;">
                   <span class="receta-print__meta-label">PACIENTE</span>
                   <span class="receta-print__meta-valor">{{ recetaEmitida.nombrePaciente }}</span>
               </div>
@@ -210,7 +210,7 @@
                   <span class="receta-print__meta-label">FECHA DE EMISIÓN</span>
                   <span class="receta-print__meta-valor">{{ recetaEmitida.fechaEmision | date:'dd/MM/yyyy' }}</span>
               </div>
-              <div class="receta-print__meta-item">
+              <div class="receta-print__meta-item" style="margin-top: 3mm;">
                   <span class="receta-print__meta-label">FECHA DE VENCIMIENTO</span>
                   <span class="receta-print__meta-valor">{{ recetaEmitida.fechaVencimiento | date:'dd/MM/yyyy' }}</span>
               </div>
@@ -224,7 +224,7 @@
               <tr>
                   <th class="col-medicamento">MEDICAMENTO / INDICACIONES</th>
                   <th class="col-dias">DÍAS</th>
-                  <th class="col-cantidad">CANTIDAD</th>
+                  <th class="col-cantidad">CANT.</th>
               </tr>
           </thead>
           <tbody>
@@ -241,13 +241,10 @@
           </tbody>
       </table>
 
-      <div class="receta-print__divider"></div>
-
       <div class="receta-print__footer">
           <div class="receta-print__firma-bloque">
               <div class="receta-print__firma-linea"></div>
-              <div class="receta-print__firma-label">Firma del Médico</div>
-              <div class="receta-print__firma-nombre">{{ recetaEmitida.nombreMedico }}</div>
+              <div class="receta-print__firma-label">FIRMA DEL MÉDICO</div>
           </div>
       </div>
   </div>

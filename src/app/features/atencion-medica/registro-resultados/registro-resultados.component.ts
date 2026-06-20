@@ -211,7 +211,10 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
       items: [...this.receta]
     };
 
-    setTimeout(() => { window.print(); }, 300);
+    setTimeout(() => { 
+      window.print(); 
+      this.recetaEmitida = null;
+    }, 300);
   }
 
   ngOnDestroy() {
