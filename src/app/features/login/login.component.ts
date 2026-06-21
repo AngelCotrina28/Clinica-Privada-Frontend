@@ -3,17 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { ROLE } from '../../core/constants/roles';
-
-const RUTAS_INICIO_POR_ROL: Record<string, string> = {
-    [ROLE.MEDICO]: '/atencion-medica',
-    [ROLE.TECNICO_FARMACIA]: '/farmacia/despacho',
-    [ROLE.CAJERO]: '/caja-facturacion',
-    [ROLE.RECEPCIONISTA]: '/admision/consulta',
-    [ROLE.ENFERMERO]: '/admision/historias',
-    [ROLE.JEFE_ENFERMERIA]: '/admision/historias',
-    [ROLE.ADMINISTRADOR]: '/dashboard'
-};
+import { RUTAS_INICIO_POR_ROL, RUTA_POR_DEFECTO } from '../../core/config/role-routing';
 
 @Component({
     selector: 'app-login',
@@ -64,10 +54,12 @@ export class LoginComponent {
         this.cargando = true;
         this.authService.login(credentials).subscribe({
             next: (response) => {
-                const rutaDestino = RUTAS_INICIO_POR_ROL[response.rol] || '/dashboard';
+                const rolDelUsuario = this.authService.obtenerRolActual();
+                const rutaDestino = RUTAS_INICIO_POR_ROL[rolDelUsuario] || RUTA_POR_DEFECTO;
                 this.router.navigate([rutaDestino]);
             },
             error: (err) => {
+                this.cargando = false;
                 if (err.error && err.error.detalle) {
                     this.errorMessage = `${err.error.mensaje}: ${err.error.detalle}`;
                 } else if (err.error && err.error.mensaje) {

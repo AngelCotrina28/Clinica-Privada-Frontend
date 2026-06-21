@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { filter } from 'rxjs';
+import { LoadingService } from './core/services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent {
 
   mostrarMenu = false;
   private router = inject(Router);
+  loadingService = inject(LoadingService);
 
   constructor() {
     this.mostrarMenu = this.debeMostrarMenu(this.router.url);
