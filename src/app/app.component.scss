@@ -5,3 +5,22 @@
   height: 100vh;
   overflow: hidden;
 }
+
+.global-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco semitransparente */
+  backdrop-filter: blur(2px); /* Un ligero desenfoque elegante (opcional) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Garantiza que flote por encima del sidebar y de todo lo demás */
+}
+
+.spinner-global {
+  width: 3rem;
+  height: 3rem;
+}
