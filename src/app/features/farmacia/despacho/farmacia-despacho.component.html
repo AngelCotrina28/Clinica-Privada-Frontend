@@ -4,19 +4,6 @@
   <section>
     <h2 class="subtitulo-seccion">Despacho de Medicamentos</h2>
 
-    @if (errorMensaje()) {
-      <div class="alerta alerta--error">
-        <span>Alerta</span><p>{{ errorMensaje() }}</p>
-        <button (click)="errorMensaje.set('')">✕</button>
-      </div>
-    }
-    @if (exitoMensaje()) {
-      <div class="alerta alerta--exito">
-        <span>✓</span><p>{{ exitoMensaje() }}</p>
-        <button (click)="exitoMensaje.set('')">✕</button>
-      </div>
-    }
-
     <div class="bloque">
       <h3 class="bloque__titulo">Buscar Orden de Entrega</h3>
       <div class="barra-busqueda">
@@ -54,12 +41,12 @@
           <tbody>
             @for (receta of recetasEncontradas; track receta.id) {
               <tr>
-                <td><code>{{ receta.numeroReceta }}</code></td>
+                <td><code style="color: #e11d48;">{{ receta.numeroReceta }}</code></td>
                 <td><strong>{{ receta.pacienteNombre }}</strong></td>
                 <td>{{ receta.pacienteDni }}</td>
                 <td>{{ receta.medicoNombre }}</td>
                 <td>
-                  <ul class="lista-meds">
+                  <ul class="lista-meds" style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem; color: #475569;">
                     @for (detalle of receta.detalles; track detalle.id) {
                       <li>{{ detalle.medicamentoNombre }} ({{ detalle.cantidadPrescrita }})</li>
                     }
@@ -74,13 +61,19 @@
                 </td>
                 <td>
                   <div class="acciones-td">
-                    <button class="btn btn--sm btn--primario"
-                      (click)="verDetalleReceta(receta)"
-                      title="Ver detalle y confirmar despacho">
-                      Ver
+                    <button type="button" class="btn-icon" title="Ver detalle / Confirmar" aria-label="Ver" (click)="verDetalleReceta(receta)">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" style="stroke: #2b6cb0;">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
                     </button>
-                    <button class="btn btn--sm btn--ghost" (click)="imprimirOrden(receta)">
-                      Imprimir
+                    
+                    <button type="button" class="btn-icon" title="Imprimir" aria-label="Imprimir" (click)="imprimirOrden(receta)">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" style="stroke: #64748b;">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                      </svg>
                     </button>
                   </div>
                 </td>
@@ -105,86 +98,105 @@
 </main>
 
 <div class="modal-overlay" *ngIf="recetaSeleccionada" (click)="cerrarModal()">
-  <div class="modal-contenedor" (click)="$event.stopPropagation()">
+  <div class="modal-contenedor" style="max-width: 700px;" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3 class="modal-titulo">Confirmar Despacho de Receta</h3>
+      <h3 class="modal-titulo">Detalle de Receta</h3>
       <button class="btn-cerrar-modal" (click)="cerrarModal()">✕</button>
     </div>
+    
     <div class="modal-body">
-
+      
       @if (recetaYaDespachada) {
-        <div class="alerta alerta--error">
-          <span>Alerta</span><p>Receta ya despachada</p>
+        <div class="alerta--warning">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p>
+            Atención: Esta receta ya se encuentra <strong>DESPACHADA</strong> y es de solo lectura.
+          </p>
         </div>
       }
 
-      <div class="resultado resultado--orden">
-        <div class="resultado__cabecera">
-          <span class="etiqueta etiqueta--orden">N° Receta</span>
-          <code class="resultado__num">{{ recetaSeleccionada!.numeroReceta }}</code>
-        </div>
-        <div class="resultado__grid">
-          <div class="resultado__campo">
-            <span class="resultado__clave">Paciente</span>
-            <span class="resultado__valor">{{ recetaSeleccionada!.pacienteNombre }}</span>
-          </div>
-          <div class="resultado__campo">
-            <span class="resultado__clave">DNI</span>
-            <span class="resultado__valor">{{ recetaSeleccionada!.pacienteDni }}</span>
-          </div>
-          <div class="resultado__campo">
-            <span class="resultado__clave">Médico</span>
-            <span class="resultado__valor">{{ recetaSeleccionada!.medicoNombre }}</span>
-          </div>
-          <div class="resultado__campo">
-            <span class="resultado__clave">Estado</span>
-            <span class="resultado__valor texto-acento">{{ recetaSeleccionada!.estado }}</span>
-          </div>
+      <div class="receta-info">
+        <div class="receta-info__campo">
+          <span class="receta-info__etiqueta">N° Receta</span>
+          <span class="receta-info__valor receta-info__valor--grande">{{ recetaSeleccionada!.numeroReceta }}</span>
         </div>
 
-        <!-- Vista estrictamente de solo lectura: sin inputs ni botones por fila -->
-        <div style="padding: 1rem;">
-          <p><strong>Medicamentos prescritos (solo lectura):</strong></p>
-          <div class="tabla-responsive">
-            <table class="tabla">
-              <thead>
-                <tr>
-                  <th>Medicamento</th>
-                  <th>Dosis</th>
-                  <th>Frecuencia</th>
-                  <th>Duración</th>
-                  <th>Vía</th>
-                  <th>Cant. Prescrita</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (detalle of recetaSeleccionada!.detalles; track detalle.id) {
-                  <tr>
-                    <td>{{ detalle.medicamentoNombre }}</td>
-                    <td>{{ detalle.dosis || '-' }}</td>
-                    <td>{{ detalle.frecuencia || '-' }}</td>
-                    <td>{{ detalle.duracion || '-' }}</td>
-                    <td>{{ detalle.viaAdministracion || '-' }}</td>
-                    <td>{{ detalle.cantidadPrescrita }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+        <div class="receta-info__campo">
+          <span class="receta-info__etiqueta">Estado</span>
+          <span class="receta-info__valor" 
+            [class.receta-info__valor--emitida]="recetaSeleccionada!.estado === 'EMITIDA'"
+            [class.receta-info__valor--despachada]="recetaSeleccionada!.estado === 'DESPACHADA'">
+            {{ recetaSeleccionada!.estado }}
+          </span>
+        </div>
 
-          @if (recetaSeleccionada!.indicacionesGenerales) {
-            <p style="margin-top: 0.75rem;"><strong>Indicaciones generales:</strong> {{ recetaSeleccionada!.indicacionesGenerales }}</p>
-          }
+        <div class="receta-info__campo">
+          <span class="receta-info__etiqueta">Paciente</span>
+          <span class="receta-info__valor">{{ recetaSeleccionada!.pacienteNombre }}</span>
+        </div>
+
+        <div class="receta-info__campo">
+          <span class="receta-info__etiqueta">DNI Paciente</span>
+          <span class="receta-info__valor">{{ recetaSeleccionada!.pacienteDni }}</span>
+        </div>
+
+        <div class="receta-info__campo receta-info__campo--full">
+          <span class="receta-info__etiqueta">Médico Tratante</span>
+          <span class="receta-info__valor">{{ recetaSeleccionada!.medicoNombre }}</span>
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button class="btn btn--ghost" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn btn--primario"
-          [disabled]="confirmando() || recetaYaDespachada"
-          (click)="confirmarEntrega()">
-          @if (confirmando()) { <span class="spinner"></span> } Confirmar Entrega
-        </button>
+      <div>
+        <p style="margin-bottom: 0.75rem; color: #1e293b;"><strong>Medicamentos prescritos:</strong></p>
+        <div class="tabla-responsive">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Medicamento</th>
+                <th>Dosis</th>
+                <th>Frecuencia</th>
+                <th>Duración</th>
+                <th>Vía</th>
+                <th>Cant. Prescrita</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (detalle of recetaSeleccionada!.detalles; track detalle.id) {
+                <tr>
+                  <td><strong>{{ detalle.medicamentoNombre }}</strong></td>
+                  <td>{{ detalle.dosis || '-' }}</td>
+                  <td>{{ detalle.frecuencia || '-' }}</td>
+                  <td>{{ detalle.duracion || '-' }}</td>
+                  <td>{{ detalle.viaAdministracion || '-' }}</td>
+                  <td style="font-size: 1.1rem; font-weight: bold; color: #2b6cb0;">{{ detalle.cantidadPrescrita }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (recetaSeleccionada!.indicacionesGenerales) {
+          <div class="notas-adicionales">
+            <strong class="notas-adicionales__titulo">Indicaciones generales:</strong> 
+            <span class="notas-adicionales__texto">{{ recetaSeleccionada!.indicacionesGenerales }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="modal-footer" style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+        <button class="btn btn--ghost" (click)="cerrarModal()">Cerrar Vista</button>
+        
+        @if (!recetaYaDespachada) {
+          <button class="btn btn--primario"
+            [disabled]="confirmando()"
+            (click)="confirmarEntrega()">
+            @if (confirmando()) { <span class="spinner"></span> } Confirmar Despacho
+          </button>
+        }
       </div>
     </div>
   </div>
