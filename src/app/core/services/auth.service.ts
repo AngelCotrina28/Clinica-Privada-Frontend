@@ -85,6 +85,7 @@ export class AuthService {
       const rolNormalizado = this.normalizarRol(rolString);
 
       return {
+        id: decodedToken.id || 0,
         username: decodedToken.username || decodedToken.sub,
         nombreCompleto: decodedToken.names || decodedToken.sub,
         rol: rolNormalizado
