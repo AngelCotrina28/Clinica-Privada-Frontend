@@ -173,12 +173,9 @@
       <form class="formulario-grid" [formGroup]="medForm" (ngSubmit)="guardarMedicamento()">
         <div class="form-seccion-titulo">Identificación</div>
 
-        <div class="form-grupo">
-          <label>Código Único <span class="requerido">*</span></label>
-          <input type="text" formControlName="codigo" placeholder="Ej: MED-001" maxlength="30" [attr.disabled]="isEditMode ? true : null" />
-          <small class="text-danger" *ngIf="medForm.get('codigo')?.invalid && medForm.get('codigo')?.touched">
-            Código obligatorio (máx. 30 caracteres)
-          </small>
+        <div class="form-grupo" *ngIf="isEditMode">
+          <label>Código Único</label>
+          <input type="text" formControlName="codigo" readonly style="background-color: #f1f5f9; cursor: not-allowed;" />
         </div>
 
         <div class="form-grupo">
