@@ -245,8 +245,6 @@ h3.bloque__titulo {
   }
 }
 
-
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -362,49 +360,36 @@ h3.bloque__titulo {
 }
 
 .btn--primario{
-
   background:#2F6FB7;
   border-color:#2F6FB7;
   color:#FFF;
-
 }
 
 .btn--primario:hover{
-
   background:#255D98;
   border-color:#255D98;
-
 }
 
 .btn--primario:focus-visible{
-
   outline:none;
   box-shadow:0 0 0 3px rgba(47,111,183,.18);
-
 }
 
 .btn--ghost{
-
   background:#FFFFFF;
   border:1px solid #CBD5E1;
   color:#475569;
-
 }
 
 .btn--ghost:hover{
-
   background:#F8FAFC;
   border-color:#94A3B8;
-
 }
 
 .btn--ghost:focus-visible{
-
   outline:none;
   box-shadow:0 0 0 3px rgba(148,163,184,.20);
-
 }
-
 
 /* --- Badges de Estado (EMITIDA / DESPACHADA) --- */
 .badge {
@@ -422,5 +407,172 @@ h3.bloque__titulo {
   &--alerta { /* Para 'DESPACHADA' */
     background-color: #fef3c7;
     color: #92400e;
+  }
+}
+
+
+.acciones-td {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 8px; /* Radio consistente con otros elementos */
+  background-color: #f1f5f9; /* Fondo gris claro inicial */
+  color: #64748b; /* Color de icono por defecto */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover {
+    background-color: #e2e8f0;
+    color: #2b6cb0; /* Azul principal para la acción de editar */
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  /* Variante para Inactivar */
+  &--danger {
+    &:hover {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+  }
+
+  /* Variante para Activar */
+  &--success {
+    &:hover {
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+  }
+}
+
+
+
+/* =========================================
+   SISTEMA DE NOTIFICACIONES (TOASTS)
+   ========================================= */
+
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999; /* Asegura que se superponga a modales y cabeceras */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none; /* Permite interactuar con elementos detrás del área vacía */
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 320px;
+  max-width: 450px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  pointer-events: auto; /* Reactiva eventos de clic dentro del toast */
+  border-left: 5px solid transparent;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  &--exito {
+    border-left-color: #10b981;
+    .toast__icono { 
+      background-color: #d1fae5; 
+      color: #059669; 
+    }
+  }
+
+  &--error {
+    border-left-color: #ef4444;
+    .toast__icono { 
+      background-color: #fee2e2; 
+      color: #dc2626; 
+    }
+  }
+
+  &__icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__contenido {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__titulo {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+  }
+
+  &__mensaje {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.4;
+  }
+
+  &__cerrar {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s ease;
+    align-self: flex-start;
+
+    &:hover {
+      color: #334155;
+    }
+  }
+}
+
+/* Animación de entrada fluida */
+@keyframes slideInRight {
+  0% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

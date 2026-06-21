@@ -4,22 +4,8 @@
   <section class="seccion">
     <h2 class="subtitulo-seccion">Control de Inventario y Medicamentos</h2>
 
-    @if (errorMensaje()) {
-      <div class="alerta alerta--error">
-        <span>Alerta</span><p>{{ errorMensaje() }}</p>
-        <button (click)="errorMensaje.set('')">✕</button>
-      </div>
-    }
-    @if (exitoMensaje()) {
-      <div class="alerta alerta--exito">
-        <span>✓</span><p>{{ exitoMensaje() }}</p>
-        <button (click)="exitoMensaje.set('')">✕</button>
-      </div>
-    }
-
     <div class="bloque bloque--filtros-modernos">
       <div class="filtros-superior">
-
         <div class="campo-busqueda-inline-wrapper">
           <div class="campo-busqueda-principal">
             <input class="input-busqueda-moderno" type="text" 
@@ -52,7 +38,7 @@
             <input type="checkbox" [(ngModel)]="filtros.soloActivos" (change)="buscar()" />
             <span class="checkbox-texto">Solo activos</span>
           </label>
-          </div>
+        </div>
       </div>
     </div>
 
@@ -109,6 +95,12 @@
                 
                 <td>
                   <div class="acciones-td">
+                    <button type="button" class="btn-icon" title="Ingresar Stock" aria-label="Ingresar Stock" (click)="abrirModalStock(med)" *ngIf="esAdmin && med.activo">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" style="stroke: #10b981;">
+                        <path d="M12 5v14M5 12h14"></path>
+                      </svg>
+                    </button>
+
                     <button type="button" class="btn-icon" title="Editar" aria-label="Editar" (click)="abrirModalEditar(med)" *ngIf="esAdmin">
                       <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"></path>
@@ -134,7 +126,6 @@
                     }
                   </div>
                 </td>
-
               </tr>
             } @empty {
               <tr>
@@ -227,6 +218,11 @@
           <input type="number" formControlName="stockInicial" min="0" placeholder="0" />
         </div>
 
+        <div class="form-grupo" *ngIf="isEditMode">
+          <label>Stock Actual (Solo lectura)</label>
+          <input type="number" formControlName="stockActual" style="background-color: #f1f5f9; cursor: not-allowed; border-color: #e2e8f0; color: #64748b;" title="Use el ícono '+' en la tabla para ingresar más stock" />
+        </div>
+
         <div class="form-grupo">
           <label>Stock Mínimo (alerta)</label>
           <input type="number" formControlName="stockMinimo" min="0" placeholder="0" />
@@ -246,6 +242,38 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isStockModalOpen" (click)="isStockModalOpen = false">
+  <div class="modal-contenedor" style="max-width: 400px;" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-titulo">Ingreso de Stock</h3>
+      <button class="btn-cerrar-modal" (click)="isStockModalOpen = false">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div style="margin-bottom: 1.5rem; padding: 1rem; background-color: #f8fafc; border-radius: 8px;">
+        <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #64748b;">Medicamento</p>
+        <strong style="font-size: 1.1rem; color: #1e293b;">{{ medStockSeleccionado?.nombre }}</strong>
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.9rem;">
+          <span style="color: #64748b;">Stock actual:</span>
+          <strong style="color: #2b6cb0;">{{ medStockSeleccionado?.stockActual }} unidades</strong>
+        </div>
+      </div>
+
+      <div class="form-grupo">
+        <label>Cantidad a ingresar <span class="requerido">*</span></label>
+        <input type="number" [(ngModel)]="cantidadStockAgregar" min="1" step="1" style="font-size: 1.2rem; padding: 0.75rem;" />
+      </div>
+
+      <div class="modal-footer" style="margin-top: 2rem;">
+        <button type="button" class="btn btn--ghost" (click)="isStockModalOpen = false">Cancelar</button>
+        <button type="button" class="btn btn--primario" [disabled]="cantidadStockAgregar <= 0 || guardando()" (click)="guardarNuevoStock()">
+          @if (guardando()) { <span class="spinner"></span> } Confirmar Ingreso
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -310,4 +338,27 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="toast-container">
+  @if (exitoMensaje()) {
+    <div class="toast toast--exito" role="alert">
+      <div class="toast__icono">✓</div>
+      <div class="toast__contenido">
+        <p class="toast__mensaje">{{ exitoMensaje() }}</p>
+      </div>
+      <button class="toast__cerrar" (click)="exitoMensaje.set('')" aria-label="Cerrar notificación">✕</button>
+    </div>
+  }
+
+  @if (errorMensaje()) {
+    <div class="toast toast--error" role="alert">
+      <div class="toast__icono">!</div>
+      <div class="toast__contenido">
+        <span class="toast__titulo">Alerta</span>
+        <p class="toast__mensaje">{{ errorMensaje() }}</p>
+      </div>
+      <button class="toast__cerrar" (click)="errorMensaje.set('')" aria-label="Cerrar notificación">✕</button>
+    </div>
+  }
 </div>

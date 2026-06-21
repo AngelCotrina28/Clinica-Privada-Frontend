@@ -89,6 +89,10 @@ export class MedicamentoService {
     return this.http.patch<MedicamentoResponse>(`${this.API}/medicamentos/${id}/activar`, {});
   }
 
+  agregarStock(id: number, cantidad: number): Observable<MedicamentoResponse> {
+    return this.http.patch<MedicamentoResponse>(`${this.API}/medicamentos/${id}/stock`, { cantidad });
+  }
+
   obtenerTodosParaReceta(): Observable<MedicamentoOpcion[]> {
     return this.http.get<MedicamentoOpcion[]>(`${this.API}/medicamentos/todos`);
   }
