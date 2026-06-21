@@ -21,7 +21,7 @@
                 </option>
             </select>
             <div *ngIf="!cargandoCitas && citasDisponibles.length === 0 && pacienteActivo"
-                 style="font-size:0.84em; color:#b45309; margin-bottom:10px;">
+            style="font-size:0.84em; color:#b45309; margin-bottom:10px;">
                 No hay citas confirmadas ni órdenes de emergencia pendientes para este paciente.
             </div>
 
@@ -68,11 +68,11 @@
                     <div class="autocomplete-lista"
                          *ngIf="mostrarSugerencias && medicamentosFiltrados.length > 0">
                         <div class="autocomplete-item"
-                             *ngFor="let med of medicamentosFiltrados"
-                             (mousedown)="seleccionarMedicamento(med)">
+                            *ngFor="let med of medicamentosFiltrados"
+                            (mousedown)="seleccionarMedicamento(med)">
                             <span class="med-nombre">{{ med.nombre }}</span>
                             <span class="med-badge"
-                                  [class.med-badge--inactivo]="!med.activo">
+                                    [class.med-badge--inactivo]="!med.activo">
                                 {{ med.activo ? 'Activo' : 'Inactivo' }}
                             </span>
                         </div>
@@ -83,18 +83,18 @@
                     <div class="campo-grupo">
                         <label for="dias">Días:</label>
                         <input type="number" id="dias" name="dias"
-                               [(ngModel)]="diasInput" min="1"
-                               (keypress)="soloNumeros($event)"
-                               placeholder="Ej. 7"
-                               class="campo__input campo__input--corto">
+                                [(ngModel)]="diasInput" min="1"
+                                (keypress)="soloNumeros($event)"
+                                placeholder="Ej. 7"
+                                class="campo__input campo__input--corto">
                     </div>
                     <div class="campo-grupo">
                         <label for="cantidad">Cantidad:</label>
                         <input type="number" id="cantidad" name="cantidad"
-                               [(ngModel)]="cantidadInput" min="1"
-                               (keypress)="soloNumeros($event)"
-                               placeholder="Ej. 21"
-                               class="campo__input campo__input--corto">
+                                [(ngModel)]="cantidadInput" min="1"
+                                (keypress)="soloNumeros($event)"
+                                placeholder="Ej. 21"
+                                class="campo__input campo__input--corto">
                     </div>
                     <div class="campo-grupo campo-grupo--wide">
                         <label for="indicaciones">
@@ -102,9 +102,9 @@
                             <span class="campo-label-ejemplo">Ej: 1 TAB DIARIA 8PM</span>
                         </label>
                         <input type="text" id="indicaciones" name="indicaciones"
-                               [(ngModel)]="indicacionesInput"
-                               placeholder="Ej: 1 TAB DIARIA 8PM"
-                               class="campo__input">
+                                [(ngModel)]="indicacionesInput"
+                                placeholder="Ej: 1 TAB DIARIA 8PM"
+                                class="campo__input">
                     </div>
                 </div>
 
@@ -126,9 +126,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for (item of receta; track item.medicamento) {
+                            @for (item of receta; track item.medicamentoId) {
                             <tr>
-                                <td>{{ item.medicamento }}</td>
+                                <td>{{ item.medicamentoNombre }}</td>
                                 <td>{{ item.dias }}</td>
                                 <td>{{ item.cantidad }}</td>
                                 <td>{{ item.indicaciones }}</td>
@@ -142,106 +142,106 @@
                     </table>
                 </div>
 
-                <div *ngIf="adjuntarReceta === true && receta.length === 0"
-                     style="font-size:0.84em; color:#b45309; margin-top:8px;">
-                    Debe añadir al menos un medicamento para poder guardar con receta.
+                    <div *ngIf="adjuntarReceta === true && receta.length === 0"
+                        style="font-size:0.84em; color:#b45309; margin-top:8px;">
+                        Debe añadir al menos un medicamento para poder guardar con receta.
+                    </div>
+                </div>
+
+                <div *ngIf="adjuntarReceta === null"
+                    style="font-size:0.84em; color:#b45309; margin-bottom:10px;">
+                    Debe seleccionar si desea adjuntar una receta médica para poder guardar.
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 20px; align-items: center;">
+                <button type="submit" class="btn btn--primario" [disabled]="!puedeGuardar()">
+                    {{ cargando ? 'Guardando...' : 'Guardar en Historia Clínica' }}
+                </button>
+                
+                <button type="button" class="btn btn--contorno" (click)="emitirReceta()" [disabled]="adjuntarReceta !== true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Emitir Receta Digital
+                </button>
+            </div>
+            </fieldset>
+        </form>
+    </section>
+
+
+    @if (recetaEmitida) {
+    <div class="receta-impresion" id="receta-print-area">
+        <div class="receta-print__header">
+            <div class="receta-print__logo-bloque">
+                <img src="/brand/logo-luz-del-tunel.png" alt="Logo Clínica" class="receta-print__logo">
+                <div class="receta-print__clinica-info">
+                    <div class="receta-print__clinica-nombre">CLÍNICA LUZ DEL TÚNEL</div>
+                    <div class="receta-print__clinica-sub">Sistema de Gestión Médica</div>
                 </div>
             </div>
-
-            <div *ngIf="adjuntarReceta === null"
-                 style="font-size:0.84em; color:#b45309; margin-bottom:10px;">
-                Debe seleccionar si desea adjuntar una receta médica para poder guardar.
+            <div class="receta-print__titulo-bloque">
+                <h1 class="receta-print__titulo">RECETA MÉDICA</h1>
+                <div class="receta-print__numero">N° {{ recetaEmitida.numeroReceta }}</div>
             </div>
-
-            <div style="display: flex; gap: 1rem; margin-top: 20px; align-items: center;">
-            <button type="submit" class="btn btn--primario" [disabled]="!puedeGuardar()">
-                {{ cargando ? 'Guardando...' : 'Guardar en Historia Clínica' }}
-            </button>
-            
-            <button type="button" class="btn btn--contorno" (click)="emitirReceta()" [disabled]="adjuntarReceta !== true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                    <rect x="6" y="14" width="12" height="8"></rect>
-                </svg>
-                Emitir Receta Digital
-            </button>
         </div>
-        </fieldset>
-    </form>
-</section>
 
+        <div class="receta-print__divider"></div>
 
-@if (recetaEmitida) {
-  <div class="receta-impresion" id="receta-print-area">
-      <div class="receta-print__header">
-          <div class="receta-print__logo-bloque">
-              <img src="/brand/logo-luz-del-tunel.png" alt="Logo Clínica" class="receta-print__logo">
-              <div class="receta-print__clinica-info">
-                  <div class="receta-print__clinica-nombre">CLÍNICA LUZ DEL TÚNEL</div>
-                  <div class="receta-print__clinica-sub">Sistema de Gestión Médica</div>
-              </div>
-          </div>
-          <div class="receta-print__titulo-bloque">
-              <h1 class="receta-print__titulo">RECETA MÉDICA</h1>
-              <div class="receta-print__numero">N° {{ recetaEmitida.numeroReceta }}</div>
-          </div>
-      </div>
+        <div class="receta-print__meta">
+            <div class="receta-print__meta-col">
+                <div class="receta-print__meta-item">
+                    <span class="receta-print__meta-label">MÉDICO</span>
+                    <span class="receta-print__meta-valor">{{ recetaEmitida.nombreMedico }}</span>
+                </div>
+                <div class="receta-print__meta-item" style="margin-top: 3mm;">
+                    <span class="receta-print__meta-label">PACIENTE</span>
+                    <span class="receta-print__meta-valor">{{ recetaEmitida.nombrePaciente }}</span>
+                </div>
+            </div>
+            <div class="receta-print__meta-col">
+                <div class="receta-print__meta-item">
+                    <span class="receta-print__meta-label">FECHA DE EMISIÓN</span>
+                    <span class="receta-print__meta-valor">{{ recetaEmitida.fechaEmision | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="receta-print__meta-item" style="margin-top: 3mm;">
+                    <span class="receta-print__meta-label">FECHA DE VENCIMIENTO</span>
+                    <span class="receta-print__meta-valor">{{ recetaEmitida.fechaVencimiento | date:'dd/MM/yyyy' }}</span>
+                </div>
+            </div>
+        </div>
 
-      <div class="receta-print__divider"></div>
+        <div class="receta-print__divider"></div>
 
-      <div class="receta-print__meta">
-          <div class="receta-print__meta-col">
-              <div class="receta-print__meta-item">
-                  <span class="receta-print__meta-label">MÉDICO</span>
-                  <span class="receta-print__meta-valor">{{ recetaEmitida.nombreMedico }}</span>
-              </div>
-              <div class="receta-print__meta-item" style="margin-top: 3mm;">
-                  <span class="receta-print__meta-label">PACIENTE</span>
-                  <span class="receta-print__meta-valor">{{ recetaEmitida.nombrePaciente }}</span>
-              </div>
-          </div>
-          <div class="receta-print__meta-col">
-              <div class="receta-print__meta-item">
-                  <span class="receta-print__meta-label">FECHA DE EMISIÓN</span>
-                  <span class="receta-print__meta-valor">{{ recetaEmitida.fechaEmision | date:'dd/MM/yyyy' }}</span>
-              </div>
-              <div class="receta-print__meta-item" style="margin-top: 3mm;">
-                  <span class="receta-print__meta-label">FECHA DE VENCIMIENTO</span>
-                  <span class="receta-print__meta-valor">{{ recetaEmitida.fechaVencimiento | date:'dd/MM/yyyy' }}</span>
-              </div>
-          </div>
-      </div>
+        <table class="receta-print__tabla">
+            <thead>
+                <tr>
+                    <th class="col-medicamento">MEDICAMENTO / INDICACIONES</th>
+                    <th class="col-dias">DÍAS</th>
+                    <th class="col-cantidad">CANT.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of recetaEmitida.items; track item.medicamentoId) {
+                <tr>
+                    <td class="col-medicamento">
+                        <div class="receta-med-nombre">{{ item.medicamentoNombre }}</div>
+                        <div class="receta-med-indicacion">{{ item.indicaciones }}</div>
+                    </td>
+                    <td class="col-dias">{{ item.dias }}</td>
+                    <td class="col-cantidad">{{ item.cantidad }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
 
-      <div class="receta-print__divider"></div>
-
-      <table class="receta-print__tabla">
-          <thead>
-              <tr>
-                  <th class="col-medicamento">MEDICAMENTO / INDICACIONES</th>
-                  <th class="col-dias">DÍAS</th>
-                  <th class="col-cantidad">CANT.</th>
-              </tr>
-          </thead>
-          <tbody>
-              @for (item of recetaEmitida.items; track item.medicamento) {
-              <tr>
-                  <td class="col-medicamento">
-                      <div class="receta-med-nombre">{{ item.medicamento }}</div>
-                      <div class="receta-med-indicacion">{{ item.indicaciones }}</div>
-                  </td>
-                  <td class="col-dias">{{ item.dias }}</td>
-                  <td class="col-cantidad">{{ item.cantidad }}</td>
-              </tr>
-              }
-          </tbody>
-      </table>
-
-      <div class="receta-print__footer">
-          <div class="receta-print__firma-bloque">
-              <div class="receta-print__firma-linea"></div>
-              <div class="receta-print__firma-label">FIRMA DEL MÉDICO</div>
-          </div>
-      </div>
-  </div>
+        <div class="receta-print__footer">
+            <div class="receta-print__firma-bloque">
+                <div class="receta-print__firma-linea"></div>
+                <div class="receta-print__firma-label">FIRMA DEL MÉDICO</div>
+            </div>
+        </div>
+    </div>
 }

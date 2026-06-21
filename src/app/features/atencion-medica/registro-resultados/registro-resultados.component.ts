@@ -5,11 +5,27 @@ import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AtencionMedicaService, CitaOpcion } from '../../../core/services/atencion-medica.service';
-import { MedicamentoService, MedicamentoOpcion } from '../../../core/services/medicamento.service';
-import { AtencionMedicaRequest, ItemReceta } from '../../../core/model/atencion-medica.model';
+import { MedicamentoService } from '../../../core/services/medicamento.service';
+import { AuthService } from '../../../core/services/auth.service'; // Inyectado para obtener el ID del médico
+import { AtencionMedicaRequest } from '../../../core/model/atencion-medica.model';
 import { HistoriaClinicaResponse } from '../../../core/model/historia-clinica.model';
 
-// Interfaz para la emisión de la receta (para la plantilla de impresión)
+// Interfaz para recibir las opciones del backend
+export interface MedicamentoOpcion {
+  id: number;
+  nombre: string;
+  activo: boolean;
+}
+
+// Interfaz adaptada para manejar el ID internamente pero mostrar el nombre en la tabla
+export interface ItemReceta {
+  medicamentoId: number;
+  medicamentoNombre: string;
+  dias: number;
+  cantidad: number;
+  indicaciones: string;
+}
+
 export interface RecetaEmitida {
   numeroReceta: string;
   nombreMedico: string;
@@ -28,38 +44,36 @@ export interface RecetaEmitida {
 })
 export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
-  private atencionService   = inject(AtencionMedicaService);
+  private atencionService = inject(AtencionMedicaService);
   private medicamentoService = inject(MedicamentoService);
+  private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
   pacienteActivo: HistoriaClinicaResponse | null = null;
-
-  // ── Dropdown de citas ─────────────────────────────────
   citasDisponibles: CitaOpcion[] = [];
   cargandoCitas = false;
   numeroCita = '';
 
-  // ── Campos generales ──────────────────────────────────
   diagnosticoCie10 = '';
   notasEvolucion   = '';
   cargando         = false;
   adjuntarReceta: boolean | null = null;
 
-  // ── Receta embebida ───────────────────────────────────
+  // Variables para el Autocomplete
   todosMedicamentos: MedicamentoOpcion[] = [];
   medicamentosFiltrados: MedicamentoOpcion[] = [];
-  medicamentoInput  = '';
+  medicamentoInput = '';
+  medicamentoSeleccionado: MedicamentoOpcion | null = null; // Guarda la entidad seleccionada
   mostrarSugerencias = false;
-  diasInput:       number | null = null;
-  cantidadInput:   number | null = null;
+  
+  diasInput: number | null = null;
+  cantidadInput: number | null = null;
   indicacionesInput = '';
   receta: ItemReceta[] = [];
 
-  // ── Datos de la receta ya emitida (para imprimir) ─────
   recetaEmitida: RecetaEmitida | null = null;
 
   ngOnInit() {
-    // Escuchar cambios de paciente activo
     this.atencionService.pacienteActivo$
       .pipe(takeUntil(this.destroy$))
       .subscribe(paciente => {
@@ -71,14 +85,13 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
         }
       });
 
-    // Cargar medicamentos para el autocomplete
+    // Llamada al nuevo endpoint sin paginación
     this.medicamentoService.obtenerTodosParaReceta().subscribe({
       next: lista => this.todosMedicamentos = lista,
       error: err  => console.error('Error al cargar medicamentos', err)
     });
   }
 
-  // ── Carga citas CONFIRMADAS y órdenes PENDIENTES ──────
   cargarCitasDisponibles(historiaId: number) {
     this.cargandoCitas = true;
     this.atencionService.obtenerCitasDisponibles(historiaId).subscribe({
@@ -90,7 +103,6 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Validación del formulario ─────────────────────────
   puedeGuardar(): boolean {
     if (!this.numeroCita) return false;
     if (this.adjuntarReceta === null) return false;
@@ -98,18 +110,31 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  // ── Guardar atención ──────────────────────────────────
   guardarAtencion() {
     if (!this.pacienteActivo || !this.puedeGuardar()) return;
     if (!this.diagnosticoCie10.trim()) { alert('El diagnóstico es obligatorio'); return; }
 
+    // SOLUCIÓN AL ERROR 400: Se obtiene el ID del médico autenticado
+    const medicoActual = this.authService.obtenerUsuarioActual();
+    if (!medicoActual || !medicoActual.id) {
+        alert('Error de sesión: No se pudo identificar al médico responsable.');
+        return;
+    }
+
     this.cargando = true;
     const request: AtencionMedicaRequest = {
       historiaClinicaId:    this.pacienteActivo.id,
+      medicoId:             medicoActual.id, // Campo obligatorio solucionado
       numeroCita:           this.numeroCita,
       diagnosticoPrincipal: this.diagnosticoCie10,
       notasEvolucion:       this.notasEvolucion,
-      itemsReceta:          this.adjuntarReceta ? this.receta : undefined
+      // Mapeamos el array para enviar solo lo que el backend necesita
+      itemsReceta:          this.adjuntarReceta ? this.receta.map(item => ({
+                                medicamentoId: item.medicamentoId,
+                                cantidad: item.cantidad,
+                                dias: item.dias,
+                                indicaciones: item.indicaciones
+                            })) : undefined
     };
 
     this.atencionService.registrarAtencion(request).subscribe({
@@ -120,34 +145,44 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
       },
       error: (err: any) => {
         console.error('Error al guardar:', err);
-        alert('Ocurrió un error al guardar la atención.');
+        alert('Ocurrió un error al procesar la solicitud.');
         this.cargando = false;
       }
     });
   }
 
   private resetFormulario() {
-    this.numeroCita      = '';
+    this.numeroCita = '';
     this.diagnosticoCie10 = '';
-    this.notasEvolucion  = '';
-    this.adjuntarReceta  = null;
-    this.receta          = [];
-    this.medicamentoInput = '';
-    this.diasInput        = null;
-    this.cantidadInput    = null;
-    this.indicacionesInput = '';
+    this.notasEvolucion = '';
+    this.adjuntarReceta = null;
+    this.receta = [];
+    this.limpiarCamposMedicamento();
   }
 
-  // ── Autocomplete medicamentos ─────────────────────────
+  limpiarCamposMedicamento() {
+    this.medicamentoInput = '';
+    this.medicamentoSeleccionado = null;
+    this.diasInput = null;
+    this.cantidadInput = null;
+    this.indicacionesInput = '';
+    this.medicamentosFiltrados = [];
+  }
+
   filtrarMedicamentos(termino: string) {
+    // Si el usuario edita el texto después de haber seleccionado uno, borramos la selección
+    this.medicamentoSeleccionado = null; 
+    
     const t = termino.toLowerCase().trim();
     if (!t) { this.medicamentosFiltrados = []; return; }
+    
     this.medicamentosFiltrados = this.todosMedicamentos
       .filter(m => m.nombre.toLowerCase().includes(t))
       .slice(0, 10);
   }
 
   seleccionarMedicamento(med: MedicamentoOpcion) {
+    this.medicamentoSeleccionado = med;
     this.medicamentoInput = med.nombre;
     this.medicamentosFiltrados = [];
     this.mostrarSugerencias = false;
@@ -163,55 +198,55 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
   }
 
   agregarMedicamento() {
-    const nombre = this.medicamentoInput.trim();
-    if (!nombre) { alert('Seleccione o escriba un medicamento.'); return; }
+    // Validación estricta: debe haber un ID seleccionado
+    if (!this.medicamentoSeleccionado) { 
+        alert('Debe seleccionar un medicamento válido de la lista desplegable.'); 
+        return; 
+    }
     if (!this.diasInput || this.diasInput < 1) { alert('Ingrese días válido.'); return; }
     if (!this.cantidadInput || this.cantidadInput < 1) { alert('Ingrese cantidad válida.'); return; }
     
-    if (this.receta.some(i => i.medicamento.toLowerCase() === nombre.toLowerCase())) {
-      alert('Este medicamento ya fue añadido.'); return;
+    if (this.receta.some(i => i.medicamentoId === this.medicamentoSeleccionado!.id)) {
+      alert('Este medicamento ya se encuentra en la receta.');
+      return;
     }
     
     this.receta.push({
-      medicamento:  nombre,
-      dias:         this.diasInput,
-      cantidad:     this.cantidadInput,
-      indicaciones: this.indicacionesInput.trim()
+      medicamentoId:     this.medicamentoSeleccionado.id,
+      medicamentoNombre: this.medicamentoSeleccionado.nombre,
+      dias:              this.diasInput,
+      cantidad:          this.cantidadInput,
+      indicaciones:      this.indicacionesInput.trim()
     });
     
-    this.medicamentoInput  = '';
-    this.diasInput         = null;
-    this.cantidadInput     = null;
-    this.indicacionesInput = '';
-    this.medicamentosFiltrados = [];
+    this.limpiarCamposMedicamento();
   }
 
   quitarMedicamento(item: ItemReceta) {
-    this.receta = this.receta.filter(r => r !== item);
+    this.receta = this.receta.filter(r => r.medicamentoId !== item.medicamentoId);
   }
 
-  // ── Emitir receta e imprimir ──────────────────────────
   emitirReceta() {
     if (this.adjuntarReceta !== true || this.receta.length === 0) return;
-
     const ahora = new Date();
     const vencimiento = new Date(ahora);
     vencimiento.setMonth(vencimiento.getMonth() + 1);
-
+    
     const pad = (n: number, l = 2) => String(n).padStart(l, '0');
     const fechaParte = `${ahora.getFullYear()}${pad(ahora.getMonth() + 1)}${pad(ahora.getDate())}`;
     const aleatorio = Math.floor(10000 + Math.random() * 90000);
 
+    const medicoActual = this.authService.obtenerUsuarioActual();
+
     this.recetaEmitida = {
       numeroReceta: `REC-${fechaParte}-${aleatorio}`,
-      // Hacemos el cast a 'any' por si getMedicoNombre no está definido estrictamente en el tipo base, o aplicamos un valor por defecto
-      nombreMedico: (this.atencionService as any).getMedicoNombre ? (this.atencionService as any).getMedicoNombre() : 'Médico Tratante',
+      nombreMedico: medicoActual?.nombreCompleto || 'Médico Tratante',
       nombrePaciente: this.pacienteActivo?.nombreCompleto ?? 'Paciente',
       fechaEmision: ahora,
       fechaVencimiento: vencimiento,
       items: [...this.receta]
     };
-
+    
     setTimeout(() => { 
       window.print(); 
       this.recetaEmitida = null;

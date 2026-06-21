@@ -96,6 +96,7 @@ h3.bloque__titulo {
 
 .btn-buscar-moderno {
   height: 42px;
+  min-width:115px;
   padding: 0 1.5rem;
   background-color: #2b6cb0;
   color: #ffffff;
@@ -130,7 +131,7 @@ h3.bloque__titulo {
   border: none;
   border-radius: 8px;
   padding: 0 1.25rem;
-  height: 44px;
+  height: 42px;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
@@ -244,48 +245,7 @@ h3.bloque__titulo {
   }
 }
 
-.acciones-td {
-  display: flex;
-  gap: 0.8rem; 
-  align-items: center;
-  justify-content: flex-start;
 
-  .btn-icon {
-    align-items: center;
-    background: transparent;
-    border: none;
-    color: #334155;
-    cursor: pointer;
-    display: inline-flex;
-    height: 32px;
-    justify-content: center;
-    padding: 0;
-    transition: transform 0.2s;
-    width: 32px;
-
-    svg {
-      fill: none;
-      height: 18px;
-      stroke: currentColor;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 2;
-      width: 18px;
-    }
-
-    &:hover {
-      transform: scale(1.15);
-    }
-  }
-
-  .btn-icon--danger {
-    color: #b42318;
-  }
-
-  .btn-icon--success {
-    color: #047857;
-  }
-}
 
 .modal-overlay {
   position: fixed;
@@ -343,5 +303,124 @@ h3.bloque__titulo {
   .control-filtro--acciones {
     justify-content: space-between;
     width: 100%;
+  }
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:.45rem;
+
+  min-width:110px;
+  height:42px;
+
+  padding:0 22px;
+
+  border-radius:10px;
+  border:1px solid transparent;
+
+  font-size:.95rem;
+  font-weight:600;
+
+  cursor:pointer;
+  user-select:none;
+
+  text-decoration:none;
+  white-space:nowrap;
+
+  transition:
+      background-color .18s,
+      border-color .18s,
+      color .18s,
+      box-shadow .18s,
+      transform .08s;
+
+  box-sizing:border-box;
+}
+
+.btn:hover{
+  text-decoration:none;
+}
+
+.btn:active{
+  transform:translateY(1px);
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.btn--sm{
+  min-width:86px;
+  height:40px;
+  padding:0 18px;
+  font-size:.88rem;
+}
+
+.btn--primario{
+
+  background:#2F6FB7;
+  border-color:#2F6FB7;
+  color:#FFF;
+
+}
+
+.btn--primario:hover{
+
+  background:#255D98;
+  border-color:#255D98;
+
+}
+
+.btn--primario:focus-visible{
+
+  outline:none;
+  box-shadow:0 0 0 3px rgba(47,111,183,.18);
+
+}
+
+.btn--ghost{
+
+  background:#FFFFFF;
+  border:1px solid #CBD5E1;
+  color:#475569;
+
+}
+
+.btn--ghost:hover{
+
+  background:#F8FAFC;
+  border-color:#94A3B8;
+
+}
+
+.btn--ghost:focus-visible{
+
+  outline:none;
+  box-shadow:0 0 0 3px rgba(148,163,184,.20);
+
+}
+
+
+/* --- Badges de Estado (EMITIDA / DESPACHADA) --- */
+.badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  &--activo { /* Para 'EMITIDA' */
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  &--alerta { /* Para 'DESPACHADA' */
+    background-color: #fef3c7;
+    color: #92400e;
   }
 }

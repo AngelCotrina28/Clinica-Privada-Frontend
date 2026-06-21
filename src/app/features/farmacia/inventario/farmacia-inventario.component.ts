@@ -68,9 +68,9 @@ export class FarmaciaInventarioComponent implements OnInit {
     this.buscar();
   }
 
-  private initForm(med?: MedicamentoResponse): void {
+private initForm(med?: MedicamentoResponse): void {
     this.medForm = this.fb.group({
-      codigo:         [med?.codigo ?? '',    [Validators.required, Validators.maxLength(30)]],
+      codigo:         [med?.codigo ?? '',    [Validators.maxLength(30)]],
       nombre:         [med?.nombre ?? '',    [Validators.required, Validators.maxLength(200)]],
       nombreGenerico: [med?.nombreGenerico ?? ''],
       descripcion:    [med?.descripcion ?? ''],
