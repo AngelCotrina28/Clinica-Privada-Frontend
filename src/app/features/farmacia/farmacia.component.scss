@@ -565,7 +565,6 @@ h3.bloque__titulo {
   }
 }
 
-/* Animación de entrada fluida */
 @keyframes slideInRight {
   0% {
     transform: translateX(120%);
@@ -574,5 +573,109 @@ h3.bloque__titulo {
   100% {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+/* =========================================
+   DETALLES DE RECETA (DESPACHO)
+   ========================================= */
+
+.alerta--warning {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background-color: #fffbeb;
+  border: 1px solid #fef08a;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    stroke: #b45309;
+    fill: none;
+    stroke-width: 2;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    color: #92400e;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+}
+
+.receta-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+
+  &__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    &--full {
+      grid-column: span 2;
+    }
+  }
+
+  &__etiqueta {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__valor {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1e293b;
+
+    &--grande {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    &--emitida {
+      color: #059669;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    &--despachada {
+      color: #64748b;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+  }
+}
+
+.notas-adicionales {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f1f5f9;
+  border-radius: 6px;
+  border-left: 4px solid #94a3b8;
+
+  &__titulo {
+    color: #475569;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+  }
+
+  &__texto {
+    color: #334155;
   }
 }
