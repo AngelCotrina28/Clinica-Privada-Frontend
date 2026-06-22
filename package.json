@@ -3,13 +3,18 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "prestart": "node scripts/sync-env.mjs",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "prebuild": "node scripts/sync-env.mjs",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
-  "packageManager": "npm@11.11.0",
+  "packageManager": "npm@10.9.4",
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || ^24.0.0"
+  },
   "dependencies": {
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",

@@ -4,7 +4,9 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string;
+  token?: string;
+  accessToken?: string;
+  refreshToken?: string;
   id: number;
   username: string;
   nombreCompleto: string;

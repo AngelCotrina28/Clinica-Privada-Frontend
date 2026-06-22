@@ -3,13 +3,16 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('token');
   const router = inject(Router);
   const authService = inject(AuthService);
-  const esAuth = req.url.includes('/api/auth/');
-  if (token && !esAuth) {
+  const token = authService.obtenerToken();
+  const esApi = req.url.startsWith(environment.apiUrl);
+  const esLogin = req.url.includes('/auth/login');
+
+  if (token && esApi && !esLogin) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`

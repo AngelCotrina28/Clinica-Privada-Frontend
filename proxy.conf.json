@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://clinica-privada-backend-8kvu.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  }
+}
