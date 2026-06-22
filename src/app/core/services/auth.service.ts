@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { jwtDecode } from 'jwt-decode'; // <-- HERRAMIENTA NUEVA
+import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, UsuarioSesion } from '../model/auth.model';
 export type { LoginRequest, LoginResponse, UsuarioSesion } from '../model/auth.model';

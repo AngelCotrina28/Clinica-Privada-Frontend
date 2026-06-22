@@ -15,12 +15,17 @@ import { RecetaResponse } from '../../../core/model/Receta.model';
 })
 export class FarmaciaDespachoComponent implements OnInit {
 
-  usuarioNombre    = '';
-  terminoBusqueda  = '';
+  usuarioNombre = '';
+  terminoBusqueda = '';
   cargandoBusqueda = signal(false);
-  errorMensaje     = signal('');
-  exitoMensaje     = signal('');
-  confirmando      = signal(false);
+
+  /** Receta que se enviará a la zona de impresión */
+  recetaAImprimir: RecetaResponse | null = null;
+  /** Captura la hora exacta de la impresión */
+  fechaActual: Date = new Date();
+  errorMensaje = signal('');
+  exitoMensaje = signal('');
+  confirmando = signal(false);
 
   /** Resultados de la búsqueda dual (N° de receta o DNI). */
   recetasEncontradas: RecetaResponse[] = [];
@@ -31,7 +36,7 @@ export class FarmaciaDespachoComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private recetaService: RecetaService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const usuario = this.authService.obtenerUsuarioActual();
@@ -104,6 +109,12 @@ export class FarmaciaDespachoComponent implements OnInit {
   }
 
   imprimirOrden(receta: RecetaResponse): void {
-    window.print();
+    this.recetaAImprimir = receta;
+    this.fechaActual = new Date();
+
+    setTimeout(() => {
+      window.print();
+      this.recetaAImprimir = null;
+    }, 100);
   }
 }

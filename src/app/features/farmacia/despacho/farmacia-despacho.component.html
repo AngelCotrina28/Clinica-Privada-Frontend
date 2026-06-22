@@ -201,3 +201,58 @@
     </div>
   </div>
 </div>
+
+@if (recetaAImprimir) {
+  <div class="ticket-impresion">
+    
+    <div class="ticket-header">
+      <h2>Luz del Túnel</h2>
+      <p>Clínica Privada</p>
+      <p><strong>ORDEN DE ENTREGA DE MEDICAMENTOS</strong></p>
+      <div class="linea-punteada"></div>
+    </div>
+
+    <div class="ticket-info">
+      <p><strong>N° Receta:</strong> {{ recetaAImprimir.numeroReceta }}</p>
+      <p><strong>Fecha y Hora:</strong> {{ fechaActual | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Paciente:</strong> {{ recetaAImprimir.pacienteNombre }}</p>
+      <p><strong>DNI:</strong> {{ recetaAImprimir.pacienteDni }}</p>
+      <p><strong>Médico:</strong> {{ recetaAImprimir.medicoNombre }}</p>
+      <p><strong>Técnico de Farmacia:</strong> {{ usuarioNombre }}</p>
+    </div>
+
+    <div class="linea-punteada"></div>
+
+    <table class="ticket-tabla">
+      <thead>
+        <tr>
+          <th>CANT.</th>
+          <th>MEDICAMENTO / PRESENTACIÓN</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (detalle of recetaAImprimir.detalles; track detalle.id) {
+          <tr>
+            <td class="col-cant"><strong>{{ detalle.cantidadPrescrita }}</strong></td>
+            <td>
+              {{ detalle.medicamentoNombre }}
+              <br>
+              <small>{{ detalle.dosis }} - {{ detalle.viaAdministracion }}</small>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="linea-punteada"></div>
+
+    <div class="ticket-footer">
+      <p>Entrega conforme. Los medicamentos no están sujetos a cambios ni devoluciones.</p>
+      <br><br><br><br>
+      <div class="firma-linea"></div>
+      <p>Firma del Paciente (Recibí Conforme)</p>
+      <p>DNI: ________________________</p>
+    </div>
+
+  </div>
+}

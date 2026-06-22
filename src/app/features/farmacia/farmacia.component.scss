@@ -5,7 +5,9 @@
   overflow-y: auto;
 }
 
-main section { margin-bottom: 3.5rem; }
+main section {
+  margin-bottom: 3.5rem;
+}
 
 h3.bloque__titulo {
   font-size: 1rem;
@@ -37,7 +39,9 @@ h3.bloque__titulo {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .bloque {
@@ -62,7 +66,7 @@ h3.bloque__titulo {
 
 .campo-busqueda-inline-wrapper {
   display: flex;
-  gap: 1rem; 
+  gap: 1rem;
   flex: 1;
   max-width: 750px;
   align-items: center;
@@ -96,7 +100,7 @@ h3.bloque__titulo {
 
 .btn-buscar-moderno {
   height: 42px;
-  min-width:115px;
+  min-width: 115px;
   padding: 0 1.5rem;
   background-color: #2b6cb0;
   color: #ffffff;
@@ -111,21 +115,21 @@ h3.bloque__titulo {
   gap: 0.5rem;
   transition: background-color 0.2s, transform 0.1s;
 
-  &:hover { 
-    background-color: #1a4975; 
+  &:hover {
+    background-color: #1a4975;
   }
 
   &:active {
     transform: scale(0.98);
   }
 
-  &:disabled { 
-    background-color: #94a3b8; 
+  &:disabled {
+    background-color: #94a3b8;
     cursor: not-allowed;
   }
 }
 
-.btn-nuevo{
+.btn-nuevo {
   background: #1e293b;
   color: white;
   border: none;
@@ -140,7 +144,9 @@ h3.bloque__titulo {
   gap: 0.5rem;
   transition: background 0.2s;
 
-  &:hover { background: #0f172a; }
+  &:hover {
+    background: #0f172a;
+  }
 }
 
 .filtros-inferior {
@@ -179,7 +185,9 @@ h3.bloque__titulo {
     outline: none;
     cursor: pointer;
 
-    &:focus { border-color: #2b6cb0; }
+    &:focus {
+      border-color: #2b6cb0;
+    }
   }
 }
 
@@ -216,32 +224,32 @@ h3.bloque__titulo {
 .badge-clinica {
   display: inline-block;
   padding: 0.35rem 0.75rem;
-  border-radius: 50px; 
+  border-radius: 50px;
   font-size: 0.78rem;
   font-weight: 700;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   &--receta {
-    background-color: #dcfce7; 
-    color: #16a34a;            
+    background-color: #dcfce7;
+    color: #16a34a;
   }
 
   &--libre {
-    background-color: #ffe4e6; 
-    color: #e11d48;            
+    background-color: #ffe4e6;
+    color: #e11d48;
   }
 
   &--activo {
-    background-color: #ecfdf5; 
-    color: #059669;            
+    background-color: #ecfdf5;
+    color: #059669;
   }
 
   &--inactivo {
-    background-color: #f1f5f9; 
-    color: #64748b;            
+    background-color: #f1f5f9;
+    color: #64748b;
   }
 }
 
@@ -251,7 +259,7 @@ h3.bloque__titulo {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 23, 42, 0.65); 
+  background: rgba(15, 23, 42, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,98 +305,102 @@ h3.bloque__titulo {
     flex-direction: column;
     align-items: stretch;
   }
-  .campo-busqueda-inline-wrapper { max-width: 100%; }
+
+  .campo-busqueda-inline-wrapper {
+    max-width: 100%;
+  }
+
   .control-filtro--acciones {
     justify-content: space-between;
     width: 100%;
   }
 }
 
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  gap:.45rem;
+  gap: .45rem;
 
-  min-width:110px;
-  height:42px;
+  min-width: 110px;
+  height: 42px;
 
-  padding:0 22px;
+  padding: 0 22px;
 
-  border-radius:10px;
-  border:1px solid transparent;
+  border-radius: 10px;
+  border: 1px solid transparent;
 
-  font-size:.95rem;
-  font-weight:600;
+  font-size: .95rem;
+  font-weight: 600;
 
-  cursor:pointer;
-  user-select:none;
+  cursor: pointer;
+  user-select: none;
 
-  text-decoration:none;
-  white-space:nowrap;
+  text-decoration: none;
+  white-space: nowrap;
 
   transition:
-      background-color .18s,
-      border-color .18s,
-      color .18s,
-      box-shadow .18s,
-      transform .08s;
+    background-color .18s,
+    border-color .18s,
+    color .18s,
+    box-shadow .18s,
+    transform .08s;
 
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
 
-.btn:hover{
-  text-decoration:none;
+.btn:hover {
+  text-decoration: none;
 }
 
-.btn:active{
-  transform:translateY(1px);
+.btn:active {
+  transform: translateY(1px);
 }
 
-.btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-  transform:none;
+.btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.btn--sm{
-  min-width:86px;
-  height:40px;
-  padding:0 18px;
-  font-size:.88rem;
+.btn--sm {
+  min-width: 86px;
+  height: 40px;
+  padding: 0 18px;
+  font-size: .88rem;
 }
 
-.btn--primario{
-  background:#2F6FB7;
-  border-color:#2F6FB7;
-  color:#FFF;
+.btn--primario {
+  background: #2F6FB7;
+  border-color: #2F6FB7;
+  color: #FFF;
 }
 
-.btn--primario:hover{
-  background:#255D98;
-  border-color:#255D98;
+.btn--primario:hover {
+  background: #255D98;
+  border-color: #255D98;
 }
 
-.btn--primario:focus-visible{
-  outline:none;
-  box-shadow:0 0 0 3px rgba(47,111,183,.18);
+.btn--primario:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(47, 111, 183, .18);
 }
 
-.btn--ghost{
-  background:#FFFFFF;
-  border:1px solid #CBD5E1;
-  color:#475569;
+.btn--ghost {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #475569;
 }
 
-.btn--ghost:hover{
-  background:#F8FAFC;
-  border-color:#94A3B8;
+.btn--ghost:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
 }
 
-.btn--ghost:focus-visible{
-  outline:none;
-  box-shadow:0 0 0 3px rgba(148,163,184,.20);
+.btn--ghost:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, .20);
 }
 
 /* --- Badges de Estado (EMITIDA / DESPACHADA) --- */
@@ -399,12 +411,14 @@ h3.bloque__titulo {
   font-weight: 700;
   text-transform: uppercase;
 
-  &--activo { /* Para 'EMITIDA' */
+  &--activo {
+    /* Para 'EMITIDA' */
     background-color: #dcfce7;
     color: #166534;
   }
 
-  &--alerta { /* Para 'DESPACHADA' */
+  &--alerta {
+    /* Para 'DESPACHADA' */
     background-color: #fef3c7;
     color: #92400e;
   }
@@ -426,9 +440,12 @@ h3.bloque__titulo {
   height: 34px;
   padding: 0;
   border: none;
-  border-radius: 8px; /* Radio consistente con otros elementos */
-  background-color: #f1f5f9; /* Fondo gris claro inicial */
-  color: #64748b; /* Color de icono por defecto */
+  border-radius: 8px;
+  /* Radio consistente con otros elementos */
+  background-color: #f1f5f9;
+  /* Fondo gris claro inicial */
+  color: #64748b;
+  /* Color de icono por defecto */
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 
@@ -444,7 +461,8 @@ h3.bloque__titulo {
 
   &:hover {
     background-color: #e2e8f0;
-    color: #2b6cb0; /* Azul principal para la acción de editar */
+    color: #2b6cb0;
+    /* Azul principal para la acción de editar */
     transform: scale(1.05);
   }
 
@@ -479,11 +497,13 @@ h3.bloque__titulo {
   position: fixed;
   top: 24px;
   right: 24px;
-  z-index: 9999; /* Asegura que se superponga a modales y cabeceras */
+  z-index: 9999;
+  /* Asegura que se superponga a modales y cabeceras */
   display: flex;
   flex-direction: column;
   gap: 12px;
-  pointer-events: none; /* Permite interactuar con elementos detrás del área vacía */
+  pointer-events: none;
+  /* Permite interactuar con elementos detrás del área vacía */
 }
 
 .toast {
@@ -496,23 +516,26 @@ h3.bloque__titulo {
   border-radius: 8px;
   background-color: #ffffff;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  pointer-events: auto; /* Reactiva eventos de clic dentro del toast */
+  pointer-events: auto;
+  /* Reactiva eventos de clic dentro del toast */
   border-left: 5px solid transparent;
   animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
   &--exito {
     border-left-color: #10b981;
-    .toast__icono { 
-      background-color: #d1fae5; 
-      color: #059669; 
+
+    .toast__icono {
+      background-color: #d1fae5;
+      color: #059669;
     }
   }
 
   &--error {
     border-left-color: #ef4444;
-    .toast__icono { 
-      background-color: #fee2e2; 
-      color: #dc2626; 
+
+    .toast__icono {
+      background-color: #fee2e2;
+      color: #dc2626;
     }
   }
 
@@ -570,6 +593,7 @@ h3.bloque__titulo {
     transform: translateX(120%);
     opacity: 0;
   }
+
   100% {
     transform: translateX(0);
     opacity: 1;
@@ -678,4 +702,8 @@ h3.bloque__titulo {
   &__texto {
     color: #334155;
   }
+}
+
+.ticket-impresion {
+  display: none;
 }
