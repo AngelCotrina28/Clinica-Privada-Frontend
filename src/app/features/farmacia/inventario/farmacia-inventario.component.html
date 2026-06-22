@@ -171,51 +171,59 @@
 
         <div class="form-grupo">
           <label>Nombre Comercial <span class="requerido">*</span></label>
-          <input type="text" formControlName="nombre" placeholder="Nombre del medicamento" maxlength="200" />
+          <input type="text" formControlName="nombre" placeholder="Nombre del medicamento" maxlength="200" [class.campo__input--error]="campoInvalido('nombre')" />
+          @if (campoInvalido('nombre')) { <span class="campo__error">{{ mensajeCampo('nombre', 'Nombre comercial') }}</span> }
         </div>
 
         <div class="form-grupo">
           <label>Nombre Genérico</label>
-          <input type="text" formControlName="nombreGenerico" placeholder="DCI o nombre genérico" maxlength="200" />
+          <input type="text" formControlName="nombreGenerico" placeholder="DCI o nombre genérico" maxlength="200" [class.campo__input--error]="campoInvalido('nombreGenerico')" />
+          @if (campoInvalido('nombreGenerico')) { <span class="campo__error">{{ mensajeCampo('nombreGenerico', 'Nombre generico') }}</span> }
         </div>
 
         <div class="form-grupo">
           <label>Categoría <span class="requerido">*</span></label>
-          <select formControlName="categoriaId">
+          <select formControlName="categoriaId" [class.campo__input--error]="campoInvalido('categoriaId')">
             <option value="" disabled>Seleccionar categoría...</option>
             @for (cat of categorias; track cat.id) {
               <option [value]="cat.id">{{ cat.nombre }}</option>
             }
           </select>
+          @if (campoInvalido('categoriaId')) { <span class="campo__error">{{ mensajeCampo('categoriaId', 'Categoria') }}</span> }
         </div>
 
         <div class="form-seccion-titulo">Detalles del Producto</div>
 
         <div class="form-grupo">
           <label>Presentación</label>
-          <input type="text" formControlName="presentacion" placeholder="Ej: Caja x 100 tabletas 500mg" maxlength="100" />
+          <input type="text" formControlName="presentacion" placeholder="Ej: Caja x 100 tabletas 500mg" maxlength="100" [class.campo__input--error]="campoInvalido('presentacion')" />
+          @if (campoInvalido('presentacion')) { <span class="campo__error">{{ mensajeCampo('presentacion', 'Presentacion') }}</span> }
         </div>
 
         <div class="form-grupo">
           <label>Laboratorio</label>
-          <input type="text" formControlName="laboratorio" placeholder="Nombre del laboratorio" maxlength="150" />
+          <input type="text" formControlName="laboratorio" placeholder="Nombre del laboratorio" maxlength="150" [class.campo__input--error]="campoInvalido('laboratorio')" />
+          @if (campoInvalido('laboratorio')) { <span class="campo__error">{{ mensajeCampo('laboratorio', 'Laboratorio') }}</span> }
         </div>
 
         <div class="form-grupo form-grupo--full">
           <label>Descripción</label>
-          <textarea formControlName="descripcion" rows="2" placeholder="Indicaciones, contraindicaciones, etc."></textarea>
+          <textarea formControlName="descripcion" rows="2" maxlength="500" placeholder="Indicaciones, contraindicaciones, etc." [class.campo__input--error]="campoInvalido('descripcion')"></textarea>
+          @if (campoInvalido('descripcion')) { <span class="campo__error">{{ mensajeCampo('descripcion', 'Descripcion') }}</span> }
         </div>
 
         <div class="form-seccion-titulo">Stock y Precios</div>
 
         <div class="form-grupo">
           <label>Precio Unitario (S/) <span class="requerido">*</span></label>
-          <input type="number" formControlName="precioUnitario" step="0.01" min="0.01" placeholder="0.00" />
+          <input type="number" formControlName="precioUnitario" step="0.01" min="0.01" placeholder="0.00" [class.campo__input--error]="campoInvalido('precioUnitario')" />
+          @if (campoInvalido('precioUnitario')) { <span class="campo__error">{{ mensajeCampo('precioUnitario', 'Precio unitario') }}</span> }
         </div>
 
         <div class="form-grupo" *ngIf="!isEditMode">
           <label>Stock Inicial <span class="requerido">*</span></label>
-          <input type="number" formControlName="stockInicial" min="0" placeholder="0" />
+          <input type="number" formControlName="stockInicial" min="0" step="1" placeholder="0" [class.campo__input--error]="campoInvalido('stockInicial')" />
+          @if (campoInvalido('stockInicial')) { <span class="campo__error">{{ mensajeCampo('stockInicial', 'Stock inicial') }}</span> }
         </div>
 
         <div class="form-grupo" *ngIf="isEditMode">
@@ -225,7 +233,8 @@
 
         <div class="form-grupo">
           <label>Stock Mínimo (alerta)</label>
-          <input type="number" formControlName="stockMinimo" min="0" placeholder="0" />
+          <input type="number" formControlName="stockMinimo" min="0" step="1" placeholder="0" [class.campo__input--error]="campoInvalido('stockMinimo')" />
+          @if (campoInvalido('stockMinimo')) { <span class="campo__error">{{ mensajeCampo('stockMinimo', 'Stock minimo') }}</span> }
         </div>
 
         <div class="form-grupo form-grupo--checkbox">
@@ -265,7 +274,8 @@
 
       <div class="form-grupo">
         <label>Cantidad a ingresar <span class="requerido">*</span></label>
-        <input type="number" [(ngModel)]="cantidadStockAgregar" min="1" step="1" style="font-size: 1.2rem; padding: 0.75rem;" />
+        <input type="number" [(ngModel)]="cantidadStockAgregar" min="1" step="1" inputmode="numeric" style="font-size: 1.2rem; padding: 0.75rem;" />
+        @if (cantidadStockAgregar <= 0) { <span class="campo__error">Ingrese una cantidad mayor que cero.</span> }
       </div>
 
       <div class="modal-footer" style="margin-top: 2rem;">

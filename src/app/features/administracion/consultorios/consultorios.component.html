@@ -104,17 +104,20 @@
     <form class="modal-body formulario-grid" [formGroup]="consultorioForm" (ngSubmit)="guardar()">
       <div class="form-grupo form-grupo--full">
         <label>Nombre <span class="requerido">*</span></label>
-        <input type="text" formControlName="nombre" maxlength="100" placeholder="Consultorio Oftalmologia">
+        <input type="text" formControlName="nombre" maxlength="100" placeholder="Consultorio Oftalmologia" [class.campo__input--error]="campoInvalido('nombre')">
+        @if (campoInvalido('nombre')) { <span class="campo__error">{{ mensajeCampo('nombre', 'Nombre') }}</span> }
       </div>
 
       <div class="form-grupo">
         <label>Numero</label>
-        <input type="text" formControlName="numero" maxlength="10" placeholder="305">
+        <input type="text" formControlName="numero" maxlength="10" placeholder="305" [class.campo__input--error]="campoInvalido('numero')">
+        @if (campoInvalido('numero')) { <span class="campo__error">{{ mensajeCampo('numero', 'Numero') }}</span> }
       </div>
 
       <div class="form-grupo">
         <label>Piso</label>
-        <input type="text" formControlName="piso" maxlength="20" placeholder="Piso 3">
+        <input type="text" formControlName="piso" maxlength="20" placeholder="Piso 3" [class.campo__input--error]="campoInvalido('piso')">
+        @if (campoInvalido('piso')) { <span class="campo__error">{{ mensajeCampo('piso', 'Piso') }}</span> }
       </div>
 
       <div class="form-grupo form-grupo--full">

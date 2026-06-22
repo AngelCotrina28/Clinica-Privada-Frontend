@@ -16,6 +16,12 @@ import {
   limpiarDocumentoPaciente,
   maxDocumentoPaciente,
   mensajeDocumentoPaciente,
+  fechaMaximaNacimiento,
+  limpiarTelefonoPaciente,
+  mensajeEmailPaciente,
+  mensajeFechaNacimiento,
+  mensajeNombrePaciente,
+  mensajeTelefonoPaciente,
   patronDocumentoPaciente,
   TipoDocumentoPaciente
 } from '../documento-paciente.util';
@@ -41,6 +47,8 @@ export class AdmisionEmergenciaComponent implements OnInit {
   tipoDocumentoNueva: TipoDocumentoPaciente = 'DNI';
   documentoBusquedaTocado = false;
   documentoNuevaTocado = false;
+  datosPacienteTocados = false;
+  readonly fechaMaximaNacimiento = fechaMaximaNacimiento();
 
   mostrarFormNueva = false;
   historiaSeleccionada = signal<HistoriaClinicaResponse | null>(null);
@@ -121,8 +129,10 @@ export class AdmisionEmergenciaComponent implements OnInit {
     this.documentoNuevaTocado = true;
     this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
     const errorDocumento = this.documentoNuevaError();
-    if (form.invalid || errorDocumento) {
-      if (errorDocumento) this.errorMensaje.set(errorDocumento);
+    const errorPaciente = this.datosPacienteError();
+    if (form.invalid || errorDocumento || errorPaciente) {
+      this.datosPacienteTocados = true;
+      this.errorMensaje.set(errorDocumento || errorPaciente);
       return;
     }
 
@@ -203,6 +213,10 @@ export class AdmisionEmergenciaComponent implements OnInit {
     this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, valor);
   }
 
+  actualizarTelefonoNueva(valor: string): void {
+    this.nuevaHistoria.telefono = limpiarTelefonoPaciente(valor);
+  }
+
   cambiarTipoDocumentoNueva(tipo: TipoDocumentoPaciente): void {
     this.tipoDocumentoNueva = tipo;
     this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(tipo, this.nuevaHistoria.dniPaciente);
@@ -215,6 +229,13 @@ export class AdmisionEmergenciaComponent implements OnInit {
 
   documentoNuevaError(): string {
     return mensajeDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
+  }
+
+  datosPacienteError(): string {
+    return mensajeNombrePaciente(this.nuevaHistoria.nombreCompleto)
+      || mensajeTelefonoPaciente(this.nuevaHistoria.telefono)
+      || mensajeEmailPaciente(this.nuevaHistoria.email)
+      || mensajeFechaNacimiento(this.nuevaHistoria.fechaNacimiento);
   }
 
   documentoBusquedaValido(): boolean {

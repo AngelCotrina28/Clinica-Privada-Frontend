@@ -105,6 +105,7 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
   puedeGuardar(): boolean {
     if (!this.numeroCita) return false;
+    if (this.diagnosticoCie10.trim().length < 3) return false;
     if (this.adjuntarReceta === null) return false;
     if (this.adjuntarReceta === true && this.receta.length === 0) return false;
     return true;
@@ -112,7 +113,7 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
 
   guardarAtencion() {
     if (!this.pacienteActivo || !this.puedeGuardar()) return;
-    if (!this.diagnosticoCie10.trim()) { alert('El diagnóstico es obligatorio'); return; }
+    if (this.diagnosticoCie10.trim().length < 3) { alert('El diagnostico debe tener al menos 3 caracteres.'); return; }
 
     // SOLUCIÓN AL ERROR 400: Se obtiene el ID del médico autenticado
     const medicoActual = this.authService.obtenerUsuarioActual();
@@ -203,8 +204,8 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
         alert('Debe seleccionar un medicamento válido de la lista desplegable.'); 
         return; 
     }
-    if (!this.diasInput || this.diasInput < 1) { alert('Ingrese días válido.'); return; }
-    if (!this.cantidadInput || this.cantidadInput < 1) { alert('Ingrese cantidad válida.'); return; }
+    if (!Number.isInteger(Number(this.diasInput)) || !this.diasInput || this.diasInput < 1) { alert('Ingrese dias validos en numeros enteros.'); return; }
+    if (!Number.isInteger(Number(this.cantidadInput)) || !this.cantidadInput || this.cantidadInput < 1) { alert('Ingrese cantidad valida en numeros enteros.'); return; }
     
     if (this.receta.some(i => i.medicamentoId === this.medicamentoSeleccionado!.id)) {
       alert('Este medicamento ya se encuentra en la receta.');

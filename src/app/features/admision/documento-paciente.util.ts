@@ -39,3 +39,37 @@ export function mensajeDocumentoPaciente(tipo: TipoDocumentoPaciente, valor: str
   return '';
 }
 
+export function fechaMaximaNacimiento(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function mensajeFechaNacimiento(valor: string | undefined): string {
+  if (!valor) return '';
+  return valor > fechaMaximaNacimiento() ? 'La fecha de nacimiento no puede estar en el futuro.' : '';
+}
+
+export function limpiarTelefonoPaciente(valor: string | undefined): string {
+  return (valor ?? '').replace(/\D/g, '').slice(0, 15);
+}
+
+export function mensajeTelefonoPaciente(valor: string | undefined): string {
+  const telefono = (valor ?? '').trim();
+  if (!telefono) return '';
+  return /^\d{6,15}$/.test(telefono) ? '' : 'El telefono debe tener entre 6 y 15 digitos.';
+}
+
+export function mensajeEmailPaciente(valor: string | undefined): string {
+  const email = (valor ?? '').trim();
+  if (!email) return '';
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : 'Ingrese un email valido.';
+}
+
+export function mensajeNombrePaciente(valor: string | undefined): string {
+  const nombre = (valor ?? '').trim();
+  if (!nombre) return 'Nombre obligatorio.';
+  if (nombre.length > 150) return 'El nombre no debe superar 150 caracteres.';
+  return /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:[ '\-][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*$/.test(nombre)
+    ? ''
+    : 'El nombre solo debe contener letras y espacios.';
+}
+

@@ -24,6 +24,7 @@
               type="date"
               class="campo__input"
               name="desde"
+              [max]="fechaMaxima"
               [(ngModel)]="filtros.desde"
             />
           </div>
@@ -35,6 +36,7 @@
               type="date"
               class="campo__input"
               name="hasta"
+              [max]="fechaMaxima"
               [(ngModel)]="filtros.hasta"
             />
           </div>
