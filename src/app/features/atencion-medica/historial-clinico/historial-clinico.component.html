@@ -27,6 +27,8 @@
             type="text"
             name="termino"
             [(ngModel)]="terminoBusqueda"
+            [maxlength]="tipoBusqueda === 'DNI' ? 8 : 20"
+            [inputMode]="tipoBusqueda === 'DNI' ? 'numeric' : 'text'"
             [placeholder]="tipoBusqueda === 'DNI' ? 'Ej. 72839401' : 'Ej. HC-00001'"
             autocomplete="off">
           <button type="submit" class="btn-accion" [disabled]="cargandoBusqueda">

@@ -9,6 +9,12 @@ import {
   limpiarDocumentoPaciente,
   maxDocumentoPaciente,
   mensajeDocumentoPaciente,
+  fechaMaximaNacimiento,
+  limpiarTelefonoPaciente,
+  mensajeEmailPaciente,
+  mensajeFechaNacimiento,
+  mensajeNombrePaciente,
+  mensajeTelefonoPaciente,
   patronDocumentoPaciente,
   TipoDocumentoPaciente
 } from '../documento-paciente.util';
@@ -163,11 +169,11 @@ import {
                 <div class="campo">
                   <label class="campo__etiqueta">Telefono</label>
                   <input type="tel" class="campo__input" name="telefono"
-                    [(ngModel)]="nuevaHistoria.telefono" maxlength="15" placeholder="987 654 321" />
+                    [ngModel]="nuevaHistoria.telefono" (ngModelChange)="actualizarTelefonoNueva($event)" maxlength="15" inputmode="numeric" placeholder="987 654 321" />
                 </div>
                 <div class="campo">
                   <label class="campo__etiqueta">Email</label>
-                  <input type="email" class="campo__input" name="email"
+                  <input type="email" email class="campo__input" name="email"
                     [(ngModel)]="nuevaHistoria.email" #emailF="ngModel"
                     [class.campo__input--error]="emailF.invalid && emailF.touched" />
                   @if (emailF.invalid && emailF.touched) {
@@ -176,7 +182,7 @@ import {
                 </div>
                 <div class="campo">
                   <label class="campo__etiqueta">Fecha de Nacimiento</label>
-                  <input type="date" class="campo__input" name="fechaNacimiento"
+                  <input type="date" class="campo__input" name="fechaNacimiento" [max]="fechaMaximaNacimiento"
                     [(ngModel)]="nuevaHistoria.fechaNacimiento" />
                 </div>
                 <div class="campo">
@@ -215,6 +221,8 @@ export class AdmisionHistoriasComponent {
   tipoDocumentoNueva: TipoDocumentoPaciente = 'DNI';
   documentoBusquedaTocado = false;
   documentoNuevaTocado = false;
+  datosPacienteTocados = false;
+  readonly fechaMaximaNacimiento = fechaMaximaNacimiento();
   mostrarFormNueva = false;
   historiaEncontrada = signal<HistoriaClinicaResponse | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
@@ -258,8 +266,10 @@ export class AdmisionHistoriasComponent {
     this.documentoNuevaTocado = true;
     this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
     const errorDocumento = this.documentoNuevaError();
-    if (form.invalid || errorDocumento) {
-      if (errorDocumento) this.errorMensaje.set(errorDocumento);
+    const errorPaciente = this.datosPacienteError();
+    if (form.invalid || errorDocumento || errorPaciente) {
+      this.datosPacienteTocados = true;
+      this.errorMensaje.set(errorDocumento || errorPaciente);
       return;
     }
 
@@ -323,6 +333,10 @@ export class AdmisionHistoriasComponent {
     this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(this.tipoDocumentoNueva, valor);
   }
 
+  actualizarTelefonoNueva(valor: string): void {
+    this.nuevaHistoria.telefono = limpiarTelefonoPaciente(valor);
+  }
+
   cambiarTipoDocumentoNueva(tipo: TipoDocumentoPaciente): void {
     this.tipoDocumentoNueva = tipo;
     this.nuevaHistoria.dniPaciente = limpiarDocumentoPaciente(tipo, this.nuevaHistoria.dniPaciente);
@@ -335,6 +349,13 @@ export class AdmisionHistoriasComponent {
 
   documentoNuevaError(): string {
     return mensajeDocumentoPaciente(this.tipoDocumentoNueva, this.nuevaHistoria.dniPaciente);
+  }
+
+  datosPacienteError(): string {
+    return mensajeNombrePaciente(this.nuevaHistoria.nombreCompleto)
+      || mensajeTelefonoPaciente(this.nuevaHistoria.telefono)
+      || mensajeEmailPaciente(this.nuevaHistoria.email)
+      || mensajeFechaNacimiento(this.nuevaHistoria.fechaNacimiento);
   }
 
   documentoBusquedaValido(): boolean {

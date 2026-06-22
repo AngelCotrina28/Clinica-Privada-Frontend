@@ -27,8 +27,10 @@ export class HistorialClinicoComponent {
   cargandoHistorial: boolean = false;
 
   buscarPaciente() {
-    if (!this.terminoBusqueda.trim()) {
-      this.mensajeBusqueda = 'Por favor, ingrese un valor para buscar.';
+    const termino = this.terminoBusqueda.trim().toUpperCase();
+    const error = this.validarTerminoBusqueda(termino);
+    if (error) {
+      this.mensajeBusqueda = error;
       return;
     }
 
@@ -38,8 +40,8 @@ export class HistorialClinicoComponent {
     this.historialMedico = [];
 
     const peticion = this.tipoBusqueda === 'DNI'
-      ? this.historiaService.buscarPorDni(this.terminoBusqueda)
-      : this.historiaService.buscarPorNumeroHistoria(this.terminoBusqueda);
+      ? this.historiaService.buscarPorDni(termino)
+      : this.historiaService.buscarPorNumeroHistoria(termino);
 
     peticion.subscribe({
       next: (paciente) => {
@@ -69,5 +71,16 @@ export class HistorialClinicoComponent {
         this.cargandoHistorial = false;
       }
     });
+  }
+
+  private validarTerminoBusqueda(termino: string): string {
+    if (!termino) return 'Por favor, ingrese un valor para buscar.';
+    if (this.tipoBusqueda === 'DNI' && !/^\d{8}$/.test(termino)) {
+      return 'El DNI debe tener exactamente 8 digitos numericos.';
+    }
+    if (this.tipoBusqueda === 'NUMERO' && !/^[A-Z0-9-]{3,20}$/.test(termino)) {
+      return 'El numero de historia tiene un formato invalido.';
+    }
+    return '';
   }
 }

@@ -7,6 +7,7 @@ import { Consultorio } from '../../../core/model/consultorio.model';
 import { ConsultorioService } from '../../../core/services/consultorio.service';
 import { EspecialidadService } from '../../../core/services/especialidad.service';
 import { HeaderComponent } from '../../../shared/header/header.component';
+import { controlErrorMessage, FORM_PATTERNS, patternValidator } from '../../../core/validators/form-validations';
 
 @Component({
   selector: 'app-consultorios',
@@ -36,9 +37,9 @@ export class ConsultoriosComponent implements OnInit {
     private especialidadService: EspecialidadService
   ) {
     this.consultorioForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.maxLength(100)]],
-      numero: ['', Validators.maxLength(10)],
-      piso: ['', Validators.maxLength(20)],
+      nombre: ['', [Validators.required, Validators.maxLength(100), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
+      numero: ['', [Validators.maxLength(10), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
+      piso: ['', [Validators.maxLength(20), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
       especialidadId: [''],
       activo: [true]
     });
@@ -173,5 +174,14 @@ export class ConsultoriosComponent implements OnInit {
     return error?.error?.mensaje
       ?? error?.message
       ?? fallback;
+  }
+
+  campoInvalido(nombre: string): boolean {
+    const control = this.consultorioForm.get(nombre);
+    return !!control && control.invalid && (control.touched || control.dirty);
+  }
+
+  mensajeCampo(nombre: string, etiqueta: string): string {
+    return controlErrorMessage(this.consultorioForm.get(nombre), etiqueta);
   }
 }

@@ -38,7 +38,6 @@ export class LoginComponent {
     }
 
     onLogin(): void {
-        console.log(this.loginForm);
         if (this.loginForm.invalid) {
             this.loginForm.markAllAsTouched();
             return;

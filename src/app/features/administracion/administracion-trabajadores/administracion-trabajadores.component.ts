@@ -5,6 +5,7 @@ import { Trabajador } from '../../../core/model/trabajador.model';
 import { EspecialidadService } from '../../../core/services/especialidad.service';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
+import { controlErrorMessage, FORM_PATTERNS, fechaHoyIso, noFutureDateValidator, patternValidator } from '../../../core/validators/form-validations';
 
 interface RolFiltro {
   id: number;
@@ -30,18 +31,19 @@ export class AdministracionTrabajadoresComponent implements OnInit {
   busquedaTrabajador = '';
   rolSeleccionado = '';
   mostrarInactivos = false;
+  readonly fechaMaximaNacimiento = fechaHoyIso();
 
   constructor(
     private fb: FormBuilder, 
     private trabajadorService: TrabajadorService, 
     private especialidadService: EspecialidadService) {
       this.trabajadorForm = this.fb.group({
-      dni: ['', [Validators.required, Validators.minLength(8)]],
-      nombreCompleto: ['', Validators.required],
+      dni: ['', [Validators.required, Validators.pattern(FORM_PATTERNS.dni)]],
+      nombreCompleto: ['', [Validators.required, Validators.maxLength(150), patternValidator(FORM_PATTERNS.nombrePersona, 'pattern')]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      telefono: [''],
-      fechaNacimiento: [''],
-      colegiatura: [''],
+      telefono: ['', [patternValidator(FORM_PATTERNS.telefono, 'pattern')]],
+      fechaNacimiento: ['', [noFutureDateValidator()]],
+      colegiatura: ['', [Validators.maxLength(20), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
       rolId: ['', Validators.required],
       especialidadesIds: [[]]
     });
@@ -130,7 +132,10 @@ export class AdministracionTrabajadoresComponent implements OnInit {
   }
 
   guardarTrabajador() {
-    if (this.trabajadorForm.invalid) return;
+    if (this.trabajadorForm.invalid) {
+      this.trabajadorForm.markAllAsTouched();
+      return;
+    }
     if (this.isEditMode && this.idSeleccionado) {
       this.trabajadorService.actualizar(this.idSeleccionado, this.trabajadorForm.value).subscribe({
         next: () => {
@@ -213,5 +218,14 @@ export class AdministracionTrabajadoresComponent implements OnInit {
     this.trabajadorForm.reset();
     this.isEditMode = false;
     this.especialidadesSeleccionadasIds = [];
+  }
+
+  campoInvalido(nombre: string): boolean {
+    const control = this.trabajadorForm.get(nombre);
+    return !!control && control.invalid && (control.touched || control.dirty);
+  }
+
+  mensajeCampo(nombre: string, etiqueta: string): string {
+    return controlErrorMessage(this.trabajadorForm.get(nombre), etiqueta);
   }
 }

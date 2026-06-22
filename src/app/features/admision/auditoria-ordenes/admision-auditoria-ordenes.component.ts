@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
 import { OrdenEmergenciaResponse, PageResponse } from '../../../core/model/admision.models';
 import { environment } from '../../../../environments/environment';
+import { fechaHoyIso } from '../../../core/validators/form-validations';
 
 interface FiltrosAuditoriaOrdenes {
   desde: string;
@@ -32,6 +33,7 @@ export class AdmisionAuditoriaOrdenesComponent implements OnInit {
   resultado = signal<PageResponse<OrdenEmergenciaResponse>>(this.resultadoVacio());
   cargando = signal(false);
   errorMensaje = signal('');
+  readonly fechaMaxima = fechaHoyIso();
 
   ordenes = computed(() => this.resultado().contenido);
   totalElementos = computed(() => this.resultado().totalElementos);
@@ -86,6 +88,10 @@ export class AdmisionAuditoriaOrdenesComponent implements OnInit {
   private buscar(pagina: number): void {
     if (this.filtros.desde && this.filtros.hasta && this.filtros.desde > this.filtros.hasta) {
       this.errorMensaje.set('La fecha Desde no puede ser mayor que la fecha Hasta.');
+      return;
+    }
+    if ((this.filtros.desde && this.filtros.desde > this.fechaMaxima) || (this.filtros.hasta && this.filtros.hasta > this.fechaMaxima)) {
+      this.errorMensaje.set('Las fechas de auditoria no pueden estar en el futuro.');
       return;
     }
 

@@ -146,6 +146,11 @@ export class HorariosMedicosComponent implements OnInit {
       this.error.set('Seleccione especialidad, medico, al menos un dia y horario.');
       return;
     }
+    const errorHorario = this.validarHorario(this.horaInicio, this.horaFin);
+    if (errorHorario) {
+      this.error.set(errorHorario);
+      return;
+    }
     this.limpiarMensajes();
     this.crearFechas(this.fechasSeleccionadas());
   }
@@ -236,6 +241,11 @@ export class HorariosMedicosComponent implements OnInit {
     const turno = this.turnoEditando();
     if (!turno || !this.editEspecialidadId || !this.editMedicoId || !this.editFecha || !this.editHoraInicio || !this.editHoraFin) {
       this.error.set('Complete especialidad, medico, fecha y horario para editar.');
+      return;
+    }
+    const errorHorario = this.validarHorario(this.editHoraInicio, this.editHoraFin);
+    if (errorHorario) {
+      this.error.set(errorHorario);
       return;
     }
     this.limpiarMensajes();
@@ -394,5 +404,28 @@ export class HorariosMedicosComponent implements OnInit {
     return error?.error?.mensaje
       ?? error?.message
       ?? 'No se pudo crear el turno.';
+  }
+
+  private validarHorario(inicio: string, fin: string): string {
+    if (!inicio || !fin) return 'Ingrese hora de inicio y fin.';
+    if (!/^\d{2}:\d{2}$/.test(inicio) || !/^\d{2}:\d{2}$/.test(fin)) {
+      return 'El horario debe tener formato HH:mm.';
+    }
+
+    const inicioMin = this.minutos(inicio);
+    let finMin = this.minutos(fin);
+    if (finMin <= inicioMin) finMin += 24 * 60;
+
+    const duracion = finMin - inicioMin;
+    if (duracion < 30) return 'El turno debe durar al menos 30 minutos.';
+    if (duracion > 12 * 60) return 'El turno no puede superar 12 horas.';
+    if (inicioMin % 30 !== 0 || finMin % 30 !== 0) return 'Use bloques de 30 minutos.';
+
+    return '';
+  }
+
+  private minutos(hora: string): number {
+    const [hh, mm] = hora.split(':').map(Number);
+    return hh * 60 + mm;
   }
 }

@@ -10,6 +10,7 @@ import {
   CategoriaResponse,
   HistorialMedicamento
 } from '../../../core/model/farmacia.models';
+import { controlErrorMessage, decimalMoneyValidator, integerValidator } from '../../../core/validators/form-validations';
 
 @Component({
   selector: 'app-farmacia-inventario',
@@ -81,15 +82,15 @@ export class FarmaciaInventarioComponent implements OnInit {
     this.medForm = this.fb.group({
       codigo:         [med?.codigo ?? '',    [Validators.maxLength(30)]],
       nombre:         [med?.nombre ?? '',    [Validators.required, Validators.maxLength(200)]],
-      nombreGenerico: [med?.nombreGenerico ?? ''],
-      descripcion:    [med?.descripcion ?? ''],
+      nombreGenerico: [med?.nombreGenerico ?? '', Validators.maxLength(200)],
+      descripcion:    [med?.descripcion ?? '', Validators.maxLength(500)],
       categoriaId:    [med?.categoriaId ?? '', Validators.required],
       presentacion:   [med?.presentacion ?? '', Validators.maxLength(100)],
       laboratorio:    [med?.laboratorio ?? '', Validators.maxLength(150)],
-      precioUnitario: [med?.precioUnitario ?? '', [Validators.required, Validators.min(0.01)]],
-      stockInicial:   [0,  Validators.min(0)],
+      precioUnitario: [med?.precioUnitario ?? '', [Validators.required, Validators.min(0.01), decimalMoneyValidator()]],
+      stockInicial:   [0,  [Validators.required, Validators.min(0), integerValidator()]],
       stockActual:    [{value: med?.stockActual ?? 0, disabled: true}], // Campo de solo lectura para edición
-      stockMinimo:    [med?.stockMinimo ?? 0, Validators.min(0)],
+      stockMinimo:    [med?.stockMinimo ?? 0, [Validators.min(0), integerValidator()]],
       requiereReceta: [med?.requiereReceta ?? false]
     });
   }
@@ -236,7 +237,10 @@ export class FarmaciaInventarioComponent implements OnInit {
   }
 
  guardarMedicamento(): void {
-    if (this.medForm.invalid) return;
+    if (this.medForm.invalid) {
+      this.medForm.markAllAsTouched();
+      return;
+    }
     this.guardando.set(true);
 
     const dtoTemporal: any = {
@@ -284,7 +288,10 @@ export class FarmaciaInventarioComponent implements OnInit {
   }
 
   guardarNuevoStock(): void {
-    if (!this.medStockSeleccionado || this.cantidadStockAgregar <= 0) return;
+    if (!this.medStockSeleccionado || !Number.isInteger(Number(this.cantidadStockAgregar)) || this.cantidadStockAgregar <= 0) {
+      this.mostrarMensajeError('La cantidad de stock debe ser un numero entero mayor que cero.');
+      return;
+    }
     this.guardando.set(true);
 
     this.medService.agregarStock(this.medStockSeleccionado.id, this.cantidadStockAgregar).subscribe({
@@ -303,5 +310,14 @@ export class FarmaciaInventarioComponent implements OnInit {
         this.guardando.set(false);
       }
     });
+  }
+
+  campoInvalido(nombre: string): boolean {
+    const control = this.medForm.get(nombre);
+    return !!control && control.invalid && (control.touched || control.dirty);
+  }
+
+  mensajeCampo(nombre: string, etiqueta: string): string {
+    return controlErrorMessage(this.medForm.get(nombre), etiqueta);
   }
 }

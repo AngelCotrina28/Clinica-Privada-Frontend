@@ -112,22 +112,26 @@
         
         <div class="form-grupo">
           <label>DNI / Documento <span class="requerido">*</span></label>
-          <input type="text" formControlName="dni" placeholder="Ej. 72839401" maxlength="8">
+          <input type="text" formControlName="dni" placeholder="Ej. 72839401" maxlength="8" inputmode="numeric" [class.campo__input--error]="campoInvalido('dni')">
+          @if (campoInvalido('dni')) { <span class="campo__error">{{ mensajeCampo('dni', 'DNI') }}</span> }
         </div>
 
         <div class="form-grupo">
           <label>Nombres y Apellidos <span class="requerido">*</span></label>
-          <input type="text" formControlName="nombreCompleto" placeholder="Nombre completo">
+          <input type="text" formControlName="nombreCompleto" placeholder="Nombre completo" maxlength="150" [class.campo__input--error]="campoInvalido('nombreCompleto')">
+          @if (campoInvalido('nombreCompleto')) { <span class="campo__error">{{ mensajeCampo('nombreCompleto', 'Nombres y apellidos') }}</span> }
         </div>
 
         <div class="form-grupo">
           <label>Teléfono / Móvil</label>
-          <input type="tel" formControlName="telefono" placeholder="Ej. 987654321">
+          <input type="tel" formControlName="telefono" placeholder="Ej. 987654321" maxlength="15" inputmode="numeric" [class.campo__input--error]="campoInvalido('telefono')">
+          @if (campoInvalido('telefono')) { <span class="campo__error">{{ mensajeCampo('telefono', 'Telefono') }}</span> }
         </div>
 
         <div class="form-grupo">
           <label>Fecha de Nacimiento</label>
-          <input type="date" formControlName="fechaNacimiento">
+          <input type="date" formControlName="fechaNacimiento" [max]="fechaMaximaNacimiento" [class.campo__input--error]="campoInvalido('fechaNacimiento')">
+          @if (campoInvalido('fechaNacimiento')) { <span class="campo__error">{{ mensajeCampo('fechaNacimiento', 'Fecha de nacimiento') }}</span> }
         </div>
 
         <div class="form-seccion-titulo">Información Profesional</div>
@@ -151,11 +155,14 @@
             N° Colegiatura (CMP/CEP) 
             <span class="requerido" *ngIf="trabajadorForm.get('rolId')?.value === '2'">*</span>
           </label>
-          <input type="text" formControlName="colegiatura" placeholder="Ej. 123456">
+          <input type="text" formControlName="colegiatura" placeholder="Ej. CMP123456" maxlength="20" [class.campo__input--error]="campoInvalido('colegiatura')">
           
           <small class="text-danger" *ngIf="trabajadorForm.get('colegiatura')?.invalid && trabajadorForm.get('colegiatura')?.touched">
             La colegiatura es obligatoria para médicos.
           </small>
+          @if (campoInvalido('colegiatura')) {
+            <span class="campo__error">{{ mensajeCampo('colegiatura', 'Colegiatura') }}</span>
+          }
         </div>
 
         <div class="form-seccion-especialidades" *ngIf="trabajadorForm.get('rolId')?.value === '2'">
@@ -184,7 +191,9 @@
           <input
             type="password"
             formControlName="password"
+            [class.campo__input--error]="campoInvalido('password')"
             [placeholder]="isEditMode ? 'Dejar en blanco para mantener la actual' : 'Mínimo 6 caracteres'">
+          @if (campoInvalido('password')) { <span class="campo__error">{{ mensajeCampo('password', 'Contraseña') }}</span> }
         </div>
 
         <div class="modal-footer" style="grid-column: span 2; margin-top: 1rem;">

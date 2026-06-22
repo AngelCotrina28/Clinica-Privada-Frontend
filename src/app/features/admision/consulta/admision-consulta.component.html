@@ -182,8 +182,10 @@
                     type="tel"
                     class="campo__input"
                     name="telefono"
-                    [(ngModel)]="nuevaHistoria.telefono"
+                    [ngModel]="nuevaHistoria.telefono"
+                    (ngModelChange)="actualizarTelefonoNueva($event)"
                     maxlength="15"
+                    inputmode="numeric"
                     placeholder="987 654 321" />
                 </div>
 
@@ -193,6 +195,7 @@
                     type="email"
                     class="campo__input"
                     name="email"
+                    email
                     [(ngModel)]="nuevaHistoria.email"
                     #emailF="ngModel"
                     [class.campo__input--error]="emailF.invalid && emailF.touched" />
@@ -207,6 +210,7 @@
                     type="date"
                     class="campo__input"
                     name="fechaNacimiento"
+                    [max]="fechaMaximaNacimiento"
                     [(ngModel)]="nuevaHistoria.fechaNacimiento" />
                 </div>
 
