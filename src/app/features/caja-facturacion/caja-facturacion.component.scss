@@ -1,31 +1,306 @@
 :host {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   overflow-y: auto;
 }
 
-main section { margin-bottom: 3.5rem; }
-
-.col-centrada { text-align: center; }
-
-.fieldset-operaciones {
-  border: none;
-  padding: 0;
-  margin: 0 0 4rem 0;
+main section {
+  margin-bottom: 2rem;
 }
 
-.total-pago {
-  margin: 1rem 0;
-  font-size: 1rem;
-  color: var(--color-texto-titulo);
+.alerta {
+  border-radius: 7px;
+  font-weight: 650;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+}
 
-  strong { color: var(--color-acento); font-size: 1.1rem; }
+.alerta-ok {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.alerta-error {
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  color: #b42318;
+}
+
+.panel-turno,
+.panel-pago,
+.resultado-cuadre {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #dbe4ef;
+  border-radius: 8px;
+  box-shadow: var(--sombra-suave, 0 4px 12px rgba(0, 0, 0, 0.05));
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.25rem;
+}
+
+.estado-caja {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  span:last-child {
+    color: #64748b;
+  }
+}
+
+.texto-suave {
+  color: #64748b;
+  margin: 0;
+}
+
+.form-inline,
+.caja-filtros,
+.formulario-pago,
+.formulario-cuadre {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.resumen-caja {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+
+  article {
+    background: #f8fafc;
+    border: 1px solid #dbe4ef;
+    border-radius: 8px;
+    display: grid;
+    gap: 0.35rem;
+    min-height: 76px;
+    padding: 0.9rem;
+  }
+
+  span {
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  strong {
+    color: #1a3b5d;
+    font-size: 1.05rem;
+  }
+}
+
+.campo-filtro {
+  display: grid;
+  flex: 0 1 190px;
+  gap: 0.35rem;
+
+  label {
+    color: #334155;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  input,
+  select {
+    background: #fcfcfc;
+    border: 1px solid #dbe4ef;
+    border-radius: 6px;
+    font: inherit;
+    min-height: 42px;
+    padding: 0.6rem 0.75rem;
+    width: 100%;
+
+    &:focus {
+      background: #fff;
+      border-color: var(--color-acento, #2f6fae);
+      box-shadow: 0 0 0 3px rgba(47, 111, 174, 0.12);
+      outline: none;
+    }
+  }
+}
+
+.campo-grow {
+  flex: 1 1 260px;
+}
+
+.btn-accion {
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+  border-radius: 7px;
+  color: #245987;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  min-height: 42px;
+  padding: 0.6rem 0.95rem;
+
+  &:hover:not(:disabled) {
+    background: #eef6ff;
+    border-color: #bdd4ea;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.btn-primary {
+  background: var(--color-acento, #2f6fae);
+  border-color: var(--color-acento, #2f6fae);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #245987;
+    border-color: #245987;
+  }
+}
+
+.badge {
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 750;
+  padding: 0.35rem 0.75rem;
+}
+
+.badge-activo {
+  background: #ecfdf5;
+  color: #166534;
+}
+
+.badge-cuadrada {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.tabla-responsive {
+  overflow-x: auto;
+}
+
+table {
+  min-width: 880px;
+}
+
+.col-check {
+  text-align: center;
+  width: 52px;
+}
+
+.col-centrada {
+  text-align: center;
+}
+
+.col-derecha {
+  text-align: right;
+}
+
+td span {
+  color: #64748b;
+  font-size: 0.84rem;
 }
 
 input[type="checkbox"] {
-  width: 1.2rem;
-  height: 1.2rem;
-  cursor: pointer;
-  accent-color: var(--color-acento);
+  accent-color: var(--color-acento, #2f6fae);
+  height: 1.1rem;
+  width: 1.1rem;
+}
+
+.total-pago {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 170px;
+
+  span {
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  strong {
+    color: #1a3b5d;
+    font-size: 1.35rem;
+  }
+}
+
+.formulario-pago {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.comprobante-emitido {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+  border-radius: 8px;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+
+  span,
+  em {
+    color: #64748b;
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  strong {
+    color: #1a3b5d;
+  }
+}
+
+.resultado-cuadre {
+  justify-content: flex-start;
+
+  span {
+    color: #1a3b5d;
+    font-weight: 750;
+  }
+
+  strong {
+    color: var(--color-acento, #2f6fae);
+    font-size: 1.2rem;
+  }
+
+  p {
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .panel-turno,
+  .panel-pago,
+  .resultado-cuadre {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .resumen-caja {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .formulario-pago {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .resumen-caja {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-filtro,
+  .form-inline,
+  .caja-filtros,
+  .formulario-pago,
+  .formulario-cuadre {
+    width: 100%;
+  }
 }

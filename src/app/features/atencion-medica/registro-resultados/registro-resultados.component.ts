@@ -146,7 +146,7 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
       },
       error: (err: any) => {
         console.error('Error al guardar:', err);
-        alert('Ocurrió un error al procesar la solicitud.');
+        alert(this.obtenerMensajeError(err, 'Ocurrio un error al guardar la atencion.'));
         this.cargando = false;
       }
     });
@@ -183,6 +183,10 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
   }
 
   seleccionarMedicamento(med: MedicamentoOpcion) {
+    if (!med.activo) {
+      alert('No se puede recetar un medicamento inactivo.');
+      return;
+    }
     this.medicamentoSeleccionado = med;
     this.medicamentoInput = med.nombre;
     this.medicamentosFiltrados = [];
@@ -257,5 +261,12 @@ export class RegistroResultadosComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private obtenerMensajeError(error: any, fallback: string): string {
+    return error?.error?.mensaje
+      ?? error?.error?.message
+      ?? error?.message
+      ?? fallback;
   }
 }
