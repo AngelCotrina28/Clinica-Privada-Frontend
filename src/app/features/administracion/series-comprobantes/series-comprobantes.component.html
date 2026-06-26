@@ -3,12 +3,39 @@
 <main class="contenedor">
   <h2 class="subtitulo-seccion">Series de Comprobantes</h2>
 
+  @if (mensaje) { <div class="alerta exito">{{ mensaje }}</div> }
+  @if (error) { <div class="alerta error">{{ error }}</div> }
+
   <div class="caja-filtros">
-    <div class="grupo-busqueda">
-      <input type="text" placeholder="Buscar por serie o tipo..." disabled>
+    <div class="grupo-busqueda-filtros">
+      <div class="campo-filtro campo-filtro--busqueda">
+        <label for="buscar-serie">Buscar serie</label>
+        <input
+          id="buscar-serie"
+          type="text"
+          class="input-busqueda"
+          placeholder="Prefijo, tipo o numero"
+          [(ngModel)]="busqueda">
+      </div>
+
+      <div class="campo-filtro campo-filtro--tipo">
+        <label for="filtrar-tipo">Tipo</label>
+        <select id="filtrar-tipo" class="select-filtro" [(ngModel)]="tipoFiltro">
+          <option value="">Todos</option>
+          @for (tipo of tiposComprobante; track tipo.value) {
+            <option [value]="tipo.value">{{ tipo.label }}</option>
+          }
+        </select>
+      </div>
+
+      <label class="check-filtro">
+        <input type="checkbox" [(ngModel)]="mostrarInactivas">
+        <span>Mostrar inactivas</span>
+      </label>
     </div>
+
     <div class="grupo-acciones">
-      <button type="button" class="btn-accion btn-primary" disabled>+ Nueva Serie</button>
+      <button type="button" class="btn-accion btn-primary" (click)="abrirModalCrear()">+ Nueva Serie</button>
     </div>
   </div>
 
@@ -17,18 +44,113 @@
       <thead>
         <tr>
           <th>Tipo Documento</th>
-          <th>Serie</th>
-          <th>Número Actual</th>
-          <th>Punto de Venta</th>
+          <th>Prefijo</th>
+          <th>Correlativo Actual</th>
+          <th>Siguiente Numero</th>
           <th>Estado</th>
-          <th>Acciones</th>
+          <th class="text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td colspan="6" class="col-centrada">No hay series cargadas.</td>
-        </tr>
+        @if (cargando) {
+          <tr>
+            <td colspan="6" class="text-center">Cargando series...</td>
+          </tr>
+        } @else {
+          @for (serie of seriesFiltradas; track serie.id) {
+            <tr>
+              <td>{{ tipoLabel(serie.tipoComprobante) }}</td>
+              <td><strong>{{ serie.prefijo }}</strong></td>
+              <td>{{ serie.correlativoActual }}</td>
+              <td><code>{{ serie.siguienteNumero }}</code></td>
+              <td>
+                <span class="badge" [ngClass]="serie.activo ? 'badge-activo' : 'badge-inactivo'">
+                  {{ serie.activo ? 'Activa' : 'Inactiva' }}
+                </span>
+              </td>
+              <td class="td-acciones">
+                <button type="button" class="btn-tabla btn-editar" (click)="prepararEdicion(serie)">
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  class="btn-tabla"
+                  [ngClass]="serie.activo ? 'btn-desactivar' : 'btn-activar'"
+                  (click)="cambiarEstado(serie)">
+                  {{ serie.activo ? 'Desactivar' : 'Reactivar' }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center">No hay series para mostrar.</td>
+            </tr>
+          }
+        }
       </tbody>
     </table>
   </div>
 </main>
+
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal-contenedor">
+    <div class="modal-header">
+      <h3 class="modal-titulo">{{ isEditMode ? 'Editar Serie' : 'Registrar Serie' }}</h3>
+      <button type="button" class="btn-cerrar-modal" (click)="cerrarModal()">x</button>
+    </div>
+
+    <form class="modal-body formulario-grid" [formGroup]="serieForm" (ngSubmit)="guardar()">
+      <div class="form-grupo">
+        <label>Tipo <span class="requerido">*</span></label>
+        <select formControlName="tipoComprobante" (change)="sugerirPrefijo()">
+          @for (tipo of tiposComprobante; track tipo.value) {
+            <option [value]="tipo.value">{{ tipo.label }}</option>
+          }
+        </select>
+        @if (campoInvalido('tipoComprobante')) {
+          <span class="campo__error">{{ mensajeCampo('tipoComprobante', 'Tipo') }}</span>
+        }
+      </div>
+
+      <div class="form-grupo">
+        <label>Prefijo <span class="requerido">*</span></label>
+        <input
+          type="text"
+          formControlName="prefijo"
+          maxlength="4"
+          placeholder="B001"
+          (input)="normalizarPrefijo()"
+          [class.campo__input--error]="campoInvalido('prefijo')">
+        @if (campoInvalido('prefijo')) {
+          <span class="campo__error">{{ mensajeCampo('prefijo', 'Prefijo') }}</span>
+        }
+      </div>
+
+      <div class="form-grupo">
+        <label>Numero Inicial <span class="requerido">*</span></label>
+        <input
+          type="number"
+          formControlName="numeroInicial"
+          min="1"
+          max="999999"
+          step="1"
+          [class.campo__input--error]="campoInvalido('numeroInicial')">
+        @if (campoInvalido('numeroInicial')) {
+          <span class="campo__error">{{ mensajeCampo('numeroInicial', 'Numero inicial') }}</span>
+        }
+      </div>
+
+      <label class="check-form">
+        <input type="checkbox" formControlName="activo">
+        <span>Activa</span>
+      </label>
+
+      <div class="modal-footer form-grupo--full">
+        <button type="button" class="btn-accion btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-accion btn-primary" [disabled]="serieForm.invalid">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

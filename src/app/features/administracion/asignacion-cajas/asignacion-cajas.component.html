@@ -1,33 +1,226 @@
 <app-header titulo="Modulo de Administracion" />
 
 <main class="contenedor">
-  <h2 class="subtitulo-seccion">Asignación de Cajas</h2>
+  @if (mensaje) {
+    <div class="alerta alerta-ok">{{ mensaje }}</div>
+  }
+  @if (error) {
+    <div class="alerta alerta-error">{{ error }}</div>
+  }
 
-  <div class="caja-filtros">
-    <div class="grupo-busqueda">
-      <input type="text" placeholder="Buscar por cajero o caja..." disabled>
-    </div>
-    <div class="grupo-acciones">
-      <button type="button" class="btn-accion btn-primary" disabled>+ Nueva Asignacion</button>
-    </div>
-  </div>
+  <section>
+    <h2 class="subtitulo-seccion">Asignacion de Cajas</h2>
 
-  <div class="tabla-responsive">
-    <table>
-      <thead>
-        <tr>
-          <th>Cajero</th>
-          <th>Caja</th>
-          <th>Fecha Asignación</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="5" class="col-centrada">No hay asignaciones cargadas.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <form class="panel-formulario" (ngSubmit)="guardar()">
+      <div class="form-grupo">
+        <label for="cajero">Cajero</label>
+        <select id="cajero" name="cajeroId" [(ngModel)]="form.cajeroId">
+          <option [ngValue]="null">Seleccione</option>
+          @for (cajero of cajeros; track cajero.id) {
+            <option [ngValue]="cajero.id">{{ cajero.nombreCompleto }} ({{ cajero.username }})</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-grupo">
+        <label for="caja_existente">Caja existente</label>
+        <select id="caja_existente" name="cajaId" [(ngModel)]="form.cajaId">
+          <option [ngValue]="null">Nueva caja</option>
+          @for (caja of cajas; track caja.id) {
+            <option [ngValue]="caja.id">{{ caja.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-grupo">
+        <label for="caja_nombre">Nombre de caja</label>
+        <input id="caja_nombre" name="cajaNombre" type="text" maxlength="100" [(ngModel)]="form.cajaNombre">
+      </div>
+
+      <div class="form-grupo">
+        <label for="caja_ubicacion">Ubicacion</label>
+        <input id="caja_ubicacion" name="cajaUbicacion" type="text" maxlength="200" [(ngModel)]="form.cajaUbicacion">
+      </div>
+
+      <div class="form-grupo">
+        <label for="serie_boleta">Serie boleta</label>
+        <select id="serie_boleta" name="serieBoletaId" [(ngModel)]="form.serieBoletaId">
+          <option [ngValue]="null">Seleccione</option>
+          @for (serie of seriesBoleta; track serie.id) {
+            <option [ngValue]="serie.id">{{ serie.prefijo }} - sig. {{ serie.siguienteNumero }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-grupo">
+        <label for="serie_factura">Serie factura</label>
+        <select id="serie_factura" name="serieFacturaId" [(ngModel)]="form.serieFacturaId">
+          <option [ngValue]="null">Seleccione</option>
+          @for (serie of seriesFactura; track serie.id) {
+            <option [ngValue]="serie.id">{{ serie.prefijo }} - sig. {{ serie.siguienteNumero }}</option>
+          }
+        </select>
+      </div>
+
+      <label class="check-form">
+        <input type="checkbox" name="activo" [(ngModel)]="form.activo">
+        Activa
+      </label>
+
+      <div class="acciones-form">
+        <button type="submit" class="btn-accion btn-primary">
+          {{ editandoId ? 'Actualizar' : 'Registrar' }}
+        </button>
+        @if (editandoId) {
+          <button type="button" class="btn-accion" (click)="cancelarEdicion()">Cancelar</button>
+        }
+      </div>
+    </form>
+
+    <div class="caja-filtros">
+      <div class="grupo-busqueda">
+        <input
+          type="text"
+          placeholder="Buscar por cajero, caja o serie"
+          [(ngModel)]="busqueda">
+      </div>
+      <label class="check-form">
+        <input type="checkbox" [(ngModel)]="mostrarInactivas">
+        Mostrar inactivas
+      </label>
+    </div>
+
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Cajero</th>
+            <th>Caja</th>
+            <th>Boleta</th>
+            <th>Factura</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (asignacion of asignacionesFiltradas; track asignacion.id) {
+            <tr>
+              <td><strong>{{ asignacion.cajeroNombre }}</strong><br><span>{{ asignacion.cajeroUsername }}</span></td>
+              <td>{{ asignacion.cajaNombre }}<br><span>{{ asignacion.cajaUbicacion || 'Sin ubicacion' }}</span></td>
+              <td>{{ asignacion.serieBoleta }}</td>
+              <td>{{ asignacion.serieFactura }}</td>
+              <td>{{ asignacion.fechaAsignacion | date:'short' }}</td>
+              <td>
+                <span class="badge" [class.badge-activo]="asignacion.activo" [class.badge-inactivo]="!asignacion.activo">
+                  {{ asignacion.activo ? 'Activa' : 'Inactiva' }}
+                </span>
+              </td>
+              <td class="td-acciones">
+                <button type="button" class="btn-tabla" (click)="prepararEdicion(asignacion)">Editar</button>
+                <button
+                  type="button"
+                  class="btn-tabla"
+                  [class.btn-desactivar]="asignacion.activo"
+                  [class.btn-activar]="!asignacion.activo"
+                  (click)="cambiarEstado(asignacion)">
+                  {{ asignacion.activo ? 'Desactivar' : 'Activar' }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="col-centrada">No hay asignaciones cargadas.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="subtitulo-seccion">Cierre de Cajas</h2>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Caja</th>
+            <th>Cajero</th>
+            <th>Apertura</th>
+            <th class="col-derecha">Teorico efectivo</th>
+            <th class="col-derecha">Contado</th>
+            <th class="col-derecha">Diferencia</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cuadre of cuadresPendientes; track cuadre.id) {
+            <tr>
+              <td>{{ cuadre.cajaNombre }}</td>
+              <td>{{ cuadre.cajeroNombre }}</td>
+              <td>{{ cuadre.fechaApertura | date:'short' }}</td>
+              <td class="col-derecha">S/ {{ cuadre.totalTeorico | number:'1.2-2' }}</td>
+              <td class="col-derecha">S/ {{ cuadre.montoCierre | number:'1.2-2' }}</td>
+              <td class="col-derecha">S/ {{ cuadre.diferencia | number:'1.2-2' }}</td>
+              <td>
+                <button type="button" class="btn-tabla btn-activar" (click)="cerrarCaja(cuadre)">Cerrar</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="col-centrada">No hay cajas cuadradas pendientes de cierre.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="subtitulo-seccion">Anulacion de Comprobantes</h2>
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Tipo</th>
+            <th>Paciente</th>
+            <th>Fecha</th>
+            <th class="col-derecha">Total</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (comprobante of comprobantes; track comprobante.id) {
+            <tr>
+              <td><strong>{{ comprobante.numeroCompleto }}</strong></td>
+              <td>{{ comprobante.tipoComprobante }}</td>
+              <td>{{ comprobante.pacienteNombre }}<br><span>{{ comprobante.pacienteDni }}</span></td>
+              <td>{{ comprobante.fechaEmision | date:'short' }}</td>
+              <td class="col-derecha">S/ {{ comprobante.total | number:'1.2-2' }}</td>
+              <td>
+                <span class="badge" [class.badge-activo]="comprobante.estado === 'EMITIDO'" [class.badge-inactivo]="comprobante.estado === 'ANULADO'">
+                  {{ comprobante.estado }}
+                </span>
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn-tabla btn-desactivar"
+                  [disabled]="comprobante.estado === 'ANULADO'"
+                  (click)="anularComprobante(comprobante)">
+                  Anular
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="col-centrada">No hay comprobantes emitidos.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
 </main>

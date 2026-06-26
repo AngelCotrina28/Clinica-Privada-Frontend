@@ -1,96 +1,241 @@
 <app-header titulo="Modulo Financiero y Caja" />
 
 <main class="contenedor">
+  @if (mensaje) {
+    <div class="alerta alerta-ok">{{ mensaje }}</div>
+  }
+  @if (error) {
+    <div class="alerta alerta-error">{{ error }}</div>
+  }
+
+  <section class="panel-turno">
+    <div>
+      <h2 class="subtitulo-seccion">Turno de Caja</h2>
+      @if (aperturaActual) {
+        <div class="estado-caja">
+          <span class="badge" [class.badge-activo]="cajaAbierta" [class.badge-cuadrada]="cajaCuadrada">
+            {{ aperturaActual.estado }}
+          </span>
+          <strong>{{ aperturaActual.cajaNombre }}</strong>
+          <span>{{ aperturaActual.cajeroNombre }}</span>
+        </div>
+      } @else {
+        <p class="texto-suave">Sin caja abierta.</p>
+      }
+    </div>
+
+    @if (!aperturaActual) {
+      <form class="form-inline" (ngSubmit)="abrirCaja()">
+        <label for="monto_inicial">Monto inicial</label>
+        <input
+          id="monto_inicial"
+          name="montoInicial"
+          type="number"
+          min="0"
+          step="0.01"
+          [(ngModel)]="montoInicial">
+        <button type="submit" class="btn-accion btn-primary" [disabled]="cargandoApertura">
+          Abrir caja
+        </button>
+      </form>
+    }
+  </section>
+
+  @if (aperturaActual) {
+    <section class="resumen-caja">
+      <article>
+        <span>Fondo inicial</span>
+        <strong>S/ {{ aperturaActual.montoInicial | number:'1.2-2' }}</strong>
+      </article>
+      <article>
+        <span>Efectivo</span>
+        <strong>S/ {{ aperturaActual.totalEfectivo | number:'1.2-2' }}</strong>
+      </article>
+      <article>
+        <span>Tarjetas</span>
+        <strong>S/ {{ aperturaActual.totalTarjetas | number:'1.2-2' }}</strong>
+      </article>
+      <article>
+        <span>Yape/Plin</span>
+        <strong>S/ {{ aperturaActual.totalBilleteras | number:'1.2-2' }}</strong>
+      </article>
+      <article>
+        <span>Teorico efectivo</span>
+        <strong>S/ {{ aperturaActual.totalTeorico | number:'1.2-2' }}</strong>
+      </article>
+    </section>
+  }
+
   <section>
-    <h2 class="subtitulo-seccion">Facturacion y Cobranza</h2>
+    <h2 class="subtitulo-seccion">Busqueda de Deudas</h2>
 
-    <form>
-      <fieldset>
-        <legend>Busqueda de Deudas</legend>
+    <form class="caja-filtros" (ngSubmit)="buscarDeudas()">
+      <div class="campo-filtro">
+        <label for="dni_deuda">DNI paciente</label>
+        <input
+          id="dni_deuda"
+          name="dniBusqueda"
+          class="input-busqueda"
+          type="text"
+          maxlength="12"
+          [(ngModel)]="dniBusqueda">
+      </div>
 
-        <label for="dni_deuda">DNI Paciente:</label>
-        <input type="text" id="dni_deuda">
-
-        <label for="concepto_deuda">Filtrar por Concepto:</label>
-        <select id="concepto_deuda">
+      <div class="campo-filtro">
+        <label for="concepto_deuda">Concepto</label>
+        <select
+          id="concepto_deuda"
+          name="conceptoFiltro"
+          class="select-filtro"
+          [(ngModel)]="conceptoFiltro">
           @for (c of conceptosDeuda; track c.value) {
             <option [value]="c.value">{{ c.label }}</option>
           }
         </select>
+      </div>
 
-        <button type="button">Buscar Deudas</button>
-      </fieldset>
+      <button type="submit" class="btn-accion btn-primary" [disabled]="cargandoDeudas">
+        Buscar
+      </button>
     </form>
 
-    <h3 class="subtitulo-seccion">Estado de Cuenta del Paciente</h3>
     <div class="tabla-responsive">
       <table>
         <thead>
           <tr>
+            <th class="col-check">
+              <input
+                type="checkbox"
+                [checked]="todasSeleccionadas"
+                [disabled]="!deudas.length"
+                (change)="alternarTodas($event)">
+            </th>
+            <th>Orden</th>
             <th>Concepto</th>
-            <th>Monto (S/)</th>
-            <th class="col-centrada">Seleccionar para Pago</th>
+            <th>Origen</th>
+            <th>Paciente</th>
+            <th class="col-derecha">Monto</th>
           </tr>
         </thead>
         <tbody>
-          @for (deuda of deudas; track deuda.concepto) {
+          @for (deuda of deudas; track deuda.id) {
             <tr>
-              <td>{{ deuda.concepto }}</td>
-              <td>{{ deuda.monto | number:'1.2-2' }}</td>
-              <td class="col-centrada">
+              <td class="col-check">
                 <input
                   type="checkbox"
                   [(ngModel)]="deuda.checked"
                   [ngModelOptions]="{ standalone: true }">
               </td>
+              <td><strong>{{ deuda.numeroOrden }}</strong></td>
+              <td>{{ deuda.conceptoLabel }}</td>
+              <td>{{ deuda.origenCodigo }}</td>
+              <td>{{ deuda.pacienteNombre }}<br><span>{{ deuda.pacienteDni }}</span></td>
+              <td class="col-derecha">S/ {{ deuda.monto | number:'1.2-2' }}</td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="3" class="col-centrada">No hay deudas cargadas.</td>
+              <td colspan="6" class="col-centrada">No hay deudas pendientes cargadas.</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
+  </section>
 
-    @if (totalSeleccionado > 0) {
-      <p class="total-pago">
-        Total a pagar: <strong>S/ {{ totalSeleccionado | number:'1.2-2' }}</strong>
-      </p>
-    }
+  <section class="panel-pago">
+    <div class="total-pago">
+      <span>Total a pagar</span>
+      <strong>S/ {{ totalSeleccionado | number:'1.2-2' }}</strong>
+    </div>
 
-    <form>
-      <fieldset>
-        <legend>Procesamiento de Pago</legend>
-
-        <label for="metodo_pago">Metodo de Pago:</label>
-        <select id="metodo_pago">
+    <form class="formulario-pago" (ngSubmit)="emitirComprobante()">
+      <div class="campo-filtro">
+        <label for="metodo_pago">Metodo</label>
+        <select id="metodo_pago" name="metodoPago" [(ngModel)]="metodoPago">
           @for (m of metodosPago; track m.value) {
             <option [value]="m.value">{{ m.label }}</option>
           }
         </select>
+      </div>
 
-        <label for="tipo_comprobante">Tipo de Comprobante:</label>
-        <select id="tipo_comprobante">
+      <div class="campo-filtro">
+        <label for="tipo_comprobante">Comprobante</label>
+        <select id="tipo_comprobante" name="tipoComprobante" [(ngModel)]="tipoComprobante">
           @for (t of tiposComprobante; track t.value) {
             <option [value]="t.value">{{ t.label }}</option>
           }
         </select>
+      </div>
 
-        <button type="button">Emitir Comprobante</button>
-      </fieldset>
+      <div class="campo-filtro">
+        <label for="ruc_dni">RUC/DNI</label>
+        <input id="ruc_dni" name="rucDni" type="text" maxlength="15" [(ngModel)]="rucDni">
+      </div>
+
+      <div class="campo-filtro campo-grow">
+        <label for="razon_social">Nombre o razon social</label>
+        <input id="razon_social" name="razonSocialNombre" type="text" maxlength="200" [(ngModel)]="razonSocialNombre">
+      </div>
+
+      <div class="campo-filtro campo-grow">
+        <label for="referencia">Referencia</label>
+        <input id="referencia" name="referencia" type="text" maxlength="100" [(ngModel)]="referencia">
+      </div>
+
+      <button
+        type="submit"
+        class="btn-accion btn-primary"
+        [disabled]="!cajaAbierta || !deudasSeleccionadas.length || procesandoPago">
+        Emitir comprobante
+      </button>
     </form>
+
+    @if (ultimoComprobante) {
+      <div class="comprobante-emitido">
+        <span>{{ ultimoComprobante.tipoComprobante }}</span>
+        <strong>{{ ultimoComprobante.numeroCompleto }}</strong>
+        <em>S/ {{ ultimoComprobante.total | number:'1.2-2' }}</em>
+      </div>
+    }
   </section>
 
-  <section>
-    <h2 class="subtitulo-seccion">Control de Caja</h2>
-    <form>
-      <fieldset class="grupo-acciones fieldset-operaciones">
-        <legend>Operaciones de Turno</legend>
-        <button type="button">Apertura de Caja</button>
-        <button type="button">Cuadre de Caja</button>
-        <button type="button">Cierre de Caja</button>
-      </fieldset>
-    </form>
-  </section>
+  @if (aperturaActual && cajaAbierta) {
+    <section>
+      <h2 class="subtitulo-seccion">Cuadre de Caja</h2>
+      <form class="formulario-cuadre" (ngSubmit)="cuadrarCaja()">
+        <div class="campo-filtro">
+          <label for="dinero_contado">Dinero fisico contado</label>
+          <input
+            id="dinero_contado"
+            name="dineroContado"
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="dineroContado">
+        </div>
+
+        <div class="campo-filtro campo-grow">
+          <label for="observaciones_cuadre">Observaciones</label>
+          <input
+            id="observaciones_cuadre"
+            name="observacionesCuadre"
+            type="text"
+            maxlength="500"
+            [(ngModel)]="observacionesCuadre">
+        </div>
+
+        <button type="submit" class="btn-accion" [disabled]="procesandoCuadre">
+          Confirmar cuadre
+        </button>
+      </form>
+    </section>
+  }
+
+  @if (aperturaActual && cajaCuadrada) {
+    <section class="resultado-cuadre">
+      <span>{{ estadoDiferencia(aperturaActual) }}</span>
+      <strong>S/ {{ diferenciaAbsoluta(aperturaActual) | number:'1.2-2' }}</strong>
+      <p>La caja queda cuadrada y pendiente de cierre administrativo.</p>
+    </section>
+  }
 </main>
