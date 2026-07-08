@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/header/header.component';
-import { AbrirHistoriaRequest, HistoriaClinicaResponse } from '../../../core/model/admision.models';
+import { ActualizarHistoriaRequest, AbrirHistoriaRequest, HistoriaClinicaResponse } from '../../../core/model/admision.models';
 import { AdmisionService } from '../../../core/services/admision.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { ROLE } from '../../../core/constants/roles';
 import {
   limpiarDocumentoPaciente,
   maxDocumentoPaciente,
@@ -18,6 +20,12 @@ import {
   patronDocumentoPaciente,
   TipoDocumentoPaciente
 } from '../documento-paciente.util';
+
+type HistoriaClinicaEdicion = ActualizarHistoriaRequest & {
+  id: number;
+  numeroHistoria: string;
+  dniPaciente: string;
+};
 
 @Component({
   selector: 'app-admision-historias',
@@ -120,6 +128,61 @@ import {
           }
         </div>
 
+        <div class="bloque">
+          <div class="tabla-cabecera">
+            <h3 class="bloque__titulo">Historias Clinicas Registradas</h3>
+            <button type="button" class="btn btn--ghost btn--sm" (click)="cargarHistorias()" [disabled]="cargandoHistorias()">
+              Actualizar
+            </button>
+          </div>
+
+          @if (cargandoHistorias()) {
+            <div class="cargando-inline">
+              <span class="spinner spinner--azul"></span>
+              Cargando historias clinicas...
+            </div>
+          } @else if (historias().length === 0) {
+            <p class="sin-datos-texto">No hay historias clinicas registradas.</p>
+          } @else {
+            <div class="tabla-responsive">
+              <table class="tabla">
+                <thead>
+                  <tr>
+                    <th>Historia</th>
+                    <th>Paciente</th>
+                    <th>DNI / CE</th>
+                    <th>Fecha nac.</th>
+                    <th>Telefono</th>
+                    <th>Registrado por</th>
+                    @if (puedeEditarHistorias) {
+                      <th>Acciones</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (historia of historias(); track historia.id) {
+                    <tr>
+                      <td><code>{{ historia.numeroHistoria }}</code></td>
+                      <td>{{ historia.nombreCompleto }}</td>
+                      <td>{{ historia.dniPaciente }}</td>
+                      <td>{{ historia.fechaNacimiento || '-' }}</td>
+                      <td>{{ historia.telefono || '-' }}</td>
+                      <td>{{ historia.creadoPor || '-' }}</td>
+                      @if (puedeEditarHistorias) {
+                        <td>
+                          <button type="button" class="btn btn--ghost btn--sm" (click)="prepararEdicionHistoria(historia)">
+                            Editar
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+
         @if (mostrarFormNueva) {
           <div class="bloque bloque--nuevo">
             <h3 class="bloque__titulo">Datos del Nuevo Paciente</h3>
@@ -181,9 +244,13 @@ import {
                   }
                 </div>
                 <div class="campo">
-                  <label class="campo__etiqueta">Fecha de Nacimiento</label>
+                  <label class="campo__etiqueta">Fecha de Nacimiento <span class="requerido">*</span></label>
                   <input type="date" class="campo__input" name="fechaNacimiento" [max]="fechaMaximaNacimiento"
-                    [(ngModel)]="nuevaHistoria.fechaNacimiento" />
+                    [(ngModel)]="nuevaHistoria.fechaNacimiento" required #fechaNacimientoF="ngModel"
+                    [class.campo__input--error]="fechaNacimientoF.invalid && fechaNacimientoF.touched" />
+                  @if (fechaNacimientoF.invalid && fechaNacimientoF.touched) {
+                    <span class="campo__error">La fecha de nacimiento es obligatoria.</span>
+                  }
                 </div>
                 <div class="campo">
                   <label class="campo__etiqueta">Genero</label>
@@ -210,12 +277,84 @@ import {
             </form>
           </div>
         }
+
+        @if (historiaEditando(); as historia) {
+          <div class="bloque bloque--nuevo">
+              <header class="resultado__cabecera">
+                <div>
+                  <span class="etiqueta etiqueta--encontrada">Edicion</span>
+                  <code class="resultado__num">{{ historia.numeroHistoria }}</code>
+                </div>
+                <button type="button" class="btn btn--ghost btn--sm" (click)="cancelarEdicionHistoria()">Cerrar</button>
+              </header>
+
+              <form class="form-grid" #edicionForm="ngForm" (ngSubmit)="guardarEdicionHistoria(edicionForm)" novalidate>
+                <div class="campo">
+                  <label class="campo__etiqueta">DNI / CE</label>
+                  <input type="text" class="campo__input" [value]="historia.dniPaciente" disabled />
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta">Nombre Completo <span class="requerido">*</span></label>
+                  <input type="text" class="campo__input" name="editNombreCompleto"
+                    [(ngModel)]="historia.nombreCompleto" required maxlength="150"
+                    #editNombreF="ngModel" [class.campo__input--error]="editNombreF.invalid && editNombreF.touched" />
+                  @if (editNombreF.invalid && editNombreF.touched) {
+                    <span class="campo__error">Nombre obligatorio</span>
+                  }
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta">Telefono</label>
+                  <input type="tel" class="campo__input" name="editTelefono"
+                    [ngModel]="historia.telefono" (ngModelChange)="actualizarTelefonoEdicion($event)"
+                    maxlength="15" inputmode="numeric" />
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta">Email</label>
+                  <input type="email" email class="campo__input" name="editEmail"
+                    [(ngModel)]="historia.email" #editEmailF="ngModel"
+                    [class.campo__input--error]="editEmailF.invalid && editEmailF.touched" />
+                  @if (editEmailF.invalid && editEmailF.touched) {
+                    <span class="campo__error">Formato de email invalido</span>
+                  }
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta">Fecha de Nacimiento <span class="requerido">*</span></label>
+                  <input type="date" class="campo__input" name="editFechaNacimiento" [max]="fechaMaximaNacimiento"
+                    [(ngModel)]="historia.fechaNacimiento" required #editFechaF="ngModel"
+                    [class.campo__input--error]="editFechaF.invalid && editFechaF.touched" />
+                  @if (editFechaF.invalid && editFechaF.touched) {
+                    <span class="campo__error">La fecha de nacimiento es obligatoria.</span>
+                  }
+                </div>
+                <div class="campo">
+                  <label class="campo__etiqueta">Genero</label>
+                  <select class="campo__input campo__select" name="editGenero" [(ngModel)]="historia.genero">
+                    <option value="">Seleccionar</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="O">Otro</option>
+                  </select>
+                </div>
+                <div class="campo campo--full">
+                  <label class="campo__etiqueta">Direccion</label>
+                  <input type="text" class="campo__input" name="editDireccion"
+                    [(ngModel)]="historia.direccion" maxlength="255" />
+                </div>
+                <div class="grupo-botones grupo-botones--form campo--full">
+                  <button type="submit" class="btn btn--primario" [disabled]="edicionForm.invalid || cargando()">
+                    @if (cargando()) { <span class="spinner"></span> } Guardar cambios
+                  </button>
+                  <button type="button" class="btn btn--ghost" (click)="cancelarEdicionHistoria()">Cancelar</button>
+                </div>
+              </form>
+          </div>
+        }
       </section>
     </main>
   `,
   styleUrl: '../admision.component.scss'
 })
-export class AdmisionHistoriasComponent {
+export class AdmisionHistoriasComponent implements OnInit {
   dniBusqueda = '';
   tipoDocumentoBusqueda: TipoDocumentoPaciente = 'DNI';
   tipoDocumentoNueva: TipoDocumentoPaciente = 'DNI';
@@ -225,12 +364,38 @@ export class AdmisionHistoriasComponent {
   readonly fechaMaximaNacimiento = fechaMaximaNacimiento();
   mostrarFormNueva = false;
   historiaEncontrada = signal<HistoriaClinicaResponse | null>(null);
+  historias = signal<HistoriaClinicaResponse[]>([]);
+  historiaEditando = signal<HistoriaClinicaEdicion | null>(null);
   nuevaHistoria: AbrirHistoriaRequest = this.initHistoria();
   cargando = signal(false);
+  cargandoHistorias = signal(false);
   errorMensaje = signal('');
   exitoMensaje = signal('');
+  puedeEditarHistorias = false;
 
-  constructor(private admisionService: AdmisionService) { }
+  constructor(
+    private admisionService: AdmisionService,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void {
+    this.puedeEditarHistorias = this.authService.obtenerRolActual() === ROLE.JEFE_ENFERMERIA;
+    this.cargarHistorias();
+  }
+
+  cargarHistorias(): void {
+    this.cargandoHistorias.set(true);
+    this.admisionService.listarHistorias().subscribe({
+      next: historias => {
+        this.historias.set(historias);
+        this.cargandoHistorias.set(false);
+      },
+      error: (e: HttpErrorResponse) => {
+        this.errorMensaje.set(e.error?.mensaje ?? 'No se pudieron cargar las historias clinicas.');
+        this.cargandoHistorias.set(false);
+      }
+    });
+  }
 
   buscarHistoria(): void {
     this.documentoBusquedaTocado = true;
@@ -285,6 +450,7 @@ export class AdmisionHistoriasComponent {
         this.nuevaHistoria = this.initHistoria();
         this.documentoNuevaTocado = false;
         this.exitoMensaje.set(`Historia ${resp.numeroHistoria} creada.`);
+        this.cargarHistorias();
       },
       error: (e: HttpErrorResponse) => {
         this.errorMensaje.set(e.error?.mensaje ?? 'Error al crear.');
@@ -317,6 +483,71 @@ export class AdmisionHistoriasComponent {
     this.nuevaHistoria = this.initHistoria();
     this.documentoNuevaTocado = false;
     this.limpiar();
+  }
+
+  prepararEdicionHistoria(historia: HistoriaClinicaResponse): void {
+    if (!this.puedeEditarHistorias) return;
+    this.errorMensaje.set('');
+    this.exitoMensaje.set('');
+    this.historiaEditando.set({
+      id: historia.id,
+      numeroHistoria: historia.numeroHistoria,
+      dniPaciente: historia.dniPaciente,
+      nombreCompleto: historia.nombreCompleto,
+      telefono: historia.telefono ?? '',
+      email: historia.email ?? '',
+      fechaNacimiento: historia.fechaNacimiento ?? '',
+      genero: historia.genero ?? '',
+      direccion: historia.direccion ?? ''
+    });
+  }
+
+  actualizarTelefonoEdicion(valor: string): void {
+    const historia = this.historiaEditando();
+    if (!historia) return;
+    this.historiaEditando.set({ ...historia, telefono: limpiarTelefonoPaciente(valor) });
+  }
+
+  guardarEdicionHistoria(form: NgForm): void {
+    const historia = this.historiaEditando();
+    if (!historia) return;
+
+    const errorPaciente = this.datosEdicionError(historia);
+    if (form.invalid || errorPaciente) {
+      form.control.markAllAsTouched();
+      this.errorMensaje.set(errorPaciente || 'Revise los datos de la historia.');
+      return;
+    }
+
+    const payload: ActualizarHistoriaRequest = {
+      nombreCompleto: historia.nombreCompleto,
+      telefono: historia.telefono,
+      email: historia.email,
+      fechaNacimiento: historia.fechaNacimiento,
+      genero: historia.genero,
+      direccion: historia.direccion
+    };
+
+    this.cargando.set(true);
+    this.admisionService.actualizarHistoria(historia.id, payload).subscribe({
+      next: resp => {
+        this.historias.update(historias => historias.map(item => item.id === resp.id ? resp : item));
+        if (this.historiaEncontrada()?.id === resp.id) {
+          this.historiaEncontrada.set(resp);
+        }
+        this.historiaEditando.set(null);
+        this.exitoMensaje.set(`Historia ${resp.numeroHistoria} actualizada.`);
+        this.cargando.set(false);
+      },
+      error: (e: HttpErrorResponse) => {
+        this.errorMensaje.set(e.error?.mensaje ?? 'No se pudo actualizar la historia clinica.');
+        this.cargando.set(false);
+      }
+    });
+  }
+
+  cancelarEdicionHistoria(): void {
+    this.historiaEditando.set(null);
   }
 
   actualizarDocumentoBusqueda(valor: string): void {
@@ -356,6 +587,13 @@ export class AdmisionHistoriasComponent {
       || mensajeTelefonoPaciente(this.nuevaHistoria.telefono)
       || mensajeEmailPaciente(this.nuevaHistoria.email)
       || mensajeFechaNacimiento(this.nuevaHistoria.fechaNacimiento);
+  }
+
+  datosEdicionError(historia: ActualizarHistoriaRequest): string {
+    return mensajeNombrePaciente(historia.nombreCompleto)
+      || mensajeTelefonoPaciente(historia.telefono)
+      || mensajeEmailPaciente(historia.email)
+      || mensajeFechaNacimiento(historia.fechaNacimiento);
   }
 
   documentoBusquedaValido(): boolean {

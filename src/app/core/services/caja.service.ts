@@ -30,8 +30,8 @@ export class CajaService {
     return this.http.post<AperturaCaja>(`${this.apiUrl}/aperturas`, { montoInicial });
   }
 
-  buscarDeudas(dni: string, concepto: ConceptoDeuda): Observable<Deuda[]> {
-    let params = new HttpParams().set('dni', dni.trim());
+  buscarDeudas(criterio: string, concepto: ConceptoDeuda): Observable<Deuda[]> {
+    let params = new HttpParams().set('dni', criterio.trim());
     if (concepto !== 'TODOS') {
       params = params.set('concepto', concepto);
     }

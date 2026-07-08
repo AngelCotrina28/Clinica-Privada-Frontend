@@ -44,7 +44,7 @@ export function fechaMaximaNacimiento(): string {
 }
 
 export function mensajeFechaNacimiento(valor: string | undefined): string {
-  if (!valor) return '';
+  if (!valor) return 'La fecha de nacimiento es obligatoria.';
   return valor > fechaMaximaNacimiento() ? 'La fecha de nacimiento no puede estar en el futuro.' : '';
 }
 

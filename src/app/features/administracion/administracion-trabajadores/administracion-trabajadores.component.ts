@@ -42,7 +42,7 @@ export class AdministracionTrabajadoresComponent implements OnInit {
       nombreCompleto: ['', [Validators.required, Validators.maxLength(150), patternValidator(FORM_PATTERNS.nombrePersona, 'pattern')]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       telefono: ['', [patternValidator(FORM_PATTERNS.telefono, 'pattern')]],
-      fechaNacimiento: ['', [noFutureDateValidator()]],
+      fechaNacimiento: ['', [Validators.required, noFutureDateValidator()]],
       colegiatura: ['', [Validators.maxLength(20), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
       rolId: ['', Validators.required],
       especialidadesIds: [[]]

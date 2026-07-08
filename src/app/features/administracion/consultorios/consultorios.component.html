@@ -63,7 +63,7 @@
             <tr>
               <td><strong>{{ c.nombre }}</strong></td>
               <td>{{ c.numero || '-' }}</td>
-              <td>{{ c.piso || '-' }}</td>
+              <td>{{ pisoVisible(c.piso) }}</td>
               <td>{{ c.especialidad }}</td>
               <td>
                 <span class="badge" [ngClass]="c.activo ? 'badge-activo' : 'badge-inactivo'">
@@ -71,15 +71,29 @@
                 </span>
               </td>
               <td class="td-acciones">
-                <button type="button" class="btn-tabla btn-editar" (click)="prepararEdicion(c)">
-                  Editar
+                <button type="button" class="btn-icon btn-editar" title="Editar" aria-label="Editar consultorio" (click)="prepararEdicion(c)">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                  </svg>
                 </button>
                 <button
                   type="button"
-                  class="btn-tabla"
+                  class="btn-icon"
                   [ngClass]="c.activo ? 'btn-desactivar' : 'btn-activar'"
+                  [title]="c.activo ? 'Desactivar' : 'Reactivar'"
+                  [attr.aria-label]="c.activo ? 'Desactivar consultorio' : 'Reactivar consultorio'"
                   (click)="cambiarEstado(c)">
-                  {{ c.activo ? 'Desactivar' : 'Reactivar' }}
+                  @if (c.activo) {
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M18 6 6 18"></path>
+                      <path d="m6 6 12 12"></path>
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m20 6-11 11-5-5"></path>
+                    </svg>
+                  }
                 </button>
               </td>
             </tr>
@@ -110,13 +124,18 @@
 
       <div class="form-grupo">
         <label>Numero</label>
-        <input type="text" formControlName="numero" maxlength="10" placeholder="305" [class.campo__input--error]="campoInvalido('numero')">
+        <input type="text" formControlName="numero" maxlength="10" inputmode="numeric" placeholder="305" [class.campo__input--error]="campoInvalido('numero')">
         @if (campoInvalido('numero')) { <span class="campo__error">{{ mensajeCampo('numero', 'Numero') }}</span> }
       </div>
 
       <div class="form-grupo">
         <label>Piso</label>
-        <input type="text" formControlName="piso" maxlength="20" placeholder="Piso 3" [class.campo__input--error]="campoInvalido('piso')">
+        <select formControlName="piso" [class.campo__input--error]="campoInvalido('piso')">
+          <option value="">Seleccionar piso</option>
+          @for (piso of pisos; track piso) {
+            <option [value]="piso">Piso {{ piso }}</option>
+          }
+        </select>
         @if (campoInvalido('piso')) { <span class="campo__error">{{ mensajeCampo('piso', 'Piso') }}</span> }
       </div>
 

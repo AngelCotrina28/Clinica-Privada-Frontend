@@ -82,8 +82,7 @@ export class SidebarComponent implements OnInit {
       group: 'atencion',
       rolesPermitidos: ROLES_ATENCION_MEDICA,
       children: [
-        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ROLES_ATENCION_MEDICA },
-        { label: 'Registrar Resultados', icon: 'medical', route: '/atencion-medica/registro-resultados', rolesPermitidos: ROLES_ATENCION_MEDICA }
+        { label: 'Consultar Historial', icon: 'record', route: '/atencion-medica/historial-clinico', rolesPermitidos: ROLES_ATENCION_MEDICA }
       ]
     },
     {

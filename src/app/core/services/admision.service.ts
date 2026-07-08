@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
+    ActualizarHistoriaRequest,
     AbrirHistoriaRequest,
     GenerarOrdenRequest,
     HistoriaClinicaResponse,
@@ -38,6 +39,14 @@ export class AdmisionService {
     // ABRIR NUEVA HISTORIA
     abrirNuevaHistoria(datos: AbrirHistoriaRequest): Observable<HistoriaClinicaResponse> {
         return this.http.post<HistoriaClinicaResponse>(`${this.apiUrl}/historia`, datos);
+    }
+
+    listarHistorias(): Observable<HistoriaClinicaResponse[]> {
+        return this.http.get<HistoriaClinicaResponse[]>(`${this.apiUrl}/historias`);
+    }
+
+    actualizarHistoria(id: number, datos: ActualizarHistoriaRequest): Observable<HistoriaClinicaResponse> {
+        return this.http.put<HistoriaClinicaResponse>(`${this.apiUrl}/historias/${id}`, datos);
     }
 
     // GENERAR ORDEN DE ATENCIÓN

@@ -129,7 +129,7 @@
         </div>
 
         <div class="form-grupo">
-          <label>Fecha de Nacimiento</label>
+          <label>Fecha de Nacimiento <span class="requerido">*</span></label>
           <input type="date" formControlName="fechaNacimiento" [max]="fechaMaximaNacimiento" [class.campo__input--error]="campoInvalido('fechaNacimiento')">
           @if (campoInvalido('fechaNacimiento')) { <span class="campo__error">{{ mensajeCampo('fechaNacimiento', 'Fecha de nacimiento') }}</span> }
         </div>

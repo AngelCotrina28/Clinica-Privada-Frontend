@@ -24,6 +24,7 @@ export class CajaFacturacionComponent implements OnInit {
   aperturaActual: AperturaCaja | null = null;
   deudas: DeudaSeleccionable[] = [];
   ultimoComprobante: Comprobante | null = null;
+  comprobanteParaImprimir: Comprobante | null = null;
 
   dniBusqueda = '';
   conceptoFiltro: ConceptoDeuda = 'TODOS';
@@ -128,15 +129,15 @@ export class CajaFacturacionComponent implements OnInit {
 
   buscarDeudas(): void {
     this.limpiarMensajes();
-    const dni = this.dniBusqueda.trim();
-    if (!dni) {
-      this.error = 'Ingrese el DNI del paciente.';
+    const criterio = this.dniBusqueda.trim();
+    if (!criterio) {
+      this.error = 'Ingrese DNI o numero de historia clinica.';
       return;
     }
 
     this.cargandoDeudas = true;
     this.ultimoComprobante = null;
-    this.cajaService.buscarDeudas(dni, this.conceptoFiltro).subscribe({
+    this.cajaService.buscarDeudas(criterio, this.conceptoFiltro).subscribe({
       next: deudas => {
         this.deudas = deudas.map(deuda => ({ ...deuda, checked: false }));
         this.mensaje = deudas.length ? '' : 'El paciente no tiene deudas pendientes para ese filtro.';
@@ -225,6 +226,15 @@ export class CajaFacturacionComponent implements OnInit {
 
   diferenciaAbsoluta(apertura: AperturaCaja): number {
     return Math.abs(Number(apertura.diferencia ?? 0));
+  }
+
+  imprimirComprobante(): void {
+    if (!this.ultimoComprobante) return;
+    this.comprobanteParaImprimir = this.ultimoComprobante;
+    setTimeout(() => {
+      window.print();
+      this.comprobanteParaImprimir = null;
+    }, 80);
   }
 
   private limpiarMensajes(): void {

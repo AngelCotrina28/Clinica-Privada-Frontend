@@ -30,6 +30,7 @@ export class ConsultoriosComponent implements OnInit {
   cargando = false;
   mensaje = '';
   error = '';
+  readonly pisos = ['1', '2', '3', '4', '5'];
 
   constructor(
     private fb: FormBuilder,
@@ -38,8 +39,8 @@ export class ConsultoriosComponent implements OnInit {
   ) {
     this.consultorioForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.maxLength(100), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
-      numero: ['', [Validators.maxLength(10), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
-      piso: ['', [Validators.maxLength(20), patternValidator(FORM_PATTERNS.codigoSimple, 'pattern')]],
+      numero: ['', [Validators.maxLength(10), patternValidator(FORM_PATTERNS.entero, 'integer')]],
+      piso: ['', [patternValidator(/^[1-5]$/, 'pattern')]],
       especialidadId: [''],
       activo: [true]
     });
@@ -183,5 +184,10 @@ export class ConsultoriosComponent implements OnInit {
 
   mensajeCampo(nombre: string, etiqueta: string): string {
     return controlErrorMessage(this.consultorioForm.get(nombre), etiqueta);
+  }
+
+  pisoVisible(piso: string | null | undefined): string {
+    if (!piso) return '-';
+    return /^\d+$/.test(piso) ? `Piso ${piso}` : piso;
   }
 }

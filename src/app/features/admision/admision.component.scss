@@ -363,6 +363,13 @@
   overflow-x: auto;
 }
 
+.tabla-cabecera {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
 .tabla {
   width: 100%;
   border-collapse: collapse;

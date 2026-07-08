@@ -255,6 +255,10 @@ input[type="checkbox"] {
   }
 }
 
+.comprobante-print {
+  display: none;
+}
+
 .resultado-cuadre {
   justify-content: flex-start;
 
@@ -271,6 +275,86 @@ input[type="checkbox"] {
   p {
     color: #64748b;
     margin: 0;
+  }
+}
+
+@media print {
+  :host {
+    display: block;
+  }
+
+  ::ng-deep body * {
+    visibility: hidden !important;
+  }
+
+  ::ng-deep .comprobante-print,
+  ::ng-deep .comprobante-print * {
+    visibility: visible !important;
+  }
+
+  ::ng-deep .comprobante-print {
+    background: #fff;
+    color: #000;
+    display: block !important;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    left: 0;
+    padding: 18mm;
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    table {
+      border-collapse: collapse;
+      margin-top: 1rem;
+      min-width: 0;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #d1d5db;
+      padding: 0.45rem;
+      text-align: left;
+    }
+
+    .col-derecha {
+      text-align: right;
+    }
+  }
+
+  ::ng-deep .comprobante-print__header {
+    border-bottom: 2px solid #000;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    text-align: center;
+
+    h1,
+    h2 {
+      margin: 0.2rem 0;
+    }
+  }
+
+  ::ng-deep .comprobante-print__datos {
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: 1fr 1fr;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  ::ng-deep .comprobante-print__totales {
+    margin-left: auto;
+    margin-top: 1rem;
+    max-width: 260px;
+
+    p {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.35rem 0;
+    }
   }
 }
 

@@ -71,13 +71,14 @@
 
     <form class="caja-filtros" (ngSubmit)="buscarDeudas()">
       <div class="campo-filtro">
-        <label for="dni_deuda">DNI paciente</label>
+        <label for="dni_deuda">DNI o historia clinica</label>
         <input
           id="dni_deuda"
           name="dniBusqueda"
           class="input-busqueda"
           type="text"
-          maxlength="12"
+          maxlength="20"
+          placeholder="72839401 o HC-874C413C348C"
           [(ngModel)]="dniBusqueda">
       </div>
 
@@ -195,6 +196,9 @@
         <span>{{ ultimoComprobante.tipoComprobante }}</span>
         <strong>{{ ultimoComprobante.numeroCompleto }}</strong>
         <em>S/ {{ ultimoComprobante.total | number:'1.2-2' }}</em>
+        <button type="button" class="btn-accion" (click)="imprimirComprobante()">
+          Imprimir / PDF
+        </button>
       </div>
     }
   </section>
@@ -239,3 +243,45 @@
     </section>
   }
 </main>
+
+@if (comprobanteParaImprimir) {
+  <section class="comprobante-print">
+    <div class="comprobante-print__header">
+      <h1>CLINICA LUZ DEL TUNEL</h1>
+      <h2>{{ comprobanteParaImprimir.tipoComprobante }} {{ comprobanteParaImprimir.numeroCompleto }}</h2>
+    </div>
+
+    <div class="comprobante-print__datos">
+      <p><strong>Fecha:</strong> {{ comprobanteParaImprimir.fechaEmision | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Paciente:</strong> {{ comprobanteParaImprimir.pacienteNombre }}</p>
+      <p><strong>DNI / CE:</strong> {{ comprobanteParaImprimir.pacienteDni }}</p>
+      <p><strong>Metodo:</strong> {{ comprobanteParaImprimir.metodoPago }}</p>
+      <p><strong>Emitido por:</strong> {{ comprobanteParaImprimir.emitidoPor }}</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Orden</th>
+          <th>Concepto</th>
+          <th class="col-derecha">Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (deuda of comprobanteParaImprimir.deudas; track deuda.id) {
+          <tr>
+            <td>{{ deuda.numeroOrden }}</td>
+            <td>{{ deuda.conceptoLabel }}</td>
+            <td class="col-derecha">S/ {{ deuda.monto | number:'1.2-2' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="comprobante-print__totales">
+      <p><span>Subtotal</span><strong>S/ {{ comprobanteParaImprimir.subtotal | number:'1.2-2' }}</strong></p>
+      <p><span>IGV</span><strong>S/ {{ comprobanteParaImprimir.igv | number:'1.2-2' }}</strong></p>
+      <p><span>Total</span><strong>S/ {{ comprobanteParaImprimir.total | number:'1.2-2' }}</strong></p>
+    </div>
+  </section>
+}

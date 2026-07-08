@@ -122,6 +122,7 @@
     <div class="cabecera-lista">
       <div>
         <h3 class="panel__titulo">Calendario de especialidad</h3>
+        <p class="subtitulo">Mes seleccionado: {{ mesTrabajoTexto() }}.</p>
         <p class="subtitulo">Usa este calendario para seleccionar dias y registrar horarios masivos.</p>
       </div>
       <span class="contador">{{ fechasSeleccionadas().length }} dias seleccionados</span>
@@ -163,7 +164,7 @@
     <div class="cabecera-lista">
       <div>
         <h3 class="panel__titulo">Calendario maestro de turnos</h3>
-        <p class="subtitulo">Vista global de todos los horarios registrados en el mes.</p>
+        <p class="subtitulo">Vista global de todos los horarios registrados en {{ mesTrabajoTexto() }}.</p>
       </div>
       <button class="secundario" (click)="cargarTurnosMaestro()">Actualizar maestro</button>
     </div>

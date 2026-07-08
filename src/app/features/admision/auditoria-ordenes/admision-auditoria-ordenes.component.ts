@@ -55,6 +55,14 @@ export class AdmisionAuditoriaOrdenesComponent implements OnInit {
     this.buscar(0);
   }
 
+  actualizarBusqueda(valor: string): void {
+    const limpio = (valor ?? '').replace(/[0-9]/g, '');
+    this.filtros.busqueda = limpio;
+    if (valor !== limpio) {
+      this.errorMensaje.set('Paciente o medico no debe contener numeros.');
+    }
+  }
+
   cambiarPagina(pagina: number): void {
     const totalPaginas = this.resultado().totalPaginas;
     if (pagina < 0 || pagina >= totalPaginas || pagina === this.resultado().paginaActual) return;

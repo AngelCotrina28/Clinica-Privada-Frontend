@@ -205,13 +205,19 @@
                 </div>
 
                 <div class="campo">
-                  <label class="campo__etiqueta">Fecha de Nacimiento</label>
+                  <label class="campo__etiqueta">Fecha de Nacimiento <span class="requerido">*</span></label>
                   <input
                     type="date"
                     class="campo__input"
                     name="fechaNacimiento"
                     [max]="fechaMaximaNacimiento"
-                    [(ngModel)]="nuevaHistoria.fechaNacimiento" />
+                    [(ngModel)]="nuevaHistoria.fechaNacimiento"
+                    required
+                    #fechaNacimientoF="ngModel"
+                    [class.campo__input--error]="fechaNacimientoF.invalid && fechaNacimientoF.touched" />
+                  @if (fechaNacimientoF.invalid && fechaNacimientoF.touched) {
+                    <span class="campo__error">La fecha de nacimiento es obligatoria.</span>
+                  }
                 </div>
 
                 <div class="campo">
@@ -521,7 +527,7 @@
       <header class="modal-horarios__cabecera">
         <div>
           <span class="programacion-panel__eyebrow">Horarios disponibles</span>
-          <h4>{{ diaSeleccionadoModal.numero }} de {{ mesesNombres[mesActual] }}</h4>
+          <h4>{{ formatearFecha(diaSeleccionadoModal.fechaCompleta) }}</h4>
         </div>
         <button type="button" class="btn-cerrar" (click)="cerrarModalHorarios()" aria-label="Cerrar">x</button>
       </header>

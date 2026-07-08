@@ -270,26 +270,21 @@ export class HorariosMedicosComponent implements OnInit {
   }
 
   private crearFechas(fechas: string[]): void {
-    let pendientes = fechas.length;
-    let creados = 0;
-    let fallidos = 0;
-    let ultimoError = '';
-
-    fechas.forEach(fecha => {
-      this.turnoService.crear({
-        especialidadId: Number(this.especialidadId),
-        medicoId: Number(this.medicoId),
-        fecha,
-        horaInicio: this.horaInicio,
-        horaFin: this.horaFin
-      }).subscribe({
-        next: () => { creados++; this.finalizarCargaMasiva(--pendientes, creados, fallidos, ultimoError); },
-        error: e => {
-          fallidos++;
-          ultimoError = this.obtenerMensajeError(e);
-          this.finalizarCargaMasiva(--pendientes, creados, fallidos, ultimoError);
-        }
-      });
+    this.turnoService.crearMultiple({
+      especialidadId: Number(this.especialidadId),
+      medicoId: Number(this.medicoId),
+      fechas,
+      horaInicio: this.horaInicio,
+      horaFin: this.horaFin
+    }).subscribe({
+      next: turnos => {
+        this.mensaje.set(`Turnos creados: ${turnos.length}.`);
+        this.fechasSeleccionadas.set([]);
+        this.cargarTurnos();
+      },
+      error: e => {
+        this.error.set(this.obtenerMensajeError(e));
+      }
     });
   }
 
@@ -310,6 +305,13 @@ export class HorariosMedicosComponent implements OnInit {
     return `${this.horaCorta(t.horaInicio)}-${this.horaCorta(t.horaFin)} ${t.nombreMedico.split(' ')[0]}`;
   }
 
+  mesTrabajoTexto(): string {
+    if (!this.mes) return '-';
+    const [anio, mes] = this.mes.split('-').map(Number);
+    return new Intl.DateTimeFormat('es-PE', { month: 'long', year: 'numeric' })
+      .format(new Date(anio, mes - 1, 1));
+  }
+
   private eliminarMultiples(turnos: TurnoResponse[], alTerminar: () => void): void {
     if (turnos.length === 0) {
       alTerminar();
@@ -322,17 +324,6 @@ export class HorariosMedicosComponent implements OnInit {
         error: () => { if (--pendientes === 0) alTerminar(); }
       });
     });
-  }
-
-  private finalizarCargaMasiva(pendientes: number, creados: number, fallidos: number, ultimoError = ''): void {
-    if (pendientes === 0) {
-      this.mensaje.set(`Creacion de turnos terminada | Creados: ${creados} - Errores: ${fallidos}.`);
-      if (fallidos > 0) {
-        this.error.set(ultimoError || 'Uno o mas turnos no pudieron crearse por reglas de disponibilidad.');
-      }
-      this.fechasSeleccionadas.set([]);
-      this.cargarTurnos();
-    }
   }
 
   private construirCalendario(): void {

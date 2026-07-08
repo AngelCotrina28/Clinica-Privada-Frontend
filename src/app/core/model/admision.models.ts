@@ -3,10 +3,19 @@ export interface AbrirHistoriaRequest {
   nombreCompleto:   string;
   telefono?:        string;
   email?:           string;
-  fechaNacimiento?: string;
+  fechaNacimiento:  string;
   genero?:          string;
   direccion?:       string;
   desdeAdmision:    boolean;
+}
+
+export interface ActualizarHistoriaRequest {
+  nombreCompleto:   string;
+  telefono?:        string;
+  email?:           string;
+  fechaNacimiento:  string;
+  genero?:          string;
+  direccion?:       string;
 }
 
 export interface HistoriaClinicaResponse {
@@ -18,6 +27,7 @@ export interface HistoriaClinicaResponse {
   email?:           string;
   fechaNacimiento?: string;
   genero?:          string;
+  direccion?:       string;
   creadoPor:        string;
   createdAt:        string;
   redirectUrl?:     string;

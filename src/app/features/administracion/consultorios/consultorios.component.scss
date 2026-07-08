@@ -144,6 +144,52 @@
   }
 }
 
+.btn-icon {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+  border-radius: 7px;
+  color: #245987;
+  cursor: pointer;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+
+  svg {
+    fill: none;
+    height: 18px;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    width: 18px;
+  }
+
+  &:hover {
+    background-color: #eef6ff;
+    border-color: #bdd4ea;
+  }
+
+  &.btn-desactivar {
+    color: #b42318;
+
+    &:hover {
+      background-color: #fff5f5;
+      border-color: #fed7d7;
+    }
+  }
+
+  &.btn-activar {
+    color: #166534;
+
+    &:hover {
+      background-color: #ecfdf5;
+      border-color: #bbf7d0;
+    }
+  }
+}
+
 td strong {
   color: var(--color-texto-titulo, #1a3b5d);
 }

@@ -188,14 +188,20 @@
             </div>
 
             <div class="campo">
-              <label class="campo__etiqueta">Fecha de Nacimiento</label>
+              <label class="campo__etiqueta">Fecha de Nacimiento <span class="requerido">*</span></label>
               <input
                 type="date"
                 class="campo__input"
                 name="fechaNacimiento"
                 [max]="fechaMaximaNacimiento"
                 [(ngModel)]="nuevaHistoria.fechaNacimiento"
+                required
+                #fechaNacimientoF="ngModel"
+                [class.campo__input--error]="fechaNacimientoF.invalid && fechaNacimientoF.touched"
               />
+              @if (fechaNacimientoF.invalid && fechaNacimientoF.touched) {
+                <span class="campo__error">La fecha de nacimiento es obligatoria.</span>
+              }
             </div>
 
             <div class="campo">

@@ -26,6 +26,16 @@ export class TurnoService {
     return this.http.post<TurnoResponse>(this.apiUrl, turno);
   }
 
+  crearMultiple(request: {
+    especialidadId: number;
+    medicoId: number;
+    fechas: string[];
+    horaInicio: string;
+    horaFin: string;
+  }): Observable<TurnoResponse[]> {
+    return this.http.post<TurnoResponse[]>(`${this.apiUrl}/batch`, request);
+  }
+
   actualizar(id: number, turno: TurnoRequest): Observable<TurnoResponse> {
     return this.http.put<TurnoResponse>(`${this.apiUrl}/${id}`, turno);
   }
