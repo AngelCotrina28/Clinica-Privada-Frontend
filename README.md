@@ -2,6 +2,25 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
 
+## Microservices Gateway
+
+The frontend uses `/api` as its single API entry point. The destination changes
+according to the environment:
+
+- Local development: `proxy.conf.json` forwards `/api` to the Kubernetes or
+  Docker Compose Gateway at `http://localhost:8090`.
+- Vercel: `vercel.json` forwards `/api` to the Render Gateway at
+  `https://clinica-gateway-service.onrender.com`.
+
+Before running the frontend locally, expose the Kubernetes Gateway with:
+
+```powershell
+kubectl -n clinica-ms port-forward svc/gateway-service 8090:8090
+```
+
+Alternatively, start the Docker Compose deployment, which already publishes the
+Gateway on port `8090`.
+
 ## Development server
 
 To start a local development server, run:
