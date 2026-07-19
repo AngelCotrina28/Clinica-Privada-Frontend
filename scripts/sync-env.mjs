@@ -15,15 +15,20 @@ const apiUrl = normalizeApiUrl(
     defaultApiUrl
 );
 
-const content = `// Synced from .env by scripts/sync-env.mjs before npm start/build.
+const content = `// Synced from environment variables or an optional .env before npm start/build.
 export const environment = {
   production: true,
   apiUrl: ${JSON.stringify(apiUrl)}
 };
 `;
 
-writeFileSync(outputPath, content, 'utf8');
-console.log(`Environment API URL: ${apiUrl}`);
+const currentContent = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
+if (normalizeLineEndings(currentContent) !== normalizeLineEndings(content)) {
+  writeFileSync(outputPath, content, 'utf8');
+  console.log(`Environment API URL updated: ${apiUrl}`);
+} else {
+  console.log(`Environment API URL unchanged: ${apiUrl}`);
+}
 
 function parseEnvFile(path) {
   if (!existsSync(path)) return {};
@@ -48,6 +53,10 @@ function parseEnvFile(path) {
 function normalizeApiUrl(value) {
   const trimmed = value.trim();
   return trimmed === '/' ? trimmed : trimmed.replace(/\/+$/, '');
+}
+
+function normalizeLineEndings(value) {
+  return value.replace(/\r\n/g, '\n');
 }
 
 function unquote(value) {

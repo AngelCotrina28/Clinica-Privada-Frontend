@@ -1,4 +1,4 @@
-// Synced from .env by scripts/sync-env.mjs before npm start/build.
+// Synced from environment variables or an optional .env before npm start/build.
 export const environment = {
   production: true,
   apiUrl: "/api"

@@ -1,78 +1,91 @@
-# Frontend
+# Clínica Privada - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
+Aplicación web Angular de la Clínica Privada Luz del Túnel.
 
-## Microservices Gateway
+## Acceso demo local
 
-The frontend uses `/api` as its single API entry point. The destination changes
-according to the environment:
+Después de iniciar el backend y la pila de microservicios con Docker Compose, use:
 
-- Local development: `proxy.conf.json` forwards `/api` to the Kubernetes or
-  Docker Compose Gateway at `http://localhost:8090`.
-- Vercel: `vercel.json` forwards `/api` to the Render Gateway at
-  `https://clinica-gateway-service.onrender.com`.
+| Rol | Usuario | Contraseña |
+|---|---|---|
+| Administrador | `admin` | `ClinicaAdminLocal123!` |
+| Recepcionista | `recepcionista` | `ClinicaDemoLocal123!` |
+| Jefe de enfermería | `jefe_enfermeria` | `ClinicaDemoLocal123!` |
+| Enfermero | `enfermero` | `ClinicaDemoLocal123!` |
+| Médico | `medico` | `ClinicaDemoLocal123!` |
+| Técnico de farmacia | `tecnico_farmacia` | `ClinicaDemoLocal123!` |
+| Cajero | `cajero` | `ClinicaDemoLocal123!` |
 
-Before running the frontend locally, expose the Kubernetes Gateway with:
+Estas cuentas son demostrativas y se crean únicamente en el entorno local. La lista completa, incluidas las credenciales preparadas para el despliegue de entrega, se mantiene en [CREDENCIALES_DEMO.md](https://github.com/AngelCotrina28/ClinicaPrivadaMSContainer/blob/main/CREDENCIALES_DEMO.md).
+
+## Requisitos
+
+- Node.js `^20.19.0`, `^22.12.0` o `^24.0.0`.
+- npm.
+- Gateway disponible en `http://localhost:8090`.
+- Backend monolítico disponible en `http://localhost:8080` mientras existan rutas legacy.
+
+## Instalación
+
+Desde la raíz del frontend:
+
+```powershell
+npm ci
+```
+
+La URL base predeterminada es `/api`, por lo que el proyecto puede arrancar sin crear un `.env`. Si necesitas personalizarla, copia la plantilla local:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+El archivo `.env` es local y no se versiona. La variable disponible es:
+
+```dotenv
+NG_APP_API_URL=/api
+```
+
+## Conectividad local
+
+El navegador llama siempre a `/api`. Al ejecutar el frontend con `npm start`, `proxy.conf.json` reenvía esas solicitudes al Gateway en `http://localhost:8090`.
+
+Antes de iniciar Angular deben estar disponibles:
+
+1. El backend monolítico en el puerto `8080`, porque el Gateway todavía envía allí las rutas legacy que no han sido migradas de forma compatible.
+2. El Gateway en el puerto `8090`.
+
+Para exponer el Gateway de Kubernetes:
 
 ```powershell
 kubectl -n clinica-ms port-forward svc/gateway-service 8090:8090
 ```
 
-Alternatively, start the Docker Compose deployment, which already publishes the
-Gateway on port `8090`.
+Como alternativa, el despliegue Docker Compose de microservicios publica directamente el puerto `8090`.
 
-## Development server
+El prefijo `/api/ms` es la vía explícita del Gateway hacia los microservicios. No debe asumirse que sus contratos son intercambiables con las rutas legacy del frontend ni activarse los flags de compatibilidad sin validar primero cada request y response.
 
-To start a local development server, run:
+## Desarrollo
 
-```bash
-ng serve
+```powershell
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La aplicación queda disponible en `http://localhost:4200`.
 
-## Code scaffolding
+## Compilación
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```powershell
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+La salida de producción se genera en `dist/frontend/browser`.
 
-```bash
-ng generate --help
+## Pruebas unitarias
+
+```powershell
+npm test -- --watch=false
 ```
 
-## Building
+## Despliegue en Vercel
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+`vercel.json` ejecuta `npm ci`, compila con `npm run build`, publica `dist/frontend/browser` y reescribe `/api` hacia el Gateway desplegado en Render. El Gateway desplegado debe tener configurado también su backend fallback para las rutas legacy.
